@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KAIH SMP Negeri 3 Sibolga</title>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -31,13 +33,13 @@
     }
 
     h1 {
-      margin-bottom: 5px;
       color: #0f4c81;
+      margin-bottom: 5px;
     }
 
     .subtitle {
-      margin-bottom: 25px;
       color: #666;
+      margin-bottom: 25px;
     }
 
     input {
@@ -61,65 +63,121 @@
       cursor: pointer;
     }
 
-    button:hover {
-      background: #08365c;
+    button:disabled {
+      opacity: 0.6;
     }
 
-    .info {
-      margin-top: 20px;
-      font-size: 13px;
-      color: #777;
+    #pesan {
+      margin-top: 15px;
+      font-size: 14px;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="login-box">
+<div class="login-box">
 
-    <h1>KAIH</h1>
+  <h1>KAIH</h1>
 
-    <div class="subtitle">
-      SMP Negeri 3 Sibolga
-    </div>
-
-    <input
-      type="email"
-      id="email"
-      placeholder="Email"
-      autocomplete="username"
-    >
-
-    <input
-      type="password"
-      id="password"
-      placeholder="Password"
-      autocomplete="current-password"
-    >
-
-    <button onclick="login()">
-      LOGIN
-    </button>
-
-    <div class="info">
-      Sistem Jurnal 7 Kebiasaan Anak Indonesia Hebat
-    </div>
-
+  <div class="subtitle">
+    SMP Negeri 3 Sibolga
   </div>
 
-  <script>
-    function login() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+  <input
+    type="email"
+    id="email"
+    placeholder="Email"
+  >
 
-      if (!email || !password) {
-        alert("Email dan password harus diisi.");
-        return;
-      }
+  <input
+    type="password"
+    id="password"
+    placeholder="Password"
+  >
 
-      alert("Halaman login sudah siap. Koneksi Supabase akan kita pasang pada langkah berikutnya.");
+  <button id="loginBtn" onclick="login()">
+    LOGIN
+  </button>
+
+  <div id="pesan"></div>
+
+</div>
+
+<script>
+
+  // =====================================
+  // SUPABASE
+  // =====================================
+
+  const SUPABASE_URL = "https://nnnvgbajiqlqrsaygxme.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_dHIoPw_gfvud74PH4UCp2w_yGzl9oDy";
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  // =====================================
+  // LOGIN
+  // =====================================
+
+  async function login() {
+
+    const email =
+      document.getElementById("email").value.trim();
+
+    const password =
+      document.getElementById("password").value;
+
+    const pesan =
+      document.getElementById("pesan");
+
+    const tombol =
+      document.getElementById("loginBtn");
+
+    if (!email || !password) {
+
+      pesan.textContent =
+        "Email dan password harus diisi.";
+
+      return;
     }
-  </script>
+
+    tombol.disabled = true;
+
+    pesan.textContent = "Memeriksa login...";
+
+    const { data, error } =
+      await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+    if (error) {
+
+      pesan.textContent =
+        "Login gagal: " + error.message;
+
+      tombol.disabled = false;
+
+      return;
+    }
+
+    pesan.textContent =
+      "Login berhasil!";
+
+    setTimeout(() => {
+
+      window.location.href = "dashboard.html";
+
+    }, 800);
+
+  }
+
+</script>
 
 </body>
 </html>
