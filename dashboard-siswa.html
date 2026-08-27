@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Dashboard Siswa - KAIH</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #e8f1ff, #f8fbff);
+      color: #222;
+    }
+
+    .header {
+      background: #0f4c81;
+      color: white;
+      padding: 25px 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 25px;
+    }
+
+    .header p {
+      margin: 8px 0 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 25px auto;
+      padding: 0 15px;
+    }
+
+    .welcome {
+      background: white;
+      border-radius: 15px;
+      padding: 22px;
+      box-shadow: 0 5px 20px rgba(0,0,0,.10);
+      margin-bottom: 20px;
+    }
+
+    .welcome h2 {
+      margin-top: 0;
+      color: #0f4c81;
+    }
+
+    .info {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .info div {
+      background: #f3f7fb;
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    .menu {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .menu button {
+      border: none;
+      border-radius: 15px;
+      padding: 28px 15px;
+      background: white;
+      box-shadow: 0 5px 20px rgba(0,0,0,.10);
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .menu button:hover {
+      transform: translateY(-2px);
+    }
+
+    .kehadiran {
+      color: #1565c0;
+    }
+
+    .jurnal {
+      color: #2e7d32;
+    }
+
+    .logout {
+      margin-top: 25px;
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 9px;
+      background: #c62828;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      .menu,
+      .info {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>🎓 KAIH SMP Negeri 3 Sibolga</h1>
+    <p>Portal Siswa</p>
+  </div>
+
+  <div class="container">
+
+    <div class="welcome">
+
+      <h2>
+        👋 Selamat Datang,
+        <span id="namaSiswa">Siswa</span>
+      </h2>
+
+      <p>
+        Login sebagai: <strong>Siswa</strong>
+      </p>
+
+      <div class="info">
+
+        <div>
+          <strong>NISN</strong><br>
+          <span id="nisnSiswa">-</span>
+        </div>
+
+        <div>
+          <strong>Kelas</strong><br>
+          <span id="kelasSiswa">-</span>
+        </div>
+
+        <div>
+          <strong>Guru Wali</strong><br>
+          <span id="guruWaliSiswa">-</span>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="menu">
+
+      <button
+        class="kehadiran"
+        onclick="bukaKehadiran()"
+      >
+        📋<br>
+        Kehadiran
+      </button>
+
+      <button
+        class="jurnal"
+        onclick="bukaJurnal()"
+      >
+        ⭐<br>
+        Jurnal 7 Kebiasaan<br>
+        Anak Indonesia Hebat
+      </button>
+
+    </div>
+
+
+    <button
+      class="logout"
+      onclick="logout()"
+    >
+      🚪 Keluar
+    </button>
+
+  </div>
+
+
+<script>
+
+const SUPABASE_URL =
+  "https://nnnvgbajiqlqrsaygxme.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_dHIoPw_gfvud74PH4UCp2w_yGzl9oDy";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+// ========================================
+// CEK LOGIN
+// ========================================
+
+async function cekLogin() {
+
+  const hasil =
+    await supabaseClient.auth.getUser();
+
+  const user =
+    hasil.data.user;
+
+  if (!user) {
+
+    window.location.href =
+      "login-siswa.html";
+
+    return;
+  }
+
+  await ambilDataSiswa(user);
+
+}
+
+
+// ========================================
+// AMBIL DATA SISWA
+// ========================================
+
+async function ambilDataSiswa(user) {
+
+  const hasil =
+    await supabaseClient
+      .from("siswa")
+      .select("*")
+      .eq("nisn", user.email.split("@")[0])
+      .maybeSingle();
+
+  if (hasil.error) {
+
+    console.error(
+      hasil.error.message
+    );
+
+    return;
+  }
+
+  const siswa =
+    hasil.data;
+
+  if (!siswa) {
+
+    console.log(
+      "Data siswa tidak ditemukan."
+    );
+
+    return;
+  }
+
+
+  document.getElementById(
+    "namaSiswa"
+  ).textContent =
+    siswa.nama || "-";
+
+
+  document.getElementById(
+    "nisnSiswa"
+  ).textContent =
+    siswa.nisn || "-";
+
+
+  // Ambil nama kelas
+  if (siswa.kelas_id) {
+
+    const kelas =
+      await supabaseClient
+        .from("kelas")
+        .select("*")
+        .eq("id", siswa.kelas_id)
+        .maybeSingle();
+
+    if (kelas.data) {
+
+      document.getElementById(
+        "kelasSiswa"
+      ).textContent =
+        kelas.data.nama ||
+        kelas.data.nama_kelas ||
+        kelas.data.name ||
+        "-";
+
+    }
+  }
+
+
+  // Ambil nama guru wali
+  if (siswa.guru_wali_id) {
+
+    const guru =
+      await supabaseClient
+        .from("guru")
+        .select("*")
+        .eq("id", siswa.guru_wali_id)
+        .maybeSingle();
+
+    if (guru.data) {
+
+      document.getElementById(
+        "guruWaliSiswa"
+      ).textContent =
+        guru.data.nama ||
+        guru.data.nama_guru ||
+        guru.data.name ||
+        "-";
+
+    }
+  }
+
+}
+
+
+// ========================================
+// KEHADIRAN
+// ========================================
+
+function bukaKehadiran() {
+
+  window.location.href =
+    "kehadiran.html";
+
+}
+
+
+// ========================================
+// JURNAL KAIH
+// ========================================
+
+function bukaJurnal() {
+
+  window.location.href =
+    "jurnal-kaih.html";
+
+}
+
+
+// ========================================
+// LOGOUT
+// ========================================
+
+async function logout() {
+
+  await supabaseClient.auth.signOut();
+
+  window.location.href =
+    "login-siswa.html";
+
+}
+
+
+cekLogin();
+
+</script>
+
+</body>
+</html>
