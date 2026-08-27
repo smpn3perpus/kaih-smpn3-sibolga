@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Dashboard Admin KAIH</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -16,6 +17,7 @@
     body {
       margin: 0;
       background: #f3f6fa;
+      color: #222;
     }
 
     header {
@@ -62,8 +64,26 @@
       margin: 0;
     }
 
-    .card p {
-      color: #666;
+    .menu {
+      margin-top: 25px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .menu a {
+      display: block;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #222;
+      font-weight: bold;
+      box-shadow: 0 3px 10px rgba(0,0,0,.08);
+    }
+
+    .menu a:hover {
+      background: #eaf1f8;
     }
 
     .logout {
@@ -98,6 +118,8 @@
     <p id="status"></p>
   </div>
 
+  <!-- STATISTIK -->
+
   <div class="cards">
 
     <div class="card">
@@ -122,15 +144,50 @@
 
   </div>
 
-  <button class="logout" onclick="keluar()">Keluar</button>
+
+  <!-- MENU -->
+
+  <div class="menu">
+
+    <a href="guru.html">
+      👨‍🏫 Data Guru
+    </a>
+
+    <a href="kelas.html">
+      🏫 Data Kelas
+    </a>
+
+    <a href="#">
+      👨‍🎓 Data Siswa
+    </a>
+
+    <a href="#">
+      📋 Kehadiran
+    </a>
+
+    <a href="#">
+      ⭐ Jurnal 7 Kebiasaan
+    </a>
+
+    <a href="#">
+      📊 Rekap & Laporan
+    </a>
+
+  </div>
+
+
+  <button class="logout" onclick="keluar()">
+    Keluar
+  </button>
 
 </div>
 
+
 <script>
 
-// ===============================
+// ==========================================
 // SUPABASE
-// ===============================
+// ==========================================
 
 const SUPABASE_URL =
   "https://nnnvgbajiqlqrsaygxme.supabase.co";
@@ -145,9 +202,9 @@ const supabaseClient =
   );
 
 
-// ===============================
+// ==========================================
 // MULAI
-// ===============================
+// ==========================================
 
 async function mulai() {
 
@@ -156,12 +213,7 @@ async function mulai() {
 
   if (hasil.error || !hasil.data.user) {
 
-    document.getElementById("status").textContent =
-      "Sesi login tidak ditemukan.";
-
-    setTimeout(function() {
-      window.location.href = "index.html";
-    }, 1500);
+    window.location.href = "index.html";
 
     return;
   }
@@ -171,13 +223,13 @@ async function mulai() {
   document.getElementById("akun").textContent =
     "Login sebagai: " + user.email;
 
-  await hitungData();
+  hitungData();
 }
 
 
-// ===============================
+// ==========================================
 // HITUNG DATA
-// ===============================
+// ==========================================
 
 async function hitungData() {
 
@@ -240,12 +292,13 @@ async function hitungData() {
     document.getElementById("siswa").textContent =
       siswa.count ?? 0;
   }
+
 }
 
 
-// ===============================
-// KELUAR
-// ===============================
+// ==========================================
+// LOGOUT
+// ==========================================
 
 async function keluar() {
 
