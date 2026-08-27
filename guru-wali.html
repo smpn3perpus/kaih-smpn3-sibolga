@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Guru Wali - KAIH SMP Negeri 3 Sibolga</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f3f6fa;
+      color: #222;
+    }
+
+    header {
+      background: #0f4c81;
+      color: white;
+      padding: 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 25px auto;
+      padding: 15px;
+    }
+
+    .kembali {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 10px 18px;
+      background: #0f4c81;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+
+    .box {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,.08);
+    }
+
+    .judul {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background: #eaf1f8;
+    }
+
+    .kosong {
+      color: #777;
+    }
+
+    #status {
+      margin: 15px 0;
+      color: #c62828;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>KAIH SMP Negeri 3 Sibolga</h1>
+  <p>Guru Wali</p>
+</header>
+
+<div class="container">
+
+  <a href="dashboard.html" class="kembali">
+    ← Kembali ke Dashboard
+  </a>
+
+  <div class="box">
+
+    <div class="judul">
+      👨‍🏫 Daftar Guru Wali
+    </div>
+
+    <div id="status"></div>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Kelas</th>
+          <th>Guru Wali</th>
+        </tr>
+      </thead>
+
+      <tbody id="daftar">
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+
+<script>
+
+// ==========================================
+// SUPABASE
+// ==========================================
+
+const SUPABASE_URL =
+  "https://nnnvgbajiqlqrsaygxme.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_dHIoPw_gfvud74PH4UCp2w_yGzl9oDy";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+// ==========================================
+// CEK LOGIN
+// ==========================================
+
+async function mulai() {
+
+  const hasil =
+    await supabaseClient.auth.getUser();
+
+  if (hasil.error || !hasil.data.user) {
+
+    window.location.href = "index.html";
+
+    return;
+  }
+
+  ambilData();
+}
+
+
+// ==========================================
+// AMBIL DATA
+// ==========================================
+
+async function ambilData() {
+
+  const kelasResult =
+    await supabaseClient
+      .from("kelas")
+      .select("*");
+
+  if (kelasResult.error) {
+
+    document.getElementById("status").textContent =
+      "Gagal mengambil kelas: " +
+      kelasResult.error.message;
+
+    return;
+  }
+
+
+  const guruResult =
+    await supabaseClient
+      .from("guru")
+      .select("*");
+
+  if (guruResult.error) {
+
+    document.getElementById("status").textContent =
+      "Gagal mengambil guru: " +
+      guruResult.error.message;
+
+    return;
+  }
+
+
+  const waliResult =
+    await supabaseClient
+      .from("guru kelas")
+      .select("*");
+
+  if (waliResult.error) {
+
+    document.getElementById("status").textContent =
+      "Gagal mengambil guru wali: " +
+      waliResult.error.message;
+
+    return;
+  }
+
+
+  tampilkan(
+    kelasResult.data || [],
+    guruResult.data || [],
+    waliResult.data || []
+  );
+}
+
+
+// ==========================================
+// TAMPILKAN
+// ==========================================
+
+function tampilkan(kelasData, guruData, waliData) {
+
+  const tabel =
+    document.getElementById("daftar");
+
+  tabel.innerHTML = "";
+
+
+  kelasData.forEach(function(kelas, index) {
+
+    const namaKelas =
+      kelas.nama ||
+      kelas.name ||
+      kelas.nama_kelas ||
+      kelas.kelas ||
+      "-";
+
+
+    const hubungan =
+      waliData.find(function(item) {
+
+        return item.kelas_id === kelas.id;
+
+      });
+
+
+    let namaGuru = "-";
+
+
+    if (hubungan) {
+
+      const guru =
+        guruData.find(function(item) {
+
+          return item.id === hubungan.guru_id;
+
+        });
+
+
+      if (guru) {
+
+        namaGuru =
+          guru.nama ||
+          guru.name ||
+          guru.nama_guru ||
+          guru.guru ||
+          "-";
+
+      }
+
+    }
+
+
+    const baris =
+      document.createElement("tr");
+
+
+    baris.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${namaKelas}</td>
+      <td class="${namaGuru === "-" ? "kosong" : ""}">
+        ${namaGuru}
+      </td>
+    `;
+
+
+    tabel.appendChild(baris);
+
+  });
+
+}
+
+
+mulai();
+
+</script>
+
+</body>
+</html>
