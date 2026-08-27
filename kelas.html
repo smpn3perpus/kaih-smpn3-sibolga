@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Data Kelas - KAIH SMP Negeri 3 Sibolga</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f3f6fa;
+    }
+
+    header {
+      background: #0f4c81;
+      color: white;
+      padding: 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 25px auto;
+      padding: 15px;
+    }
+
+    .kembali {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 10px 18px;
+      background: #0f4c81;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+
+    .box {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,.08);
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .jumlah {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    input {
+      padding: 10px;
+      width: 280px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background: #eaf1f8;
+    }
+
+    #status {
+      margin: 15px 0;
+      color: #c62828;
+    }
+
+    @media (max-width: 700px) {
+      input {
+        width: 100%;
+      }
+
+      table {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>KAIH SMP Negeri 3 Sibolga</h1>
+  <p>Data Kelas</p>
+</header>
+
+<div class="container">
+
+  <a href="dashboard.html" class="kembali">
+    ← Kembali ke Dashboard
+  </a>
+
+  <div class="box">
+
+    <div class="top">
+
+      <div class="jumlah">
+        Jumlah Kelas: <span id="jumlah">0</span>
+      </div>
+
+      <input
+        type="text"
+        id="cari"
+        placeholder="Cari kelas..."
+        onkeyup="cariKelas()"
+      >
+
+    </div>
+
+    <div id="status"></div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Nama Kelas</th>
+        </tr>
+      </thead>
+
+      <tbody id="daftarKelas"></tbody>
+    </table>
+
+  </div>
+
+</div>
+
+<script>
+
+// ==========================================
+// SUPABASE
+// ==========================================
+
+const SUPABASE_URL =
+  "https://nnnvgbajiqlqrsaygxme.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_dHIoPw_gfvud74PH4UCp2w_yGzl9oDy";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+// ==========================================
+// DATA KELAS
+// ==========================================
+
+let semuaKelas = [];
+
+
+// ==========================================
+// CEK LOGIN
+// ==========================================
+
+async function mulai() {
+
+  const hasil =
+    await supabaseClient.auth.getUser();
+
+  if (hasil.error || !hasil.data.user) {
+
+    window.location.href = "index.html";
+
+    return;
+  }
+
+  ambilKelas();
+}
+
+
+// ==========================================
+// AMBIL DATA KELAS
+// ==========================================
+
+async function ambilKelas() {
+
+  const hasil =
+    await supabaseClient
+      .from("kelas")
+      .select("*");
+
+  if (hasil.error) {
+
+    document.getElementById("status").textContent =
+      "Gagal mengambil data kelas: " +
+      hasil.error.message;
+
+    return;
+  }
+
+  semuaKelas = hasil.data || [];
+
+  document.getElementById("jumlah").textContent =
+    semuaKelas.length;
+
+  tampilkanKelas(semuaKelas);
+}
+
+
+// ==========================================
+// TAMPILKAN KELAS
+// ==========================================
+
+function tampilkanKelas(data) {
+
+  const tabel =
+    document.getElementById("daftarKelas");
+
+  tabel.innerHTML = "";
+
+  data.forEach(function(kelas, index) {
+
+    const baris =
+      document.createElement("tr");
+
+    const nama =
+      kelas.nama ||
+      kelas.name ||
+      kelas.nama_kelas ||
+      kelas.kelas ||
+      "-";
+
+    baris.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${nama}</td>
+    `;
+
+    tabel.appendChild(baris);
+
+  });
+}
+
+
+// ==========================================
+// PENCARIAN
+// ==========================================
+
+function cariKelas() {
+
+  const kata =
+    document
+      .getElementById("cari")
+      .value
+      .toLowerCase();
+
+  const hasil =
+    semuaKelas.filter(function(kelas) {
+
+      const nama =
+        kelas.nama ||
+        kelas.name ||
+        kelas.nama_kelas ||
+        kelas.kelas ||
+        "";
+
+      return nama
+        .toLowerCase()
+        .includes(kata);
+
+    });
+
+  tampilkanKelas(hasil);
+}
+
+
+mulai();
+
+</script>
+
+</body>
+</html>
