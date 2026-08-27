@@ -16,7 +16,6 @@
     body {
       margin: 0;
       background: #f3f6fa;
-      color: #222;
     }
 
     header {
@@ -25,19 +24,10 @@
       padding: 20px;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 24px;
-    }
-
-    header p {
-      margin: 6px 0 0;
-    }
-
     .container {
       max-width: 1100px;
       margin: 25px auto;
-      padding: 0 15px;
+      padding: 15px;
     }
 
     .welcome {
@@ -45,7 +35,6 @@
       padding: 20px;
       border-radius: 12px;
       margin-bottom: 20px;
-      box-shadow: 0 3px 10px rgba(0,0,0,.08);
     }
 
     .cards {
@@ -59,24 +48,18 @@
       padding: 25px;
       border-radius: 12px;
       text-align: center;
-      box-shadow: 0 3px 10px rgba(0,0,0,.08);
     }
 
     .card h2 {
-      margin: 0;
       font-size: 32px;
       color: #0f4c81;
-    }
-
-    .card p {
-      margin-bottom: 0;
-      color: #666;
+      margin: 0;
     }
 
     .logout {
       margin-top: 25px;
-      padding: 12px 20px;
-      border: none;
+      padding: 12px 25px;
+      border: 0;
       border-radius: 8px;
       background: #c62828;
       color: white;
@@ -84,8 +67,7 @@
     }
 
     #status {
-      margin-top: 15px;
-      color: #c62828;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -102,23 +84,23 @@
   <div class="welcome">
     <h2>Selamat Datang, Admin 👋</h2>
     <p id="emailAdmin">Memeriksa akun...</p>
-    <div id="status"></div>
+    <p id="status"></p>
   </div>
 
   <div class="cards">
 
     <div class="card">
-      <h2 id="jumlahGuru">-</h2>
+      <h2 id="jumlahGuru">0</h2>
       <p>Guru</p>
     </div>
 
     <div class="card">
-      <h2 id="jumlahKelas">-</h2>
+      <h2 id="jumlahKelas">0</h2>
       <p>Kelas</p>
     </div>
 
     <div class="card">
-      <h2 id="jumlahSiswa">-</h2>
+      <h2 id="jumlahSiswa">0</h2>
       <p>Siswa</p>
     </div>
 
@@ -129,16 +111,13 @@
 
   </div>
 
-  <button class="logout" onclick="logout()">
-    Keluar
-  </button>
+  <button class="logout" onclick="logout()">Keluar</button>
 
 </div>
 
 <script>
 
 const SUPABASE_URL = "TEMPEL_PROJECT_URL_DI_SINI";
-
 const SUPABASE_KEY = "TEMPEL_PUBLISHABLE_KEY_DI_SINI";
 
 const supabaseClient =
@@ -148,68 +127,66 @@ const supabaseClient =
   );
 
 
-async function cekAdmin() {
+async function mulai() {
 
   const { data, error } =
     await supabaseClient.auth.getUser();
 
   if (error || !data.user) {
-
     window.location.href = "index.html";
-
     return;
   }
 
   document.getElementById("emailAdmin").textContent =
     "Login sebagai: " + data.user.email;
 
-  const { data: profil, error: profilError } =
-    await supabaseClient
-      .from("profil_pengguna")
-      .select("nama, role")
-      .eq("id", data.user.id)
-      .single();
-
-  if (profilError || !profil || profil.role !== "ADMIN") {
-
-    document.getElementById("status").textContent =
-      "Akun ini bukan akun Admin.";
-
-    return;
-  }
-
-  document.getElementById("emailAdmin").textContent =
-    "Login sebagai: " + profil.nama;
-
-  hitungData();
+  await hitungData();
 }
 
 
 async function hitungData() {
 
-  const guru =
+  const hasilGuru =
     await supabaseClient
       .from("guru")
       .select("*", { count: "exact", head: true });
 
-  const kelas =
+  const hasilKelas =
     await supabaseClient
       .from("kelas")
       .select("*", { count: "exact", head: true });
 
-  const siswa =
+  const hasilSiswa =
     await supabaseClient
       .from("siswa")
       .select("*", { count: "exact", head: true });
 
-  document.getElementById("jumlahGuru").textContent =
-    guru.count ?? 0;
 
-  document.getElementById("jumlahKelas").textContent =
-    kelas.count ?? 0;
+  if (hasilGuru.error) {
+    document.getElementById("status").textContent =
+      "Guru: " + hasilGuru.error.message;
+  } else {
+    document.getElementById("jumlahGuru").textContent =
+      hasilGuru.count ?? 0;
+  }
 
-  document.getElementById("jumlahSiswa").textContent =
-    siswa.count ?? 0;
+
+  if (hasilKelas.error) {
+    document.getElementById("status").textContent =
+      "Kelas: " + hasilKelas.error.message;
+  } else {
+    document.getElementById("jumlahKelas").textContent =
+      hasilKelas.count ?? 0;
+  }
+
+
+  if (hasilSiswa.error) {
+    document.getElementById("status").textContent =
+      "Siswa: " + hasilSiswa.error.message;
+  } else {
+    document.getElementById("jumlahSiswa").textContent =
+      hasilSiswa.count ?? 0;
+  }
 }
 
 
@@ -221,7 +198,7 @@ async function logout() {
 }
 
 
-cekAdmin();
+mulai();
 
 </script>
 
