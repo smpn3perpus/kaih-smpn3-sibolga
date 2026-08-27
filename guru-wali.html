@@ -205,7 +205,7 @@ async function ambilData() {
 
   const waliResult =
     await supabaseClient
-      .from("guru kelas")
+      .from("guru_kelas")
       .select("*");
 
   if (waliResult.error) {
