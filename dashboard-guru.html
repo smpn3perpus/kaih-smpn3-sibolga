@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard Guru - KAIH SMP Negeri 3 Sibolga</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f4f7fb;
+  color: #222;
+}
+
+.header {
+  background: linear-gradient(135deg,#0f4c81,#1565c0);
+  color: white;
+  text-align: center;
+  padding: 35px 20px;
+}
+
+.header h1 {
+  margin: 0 0 10px;
+  font-size: 30px;
+}
+
+.header p {
+  margin: 5px 0;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 25px auto;
+  padding: 0 15px;
+}
+
+.welcome {
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 15px rgba(0,0,0,.08);
+}
+
+.welcome h2 {
+  margin-top: 0;
+  color: #0f4c81;
+}
+
+.info {
+  background: #eef5ff;
+  border-radius: 10px;
+  padding: 15px;
+  line-height: 1.8;
+}
+
+.menu {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit,minmax(230px,1fr));
+  gap: 18px;
+}
+
+.menu-card {
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,.08);
+  transition: .2s;
+}
+
+.menu-card:hover {
+  transform: translateY(-4px);
+}
+
+.icon {
+  font-size: 45px;
+  margin-bottom: 12px;
+}
+
+.menu-card h3 {
+  color: #0f4c81;
+  margin: 10px 0;
+}
+
+.menu-card p {
+  color: #666;
+  min-height: 42px;
+}
+
+.menu-card button {
+  border: none;
+  border-radius: 9px;
+  padding: 12px 18px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  background: #1565c0;
+}
+
+.menu-card button:hover {
+  opacity: .9;
+}
+
+.logout {
+  background: #c62828 !important;
+}
+
+.footer {
+  text-align: center;
+  color: #666;
+  padding: 30px 15px;
+  font-size: 14px;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+}
+
+.error {
+  background: #ffebee;
+  color: #c62828;
+  padding: 15px;
+  border-radius: 10px;
+  display: none;
+}
+
+@media(max-width:600px) {
+
+  .header h1 {
+    font-size: 24px;
+  }
+
+  .welcome {
+    padding: 18px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+
+  <h1>👨‍🏫 Dashboard Guru</h1>
+
+  <p>Sistem KAIH</p>
+
+  <p>
+    SMP Negeri 3 Sibolga
+  </p>
+
+</div>
+
+<div class="container">
+
+  <div id="loading" class="loading">
+    Memuat data guru...
+  </div>
+
+  <div id="error" class="error"></div>
+
+  <div id="isiDashboard" style="display:none;">
+
+    <div class="welcome">
+
+      <h2>
+        👋 Selamat Datang,
+        <span id="namaGuru">-</span>
+      </h2>
+
+      <div class="info">
+
+        <strong>Username:</strong>
+        <span id="usernameGuru">-</span>
+
+        <br>
+
+        <strong>Status:</strong>
+        Guru Wali
+
+      </div>
+
+    </div>
+
+
+    <div class="menu">
+
+      <!-- KEHADIRAN -->
+
+      <div class="menu-card">
+
+        <div class="icon">📋</div>
+
+        <h3>Kehadiran Siswa</h3>
+
+        <p>
+          Melihat kehadiran siswa
+          yang menjadi siswa wali.
+        </p>
+
+        <button
+          onclick="buka('verifikasi-kehadiran.html')"
+        >
+          Buka Kehadiran
+        </button>
+
+      </div>
+
+
+      <!-- VERIFIKASI -->
+
+      <div class="menu-card">
+
+        <div class="icon">✅</div>
+
+        <h3>Verifikasi Kehadiran</h3>
+
+        <p>
+          Memeriksa dan memverifikasi
+          kehadiran siswa.
+        </p>
+
+        <button
+          onclick="buka('verifikasi-kehadiran.html')"
+        >
+          Verifikasi
+        </button>
+
+      </div>
+
+
+      <!-- REKAP -->
+
+      <div class="menu-card">
+
+        <div class="icon">📊</div>
+
+        <h3>Rekap Kehadiran</h3>
+
+        <p>
+          Melihat rekap kehadiran
+          siswa berdasarkan bulan.
+        </p>
+
+        <button
+          onclick="buka('rekap-kehadiran.html')"
+        >
+          Lihat Rekap
+        </button>
+
+      </div>
+
+
+      <!-- KAIH -->
+
+      <div class="menu-card">
+
+        <div class="icon">📖</div>
+
+        <h3>Jurnal 7 KAIH</h3>
+
+        <p>
+          Mengisi dan melihat jurnal
+          7 Kebiasaan Anak Indonesia Hebat.
+        </p>
+
+        <button
+          onclick="bukaJurnal()"
+        >
+          Buka Jurnal 7 KAIH
+        </button>
+
+      </div>
+
+
+      <!-- LOGOUT -->
+
+      <div class="menu-card">
+
+        <div class="icon">🚪</div>
+
+        <h3>Keluar</h3>
+
+        <p>
+          Keluar dari akun Guru.
+        </p>
+
+        <button
+          class="logout"
+          onclick="logoutGuru()"
+        >
+          Keluar
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="footer">
+
+  <strong>
+    Created by MR. Rahmat Batubara, S.T.P
+  </strong>
+
+  <br>
+
+  SMP Negeri 3 Sibolga
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+"https://nnnvgbajiqlqrsaygxme.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_dHIoPw_gfvud74PH4UCp2w_yGzl9oDy";
+
+const supabaseClient =
+window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+
+let guruLogin = null;
+
+
+// =====================================
+// MULAI
+// =====================================
+
+async function mulai() {
+
+  const hasil =
+    await supabaseClient.auth.getUser();
+
+  const user =
+    hasil.data.user;
+
+
+  // Belum login
+
+  if (!user) {
+
+    window.location.href =
+      "login-guru.html";
+
+    return;
+
+  }
+
+
+  // Ambil data guru
+
+  const guru =
+    await supabaseClient
+      .from("guru")
+      .select(
+        "id,nama,username,auth_user_id"
+      )
+      .eq(
+        "auth_user_id",
+        user.id
+      )
+      .maybeSingle();
+
+
+  if (
+    guru.error ||
+    !guru.data
+  ) {
+
+    document.getElementById(
+      "loading"
+    ).style.display = "none";
+
+    const error =
+      document.getElementById("error");
+
+    error.style.display = "block";
+
+    error.textContent =
+      "Akun login tidak terdaftar sebagai Guru.";
+
+    return;
+
+  }
+
+
+  guruLogin =
+    guru.data;
+
+
+  document.getElementById(
+    "namaGuru"
+  ).textContent =
+    guruLogin.nama || "-";
+
+
+  document.getElementById(
+    "usernameGuru"
+  ).textContent =
+    guruLogin.username || "-";
+
+
+  document.getElementById(
+    "loading"
+  ).style.display =
+    "none";
+
+
+  document.getElementById(
+    "isiDashboard"
+  ).style.display =
+    "block";
+
+}
+
+
+// =====================================
+// BUKA HALAMAN
+// =====================================
+
+function buka(
+  halaman
+) {
+
+  window.location.href =
+    halaman;
+
+}
+
+
+// =====================================
+// JURNAL KAIH
+// =====================================
+
+function bukaJurnal() {
+
+  /*
+    Untuk sementara diarahkan
+    ke halaman utama KAIH.
+
+    Setelah kita mengetahui nama
+    file jurnal guru yang sebenarnya,
+    tombol ini akan diarahkan
+    ke halaman tersebut.
+  */
+
+  window.location.href =
+    "index.html";
+
+}
+
+
+// =====================================
+// LOGOUT
+// =====================================
+
+async function logoutGuru() {
+
+  await supabaseClient.auth.signOut();
+
+  window.location.href =
+    "login-guru.html";
+
+}
+
+
+mulai();
+
+</script>
+
+</body>
+</html>
