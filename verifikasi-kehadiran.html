@@ -80,10 +80,6 @@
       background: #2e7d32;
     }
 
-    .btn-ubah {
-      background: #1565c0;
-    }
-
     .btn-logout {
       background: #c62828;
       margin-top: 15px;
@@ -140,6 +136,11 @@
       color: #555;
     }
 
+    .terverifikasi {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
     .pesan {
       padding: 12px;
       border-radius: 8px;
@@ -171,13 +172,26 @@
 
   <div class="card">
 
-    <h2>👋 Selamat Datang, <span id="namaGuru">Memuat...</span></h2>
+    <h2>
+      👋 Selamat Datang,
+      <span id="namaGuru">Memuat...</span>
+    </h2>
 
     <div class="info">
+
       <strong>Username:</strong>
       <span id="usernameGuru">-</span>
+
       <br><br>
-      <strong>Status:</strong> Guru Wali
+
+      <strong>Status:</strong>
+      Guru Wali
+
+      <br><br>
+
+      <strong>Siswa Wali:</strong>
+      <span id="jumlahSiswa">0</span> siswa
+
     </div>
 
     <div id="pesan" class="pesan"></div>
@@ -190,7 +204,6 @@
       >
 
       <button
-        class="btn-ubah"
         onclick="ambilData()"
       >
         🔄 Tampilkan
@@ -203,7 +216,7 @@
 
   <div class="card">
 
-    <h2>📋 Daftar Kehadiran</h2>
+    <h2>📋 Daftar Kehadiran Siswa Wali</h2>
 
     <div style="overflow-x:auto;">
 
@@ -218,7 +231,7 @@
             <th>Kelas</th>
             <th>Status Siswa</th>
             <th>Status Final</th>
-            <th>Aksi</th>
+            <th>Verifikasi / Edit</th>
           </tr>
 
         </thead>
@@ -245,19 +258,14 @@
     <h2>ℹ️ Keterangan</h2>
 
     <p>
-      Guru dapat memeriksa status kehadiran yang diisi siswa.
+      Guru Wali dapat memeriksa dan mengubah
+      status kehadiran siswa yang menjadi walinya.
     </p>
 
     <p>
-      Guru dapat mengubah status menjadi:
+      Status akhir yang dipilih guru akan menjadi
+      status resmi kehadiran siswa.
     </p>
-
-    <ul>
-      <li>🟢 Hadir</li>
-      <li>🟡 Sakit</li>
-      <li>🔵 Izin</li>
-      <li>🔴 Alpa / Tanpa Keterangan</li>
-    </ul>
 
     <button
       class="btn-logout"
@@ -287,13 +295,17 @@ const supabaseClient =
 
 
 let guruLogin = null;
+let daftarSiswaWali = [];
 
 
-// ======================================
+// =====================================
 // PESAN
-// ======================================
+// =====================================
 
-function tampilPesan(teks, sukses = false) {
+function tampilPesan(
+  teks,
+  sukses = false
+) {
 
   const box =
     document.getElementById("pesan");
@@ -303,16 +315,20 @@ function tampilPesan(teks, sukses = false) {
   box.style.display = "block";
 
   box.style.background =
-    sukses ? "#e8f5e9" : "#ffebee";
+    sukses
+      ? "#e8f5e9"
+      : "#ffebee";
 
   box.style.color =
-    sukses ? "#2e7d32" : "#c62828";
+    sukses
+      ? "#2e7d32"
+      : "#c62828";
 }
 
 
-// ======================================
+// =====================================
 // MULAI
-// ======================================
+// =====================================
 
 async function mulai() {
 
@@ -372,6 +388,9 @@ async function mulai() {
     guruLogin.username || "-";
 
 
+  await ambilSiswaWali();
+
+
   const sekarang =
     new Date();
 
@@ -400,9 +419,55 @@ async function mulai() {
 }
 
 
-// ======================================
-// AMBIL DATA KEHADIRAN
-// ======================================
+// =====================================
+// AMBIL SISWA YANG MEMILIH GURU INI
+// =====================================
+
+async function ambilSiswaWali() {
+
+  const hasil =
+    await supabaseClient
+      .from("siswa")
+      .select(
+        "id, nama, nisn, kelas_id"
+      )
+      .eq(
+        "guru_wali_id",
+        guruLogin.id
+      )
+      .order(
+        "nama",
+        {
+          ascending: true
+        }
+      );
+
+
+  if (hasil.error) {
+
+    tampilPesan(
+      "Gagal mengambil siswa wali: " +
+      hasil.error.message
+    );
+
+    return;
+  }
+
+
+  daftarSiswaWali =
+    hasil.data || [];
+
+
+  document.getElementById(
+    "jumlahSiswa"
+  ).textContent =
+    daftarSiswaWali.length;
+}
+
+
+// =====================================
+// AMBIL KEHADIRAN
+// =====================================
 
 async function ambilData() {
 
@@ -415,11 +480,39 @@ async function ambilData() {
   if (!tanggal) {
 
     tampilPesan(
-      "Pilih tanggal terlebih dahulu."
+      "Silakan pilih tanggal."
     );
 
     return;
   }
+
+
+  const tbody =
+    document.getElementById(
+      "tabelData"
+    );
+
+
+  if (
+    daftarSiswaWali.length === 0
+  ) {
+
+    tbody.innerHTML =
+      `<tr>
+        <td colspan="7">
+          Belum ada siswa yang memilih
+          Anda sebagai Guru Wali.
+        </td>
+      </tr>`;
+
+    return;
+  }
+
+
+  const ids =
+    daftarSiswaWali.map(
+      siswa => siswa.id
+    );
 
 
   const hasil =
@@ -437,6 +530,10 @@ async function ambilData() {
         "tanggal",
         tanggal
       )
+      .in(
+        "siswa_id",
+        ids
+      )
       .order(
         "siswa_id",
         {
@@ -448,7 +545,7 @@ async function ambilData() {
   if (hasil.error) {
 
     tampilPesan(
-      "Gagal mengambil data: " +
+      "Gagal mengambil kehadiran: " +
       hasil.error.message
     );
 
@@ -460,172 +557,163 @@ async function ambilData() {
     hasil.data || [];
 
 
-  const tbody =
-    document.getElementById(
-      "tabelData"
-    );
-
-
-  if (data.length === 0) {
-
-    tbody.innerHTML =
-      `<tr>
-        <td colspan="7">
-          Belum ada siswa yang mengisi kehadiran pada tanggal ini.
-        </td>
-      </tr>`;
-
-    return;
-  }
-
-
   tbody.innerHTML = "";
 
 
   let nomor = 1;
 
 
-  for (const row of data) {
+  for (
+    const siswa of daftarSiswaWali
+  ) {
 
-    const siswa =
-      await supabaseClient
-        .from("siswa")
-        .select(
-          "id, nama, nisn, kelas_id"
-        )
-        .eq(
-          "id",
-          row.siswa_id
-        )
-        .maybeSingle();
+    const row =
+      data.find(
+        item =>
+          Number(item.siswa_id) ===
+          Number(siswa.id)
+      );
 
 
-    let nama =
-      "-";
-
-    let nisn =
-      "-";
-
-    let kelas =
-      "-";
+    let statusSiswa =
+      row
+        ? row.status_siswa
+        : "Belum mengisi";
 
 
-    if (siswa.data) {
-
-      nama =
-        siswa.data.nama || "-";
-
-      nisn =
-        siswa.data.nisn || "-";
-
-      if (siswa.data.kelas_id) {
-
-        const kelasResult =
-          await supabaseClient
-            .from("kelas")
-            .select("*")
-            .eq(
-              "id",
-              siswa.data.kelas_id
-            )
-            .maybeSingle();
+    let statusFinal =
+      row
+        ? (
+            row.status_final ||
+            row.status_siswa
+          )
+        : "Belum mengisi";
 
 
-        if (kelasResult.data) {
-
-          kelas =
-            kelasResult.data.nama ||
-            kelasResult.data.nama_kelas ||
-            kelasResult.data.name ||
-            "-";
-        }
-      }
-    }
+    let statusVerifikasi =
+      row
+        ? (
+            row.status_verifikasi ||
+            "Belum diverifikasi"
+          )
+        : "-";
 
 
-    const status =
-      row.status_final ||
-      row.status_siswa ||
-      "-";
-
-
-    const statusClass =
-      status === "Hadir"
-        ? "hadir"
-        : status === "Sakit"
-        ? "sakit"
-        : status === "Izin"
-        ? "izin"
-        : status === "Alpa"
-        ? "alpa"
-        : "belum";
+    const kelas =
+      await ambilNamaKelas(
+        siswa.kelas_id
+      );
 
 
     const tr =
       document.createElement("tr");
 
 
-    tr.innerHTML = `
+    if (!row) {
 
-      <td>${nomor}</td>
+      tr.innerHTML = `
 
-      <td>${nama}</td>
+        <td>${nomor}</td>
 
-      <td>${nisn}</td>
+        <td>${siswa.nama || "-"}</td>
 
-      <td>${kelas}</td>
+        <td>${siswa.nisn || "-"}</td>
 
-      <td>
-        <span class="badge ${statusClass}">
-          ${row.status_siswa || "-"}
-        </span>
-      </td>
+        <td>${kelas}</td>
 
-      <td>
-        <span class="badge ${statusClass}">
-          ${status}
-        </span>
-      </td>
+        <td>
+          <span class="badge belum">
+            Belum mengisi
+          </span>
+        </td>
 
-      <td>
+        <td>
+          <span class="badge belum">
+            -
+          </span>
+        </td>
 
-        <select
-          id="status-${row.id}"
-        >
+        <td>
+          <span class="badge belum">
+            Belum ada data
+          </span>
+        </td>
 
-          <option value="Hadir"
-            ${status === "Hadir" ? "selected" : ""}>
-            Hadir
-          </option>
+      `;
 
-          <option value="Sakit"
-            ${status === "Sakit" ? "selected" : ""}>
-            Sakit
-          </option>
+    } else {
 
-          <option value="Izin"
-            ${status === "Izin" ? "selected" : ""}>
-            Izin
-          </option>
+      tr.innerHTML = `
 
-          <option value="Alpa"
-            ${status === "Alpa" ? "selected" : ""}>
-            Alpa
-          </option>
+        <td>${nomor}</td>
 
-        </select>
+        <td>${siswa.nama || "-"}</td>
 
-        <br><br>
+        <td>${siswa.nisn || "-"}</td>
 
-        <button
-          class="btn-verifikasi"
-          onclick="verifikasi(${row.id})"
-        >
-          ✓ Verifikasi
-        </button>
+        <td>${kelas}</td>
 
-      </td>
-    `;
+        <td>
+          ${badgeStatus(statusSiswa)}
+        </td>
+
+        <td>
+          ${badgeStatus(statusFinal)}
+          <br>
+          <small>
+            ${statusVerifikasi}
+          </small>
+        </td>
+
+        <td>
+
+          <select
+            id="status-${row.id}"
+          >
+
+            <option value="Hadir"
+              ${statusFinal === "Hadir"
+                ? "selected"
+                : ""}>
+              Hadir
+            </option>
+
+            <option value="Sakit"
+              ${statusFinal === "Sakit"
+                ? "selected"
+                : ""}>
+              Sakit
+            </option>
+
+            <option value="Izin"
+              ${statusFinal === "Izin"
+                ? "selected"
+                : ""}>
+              Izin
+            </option>
+
+            <option value="Alpa"
+              ${statusFinal === "Alpa"
+                ? "selected"
+                : ""}>
+              Alpa
+            </option>
+
+          </select>
+
+          <br><br>
+
+          <button
+            class="btn-verifikasi"
+            onclick="verifikasi(${row.id})"
+          >
+            ✓ Verifikasi
+          </button>
+
+        </td>
+
+      `;
+    }
 
 
     tbody.appendChild(tr);
@@ -636,9 +724,81 @@ async function ambilData() {
 }
 
 
-// ======================================
+// =====================================
+// BADGE STATUS
+// =====================================
+
+function badgeStatus(status) {
+
+  let kelas =
+    "belum";
+
+
+  if (status === "Hadir")
+    kelas = "hadir";
+
+  if (status === "Sakit")
+    kelas = "sakit";
+
+  if (status === "Izin")
+    kelas = "izin";
+
+  if (status === "Alpa")
+    kelas = "alpa";
+
+
+  return `
+    <span class="badge ${kelas}">
+      ${status}
+    </span>
+  `;
+}
+
+
+// =====================================
+// NAMA KELAS
+// =====================================
+
+async function ambilNamaKelas(
+  kelasId
+) {
+
+  if (!kelasId)
+    return "-";
+
+
+  const hasil =
+    await supabaseClient
+      .from("kelas")
+      .select("*")
+      .eq(
+        "id",
+        kelasId
+      )
+      .maybeSingle();
+
+
+  if (
+    hasil.error ||
+    !hasil.data
+  ) {
+
+    return "-";
+  }
+
+
+  return (
+    hasil.data.nama ||
+    hasil.data.nama_kelas ||
+    hasil.data.name ||
+    "-"
+  );
+}
+
+
+// =====================================
 // VERIFIKASI
-// ======================================
+// =====================================
 
 async function verifikasi(id) {
 
@@ -646,6 +806,16 @@ async function verifikasi(id) {
     document.getElementById(
       "status-" + id
     );
+
+
+  if (!select) {
+
+    tampilPesan(
+      "Data kehadiran tidak ditemukan."
+    );
+
+    return;
+  }
 
 
   const status =
@@ -666,9 +836,16 @@ async function verifikasi(id) {
     await supabaseClient
       .from("kehadiran")
       .update({
-        status_final: status,
-        status_verifikasi: "Terverifikasi",
-        diverifikasi_oleh: guruLogin.id
+
+        status_final:
+          status,
+
+        status_verifikasi:
+          "Terverifikasi",
+
+        diverifikasi_oleh:
+          guruLogin.id
+
       })
       .eq(
         "id",
@@ -698,9 +875,9 @@ async function verifikasi(id) {
 }
 
 
-// ======================================
+// =====================================
 // LOGOUT
-// ======================================\
+// =====================================
 
 async function logoutGuru() {
 
