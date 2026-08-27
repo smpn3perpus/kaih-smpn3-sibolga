@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Login Siswa - KAIH SMP Negeri 3 Sibolga</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -16,71 +17,83 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background: #eef5fb;
+      background: linear-gradient(135deg, #e8f1ff, #f8fbff);
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 20px;
     }
 
-    .box {
+    .container {
       width: 100%;
-      max-width: 450px;
+      max-width: 500px;
+    }
+
+    .card {
       background: white;
       padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 5px 20px rgba(0,0,0,.12);
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.12);
     }
 
     h1 {
       text-align: center;
       color: #0f4c81;
-      margin-bottom: 5px;
+      margin: 0;
     }
 
     .subjudul {
       text-align: center;
       color: #666;
-      margin-bottom: 25px;
+      margin: 8px 0 25px;
+    }
+
+    h2 {
+      color: #0f4c81;
+      margin-top: 0;
     }
 
     label {
       display: block;
-      margin-top: 15px;
+      margin-top: 14px;
       margin-bottom: 6px;
       font-weight: bold;
     }
 
-    input, select {
+    input,
+    select {
       width: 100%;
       padding: 12px;
       border: 1px solid #ccc;
       border-radius: 8px;
       font-size: 15px;
+      background: white;
     }
 
     button {
       width: 100%;
+      border: none;
       padding: 13px;
+      border-radius: 9px;
       margin-top: 20px;
-      border: 0;
-      border-radius: 8px;
-      background: #0f4c81;
-      color: white;
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
     }
 
-    .daftar {
-      background: #2e7d32;
+    .btn-login {
+      background: #0f4c81;
+      color: white;
     }
 
-    .pesan {
-      margin-top: 15px;
-      padding: 10px;
-      border-radius: 8px;
-      display: none;
+    .btn-daftar {
+      background: #2e7d32;
+      color: white;
+    }
+
+    .btn-kembali {
+      background: #777;
+      color: white;
     }
 
     .link {
@@ -94,146 +107,175 @@
       text-decoration: none;
     }
 
-    #formDaftar {
+    .pesan {
       display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      line-height: 1.5;
+    }
+
+    .login-form {
+      display: block;
+    }
+
+    .daftar-form {
+      display: none;
+    }
+
+    .loading {
+      text-align: center;
+      color: #666;
+      padding: 10px;
     }
   </style>
 </head>
 
 <body>
 
-<div class="box">
+<div class="container">
 
-  <h1>🧑‍🎓 Login Siswa</h1>
+  <div class="card">
 
-  <div class="subjudul">
-    KAIH SMP Negeri 3 Sibolga
-  </div>
+    <h1>🧑‍🎓 Login Siswa</h1>
 
-
-  <!-- LOGIN -->
-
-  <div id="formLogin">
-
-    <label>Username</label>
-
-    <input
-      type="text"
-      id="loginUsername"
-      placeholder="Masukkan username"
-    >
-
-
-    <label>Password</label>
-
-    <input
-      type="password"
-      id="loginPassword"
-      placeholder="Masukkan password"
-    >
-
-
-    <button onclick="loginSiswa()">
-      🔐 LOGIN SISWA
-    </button>
-
-
-    <div class="link">
-      Belum punya akun?
-      <a href="#" onclick="tampilDaftar()">
-        Daftar Akun Siswa
-      </a>
+    <div class="subjudul">
+      KAIH SMP Negeri 3 Sibolga
     </div>
 
-  </div>
 
+    <!-- ========================= -->
+    <!-- LOGIN SISWA -->
+    <!-- ========================= -->
 
-  <!-- DAFTAR -->
+    <div id="loginForm" class="login-form">
 
-  <div id="formDaftar">
+      <h2>🔐 Masuk</h2>
 
-    <h2>📝 Daftar Akun Siswa</h2>
+      <label>Username</label>
 
-    <label>Nama Siswa</label>
+      <input
+        type="text"
+        id="loginUsername"
+        placeholder="Masukkan username"
+        autocomplete="username"
+      >
 
-    <input
-      type="text"
-      id="nama"
-      placeholder="Nama lengkap"
-    >
+      <label>Password</label>
 
+      <input
+        type="password"
+        id="loginPassword"
+        placeholder="Masukkan password"
+        autocomplete="current-password"
+      >
 
-    <label>NISN</label>
+      <button
+        class="btn-login"
+        onclick="loginSiswa()"
+      >
+        LOGIN SISWA
+      </button>
 
-    <input
-      type="text"
-      id="nisn"
-      placeholder="NISN"
-    >
+      <div class="link">
+        Belum punya akun?
+        <a href="#" onclick="tampilDaftar()">
+          Daftar Akun Siswa
+        </a>
+      </div>
 
-
-    <label>NIS</label>
-
-    <input
-      type="text"
-      id="nis"
-      placeholder="NIS"
-    >
-
-
-    <label>Username</label>
-
-    <input
-      type="text"
-      id="username"
-      placeholder="Buat username"
-    >
-
-
-    <label>Password</label>
-
-    <input
-      type="password"
-      id="password"
-      placeholder="Buat password"
-    >
-
-
-    <label>Kelas</label>
-
-    <select id="kelas">
-      <option value="">Memuat kelas...</option>
-    </select>
-
-
-    <button
-      class="daftar"
-      onclick="daftarSiswa()"
-    >
-      📝 DAFTAR AKUN
-    </button>
-
-
-    <div class="link">
-      Sudah punya akun?
-      <a href="#" onclick="tampilLogin()">
-        Login Siswa
-      </a>
     </div>
 
+
+    <!-- ========================= -->
+    <!-- DAFTAR SISWA -->
+    <!-- ========================= -->
+
+    <div id="daftarForm" class="daftar-form">
+
+      <h2>📝 Daftar Akun Siswa</h2>
+
+      <label>Nama Lengkap</label>
+
+      <input
+        type="text"
+        id="nama"
+        placeholder="Masukkan nama lengkap"
+      >
+
+      <label>NISN</label>
+
+      <input
+        type="text"
+        id="nisn"
+        placeholder="Masukkan NISN"
+      >
+
+      <label>NIS</label>
+
+      <input
+        type="text"
+        id="nis"
+        placeholder="Masukkan NIS"
+      >
+
+      <label>Username</label>
+
+      <input
+        type="text"
+        id="username"
+        placeholder="Buat username"
+      >
+
+      <label>Password</label>
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Minimal 6 karakter"
+      >
+
+      <label>Kelas</label>
+
+      <select id="kelas">
+        <option value="">Memuat kelas...</option>
+      </select>
+
+      <label>Guru Wali</label>
+
+      <select id="guruWali">
+        <option value="">Memuat guru...</option>
+      </select>
+
+      <button
+        class="btn-daftar"
+        onclick="daftarSiswa()"
+      >
+        📝 BUAT AKUN SISWA
+      </button>
+
+      <button
+        class="btn-kembali"
+        onclick="tampilLogin()"
+      >
+        ← Kembali ke Login
+      </button>
+
+    </div>
+
+
+    <div id="pesan" class="pesan"></div>
+
   </div>
-
-
-  <div id="pesan" class="pesan"></div>
 
 </div>
 
 
 <script>
 
-// ==========================================
+// =====================================================
 // SUPABASE
-// ==========================================
+// =====================================================
 
 const SUPABASE_URL =
   "https://nnnvgbajiqlqrsaygxme.supabase.co";
@@ -248,11 +290,11 @@ const supabaseClient =
   );
 
 
-// ==========================================
-// TAMPILKAN PESAN
-// ==========================================
+// =====================================================
+// PESAN
+// =====================================================
 
-function pesan(teks, berhasil = false) {
+function tampilPesan(teks, sukses = false) {
 
   const box =
     document.getElementById("pesan");
@@ -261,24 +303,26 @@ function pesan(teks, berhasil = false) {
 
   box.style.display = "block";
 
-  box.style.background =
-    berhasil ? "#e8f5e9" : "#ffebee";
-
-  box.style.color =
-    berhasil ? "#2e7d32" : "#c62828";
+  if (sukses) {
+    box.style.background = "#e8f5e9";
+    box.style.color = "#2e7d32";
+  } else {
+    box.style.background = "#ffebee";
+    box.style.color = "#c62828";
+  }
 }
 
 
-// ==========================================
-// FORM LOGIN
-// ==========================================
+// =====================================================
+// TAMPIL LOGIN
+// =====================================================
 
 function tampilLogin() {
 
-  document.getElementById("formLogin").style.display =
+  document.getElementById("loginForm").style.display =
     "block";
 
-  document.getElementById("formDaftar").style.display =
+  document.getElementById("daftarForm").style.display =
     "none";
 
   document.getElementById("pesan").style.display =
@@ -286,40 +330,45 @@ function tampilLogin() {
 }
 
 
-// ==========================================
-// FORM DAFTAR
-// ==========================================
+// =====================================================
+// TAMPIL DAFTAR
+// =====================================================
 
 async function tampilDaftar() {
 
-  document.getElementById("formLogin").style.display =
+  document.getElementById("loginForm").style.display =
     "none";
 
-  document.getElementById("formDaftar").style.display =
+  document.getElementById("daftarForm").style.display =
     "block";
 
   document.getElementById("pesan").style.display =
     "none";
 
   await ambilKelas();
+
+  await ambilGuru();
+
 }
 
 
-// ==========================================
+// =====================================================
 // AMBIL KELAS
-// ==========================================
+// =====================================================
 
 async function ambilKelas() {
 
   const hasil =
     await supabaseClient
       .from("kelas")
-      .select("*");
+      .select("*")
+      .order("id");
+
 
   if (hasil.error) {
 
-    pesan(
-      "Gagal mengambil kelas: " +
+    tampilPesan(
+      "Gagal mengambil data kelas: " +
       hasil.error.message
     );
 
@@ -358,30 +407,140 @@ async function ambilKelas() {
 }
 
 
-// ==========================================
+// =====================================================
+// AMBIL GURU
+// =====================================================
+
+async function ambilGuru() {
+
+  const hasil =
+    await supabaseClient
+      .from("guru")
+      .select("*");
+
+
+  if (hasil.error) {
+
+    tampilPesan(
+      "Gagal mengambil data guru: " +
+      hasil.error.message
+    );
+
+    return;
+  }
+
+
+  const select =
+    document.getElementById("guruWali");
+
+  select.innerHTML =
+    '<option value="">Pilih guru wali</option>';
+
+
+  (hasil.data || []).forEach(function(guru) {
+
+    const nama =
+      guru.nama ||
+      guru.name ||
+      guru.nama_guru ||
+      guru.guru ||
+      "-";
+
+
+    const option =
+      document.createElement("option");
+
+    option.value = guru.id;
+
+    option.textContent = nama;
+
+    select.appendChild(option);
+
+  });
+
+}
+
+
+// =====================================================
+// CEK USERNAME
+// =====================================================
+
+async function cekUsername(username) {
+
+  const hasil =
+    await supabaseClient
+      .from("siswa")
+      .select("id")
+      .eq("username", username)
+      .limit(1);
+
+
+  if (hasil.error) {
+
+    return {
+      error: hasil.error
+    };
+
+  }
+
+
+  return {
+    ada: (hasil.data || []).length > 0
+  };
+
+}
+
+
+// =====================================================
 // DAFTAR SISWA
-// ==========================================
+// =====================================================
 
 async function daftarSiswa() {
 
   const nama =
-    document.getElementById("nama").value.trim();
+    document
+      .getElementById("nama")
+      .value
+      .trim();
 
   const nisn =
-    document.getElementById("nisn").value.trim();
+    document
+      .getElementById("nisn")
+      .value
+      .trim();
 
   const nis =
-    document.getElementById("nis").value.trim();
+    document
+      .getElementById("nis")
+      .value
+      .trim();
 
   const username =
-    document.getElementById("username").value.trim();
+    document
+      .getElementById("username")
+      .value
+      .trim()
+      .toLowerCase();
 
   const password =
-    document.getElementById("password").value;
+    document
+      .getElementById("password")
+      .value;
 
   const kelas_id =
-    document.getElementById("kelas").value;
+    document
+      .getElementById("kelas")
+      .value;
 
+  const guru_wali_id =
+    document
+      .getElementById("guruWali")
+      .value;
+
+
+  // ---------------------------------------------
+  // VALIDASI
+  // ---------------------------------------------
 
   if (
     !nama ||
@@ -389,10 +548,11 @@ async function daftarSiswa() {
     !nis ||
     !username ||
     !password ||
-    !kelas_id
+    !kelas_id ||
+    !guru_wali_id
   ) {
 
-    pesan(
+    tampilPesan(
       "Semua data harus diisi."
     );
 
@@ -402,7 +562,7 @@ async function daftarSiswa() {
 
   if (password.length < 6) {
 
-    pesan(
+    tampilPesan(
       "Password minimal 6 karakter."
     );
 
@@ -410,25 +570,71 @@ async function daftarSiswa() {
   }
 
 
-  pesan("Membuat akun...");
+  // ---------------------------------------------
+  // CEK USERNAME
+  // ---------------------------------------------
+
+  tampilPesan(
+    "Memeriksa username..."
+  );
 
 
-  // Email internal berdasarkan username
+  const cek =
+    await cekUsername(username);
+
+
+  if (cek.error) {
+
+    tampilPesan(
+      "Gagal memeriksa username: " +
+      cek.error.message
+    );
+
+    return;
+  }
+
+
+  if (cek.ada) {
+
+    tampilPesan(
+      "Username sudah digunakan. Silakan pilih username lain."
+    );
+
+    return;
+  }
+
+
+  // ---------------------------------------------
+  // BUAT EMAIL INTERNAL
+  // ---------------------------------------------
+
   const email =
-    username.toLowerCase() +
+    username +
     "@siswa.kaih.local";
+
+
+  // ---------------------------------------------
+  // BUAT AKUN SUPABASE AUTH
+  // ---------------------------------------------
+
+  tampilPesan(
+    "Membuat akun siswa..."
+  );
 
 
   const akun =
     await supabaseClient.auth.signUp({
+
       email: email,
+
       password: password
+
     });
 
 
   if (akun.error) {
 
-    pesan(
+    tampilPesan(
       "Gagal membuat akun: " +
       akun.error.message
     );
@@ -443,7 +649,7 @@ async function daftarSiswa() {
 
   if (!user) {
 
-    pesan(
+    tampilPesan(
       "Akun belum berhasil dibuat."
     );
 
@@ -451,50 +657,78 @@ async function daftarSiswa() {
   }
 
 
-  const siswa =
+  // ---------------------------------------------
+  // SIMPAN DATA SISWA
+  // ---------------------------------------------
+
+  tampilPesan(
+    "Menyimpan data siswa..."
+  );
+
+
+  const simpan =
     await supabaseClient
       .from("siswa")
       .insert({
 
         id: user.id,
+
         nama: nama,
+
         nisn: nisn,
+
         nis: nis,
+
         username: username,
-        kelas_id: kelas_id
+
+        kelas_id: kelas_id,
+
+        guru_wali_id: guru_wali_id
 
       });
 
 
-  if (siswa.error) {
+  if (simpan.error) {
 
-    pesan(
-      "Akun berhasil dibuat, tetapi data siswa gagal disimpan: " +
-      siswa.error.message
+    tampilPesan(
+      "Akun dibuat tetapi data siswa gagal disimpan: " +
+      simpan.error.message
     );
 
     return;
   }
 
 
-  pesan(
-    "Akun siswa berhasil dibuat. Silakan login.",
+  // ---------------------------------------------
+  // BERHASIL
+  // ---------------------------------------------
+
+  tampilPesan(
+    "🎉 Akun siswa berhasil dibuat! Silakan login.",
     true
   );
+
+
+  document.getElementById("loginUsername").value =
+    username;
+
+
+  document.getElementById("loginPassword").value =
+    "";
 
 
   setTimeout(function() {
 
     tampilLogin();
 
-  }, 1500);
+  }, 2000);
 
 }
 
 
-// ==========================================
+// =====================================================
 // LOGIN SISWA
-// ==========================================
+// =====================================================
 
 async function loginSiswa() {
 
@@ -506,12 +740,14 @@ async function loginSiswa() {
       .toLowerCase();
 
   const password =
-    document.getElementById("loginPassword").value;
+    document
+      .getElementById("loginPassword")
+      .value;
 
 
   if (!username || !password) {
 
-    pesan(
+    tampilPesan(
       "Username dan password harus diisi."
     );
 
@@ -522,6 +758,11 @@ async function loginSiswa() {
   const email =
     username +
     "@siswa.kaih.local";
+
+
+  tampilPesan(
+    "Memeriksa login..."
+  );
 
 
   const hasil =
@@ -536,7 +777,7 @@ async function loginSiswa() {
 
   if (hasil.error) {
 
-    pesan(
+    tampilPesan(
       "Login gagal: " +
       hasil.error.message
     );
