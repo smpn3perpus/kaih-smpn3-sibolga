@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Jurnal 7 KAIH Guru - SMP Negeri 3 Sibolga</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f4f7fb;
+  color: #222;
+}
+
+.header {
+  background: linear-gradient(135deg,#0f4c81,#1565c0);
+  color: white;
+  text-align: center;
+  padding: 30px 15px;
+}
+
+.header h1 {
+  margin: 0 0 8px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 25px auto;
+  padding: 0 15px;
+}
+
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 22px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,.08);
+}
+
+.info {
+  background: #eef5ff;
+  padding: 15px;
+  border-radius: 10px;
+  line-height: 1.8;
+  margin-top: 15px;
+}
+
+.filter {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+input,
+select,
+textarea {
+  padding: 11px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+input[type="date"] {
+  width: 180px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 70px;
+  resize: vertical;
+}
+
+button {
+  border: none;
+  border-radius: 8px;
+  padding: 11px 16px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-simpan {
+  background: #2e7d32;
+}
+
+.btn-tampil {
+  background: #1565c0;
+}
+
+.btn-kembali {
+  background: #616161;
+}
+
+.btn-logout {
+  background: #c62828;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit,minmax(260px,1fr));
+  gap: 15px;
+}
+
+.kaih {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 18px;
+  background: #fafafa;
+}
+
+.kaih h3 {
+  margin-top: 0;
+  color: #0f4c81;
+}
+
+.kaih label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.pesan {
+  display: none;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 15px 0;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 850px;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background: #0f4c81;
+  color: white;
+}
+
+td:nth-child(2) {
+  text-align: left;
+}
+
+.status-hari {
+  font-weight: bold;
+}
+
+.footer {
+  text-align: center;
+  color: #666;
+  padding: 30px 15px;
+  font-size: 14px;
+}
+
+.loading {
+  text-align: center;
+  padding: 30px;
+}
+
+.kosong {
+  text-align: center;
+  padding: 25px;
+  color: #666;
+}
+
+@media(max-width:700px) {
+
+  .container {
+    padding: 10px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  table {
+    font-size: 12px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+
+  <h1>📖 Jurnal 7 KAIH</h1>
+
+  <p>
+    7 Kebiasaan Anak Indonesia Hebat
+  </p>
+
+  <p>
+    SMP Negeri 3 Sibolga
+  </p>
+
+</div>
+
+
+<div class="container">
+
+
+<!-- INFORMASI GURU -->
+
+<div class="card">
+
+  <h2>
+    👨‍🏫 Guru:
+    <span id="namaGuru">Memuat...</span>
+  </h2>
+
+  <div class="info">
+
+    <strong>Username:</strong>
+    <span id="usernameGuru">-</span>
+
+    <br>
+
+    <strong>Siswa Wali:</strong>
+    <span id="jumlahSiswa">0</span> siswa
+
+  </div>
+
+</div>
+
+
+<!-- INPUT JURNAL -->
+
+<div class="card">
+
+  <h2>📝 Jurnal 7 KAIH Siswa Wali</h2>
+
+  <p>
+    Pilih tanggal dan isi kebiasaan siswa yang menjadi
+    siswa wali Anda.
+  </p>
+
+  <div class="filter">
+
+    <strong>Tanggal:</strong>
+
+    <input
+      type="date"
+      id="tanggal"
+    >
+
+    <button
+      class="btn-tampil"
+      onclick="ambilJurnal()"
+    >
+      🔄 Tampilkan
+    </button>
+
+  </div>
+
+  <div id="pesan" class="pesan"></div>
+
+</div>
+
+
+<!-- DAFTAR SISWA -->
+
+<div class="card">
+
+  <h2>👨‍🎓 Daftar Siswa Wali</h2>
+
+  <div
+    id="loading"
+    class="loading"
+  >
+    Memuat siswa...
+  </div>
+
+  <div
+    id="daftar"
+    style="display:none;"
+  ></div>
+
+</div>
+
+
+<!-- TOMBOL -->
+
+<div class="card">
+
+  <button
+    class="btn-kembali"
+    onclick="location.href='dashboard-guru.html'"
+  >
+    ← Dashboard Guru
+  </button>
+
+  <button
+    class="btn-logout"
+    onclick="logoutGuru()"
+  >
+    🚪 Keluar
+  </button>
+
+</div>
+
+
+</div>
+
+
+<div class="footer">
+
+  <strong>
+    Created by MR. Rahmat Batubara, S.T.P
+  </strong>
+
+  <br>
+
+  SMP Negeri 3 Sibolga
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+"https://nnnvgbajiqlqrsaygxme.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_dHIoPw_gfvud74PH4UCp2w_yGzl9oDy";
+
+const supabaseClient =
+window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+
+let guruLogin = null;
+
+let siswaWali = [];
+
+
+// =====================================
+// PESAN
+// =====================================
+
+function tampilPesan(
+  teks,
+  sukses = false
+) {
+
+  const box =
+    document.getElementById("pesan");
+
+  box.textContent = teks;
+
+  box.style.display = "block";
+
+  box.style.background =
+    sukses
+      ? "#e8f5e9"
+      : "#ffebee";
+
+  box.style.color =
+    sukses
+      ? "#2e7d32"
+      : "#c62828";
+}
+
+
+// =====================================
+// MULAI
+// =====================================
+
+async function mulai() {
+
+  const hasil =
+    await supabaseClient.auth.getUser();
+
+  const user =
+    hasil.data.user;
+
+
+  if (!user) {
+
+    location.href =
+      "login-guru.html";
+
+    return;
+  }
+
+
+  const guru =
+    await supabaseClient
+      .from("guru")
+      .select(
+        "id,nama,username,auth_user_id"
+      )
+      .eq(
+        "auth_user_id",
+        user.id
+      )
+      .maybeSingle();
+
+
+  if (
+    guru.error ||
+    !guru.data
+  ) {
+
+    alert(
+      "Akun login tidak terdaftar sebagai Guru."
+    );
+
+    await supabaseClient.auth.signOut();
+
+    location.href =
+      "login-guru.html";
+
+    return;
+  }
+
+
+  guruLogin =
+    guru.data;
+
+
+  document.getElementById(
+    "namaGuru"
+  ).textContent =
+    guruLogin.nama || "-";
+
+
+  document.getElementById(
+    "usernameGuru"
+  ).textContent =
+    guruLogin.username || "-";
+
+
+  const sekarang =
+    new Date();
+
+
+  const tahun =
+    sekarang.getFullYear();
+
+
+  const bulan =
+    String(
+      sekarang.getMonth() + 1
+    ).padStart(2,"0");
+
+
+  const hari =
+    String(
+      sekarang.getDate()
+    ).padStart(2,"0");
+
+
+  document.getElementById(
+    "tanggal"
+  ).value =
+    `${tahun}-${bulan}-${hari}`;
+
+
+  await ambilSiswa();
+
+
+  await ambilJurnal();
+
+}
+
+
+// =====================================
+// AMBIL SISWA WALI
+// =====================================
+
+async function ambilSiswa() {
+
+  const hasil =
+    await supabaseClient
+      .from("siswa")
+      .select(
+        "id,nama,nisn,kelas_id"
+      )
+      .eq(
+        "guru_wali_id",
+        guruLogin.id
+      )
+      .order(
+        "nama",
+        {
+          ascending:true
+        }
+      );
+
+
+  if (hasil.error) {
+
+    document.getElementById(
+      "loading"
+    ).textContent =
+      "Gagal mengambil siswa: " +
+      hasil.error.message;
+
+    return;
+  }
+
+
+  siswaWali =
+    hasil.data || [];
+
+
+  document.getElementById(
+    "jumlahSiswa"
+  ).textContent =
+    siswaWali.length;
+
+
+  document.getElementById(
+    "loading"
+  ).style.display =
+    "none";
+
+
+  document.getElementById(
+    "daftar"
+  ).style.display =
+    "block";
+
+}
+
+
+// =====================================
+// AMBIL JURNAL
+// =====================================
+
+async function ambilJurnal() {
+
+  const tanggal =
+    document.getElementById(
+      "tanggal"
+    ).value;
+
+
+  if (!tanggal) {
+
+    tampilPesan(
+      "Silakan pilih tanggal."
+    );
+
+    return;
+  }
+
+
+  const daftar =
+    document.getElementById(
+      "daftar"
+    );
+
+
+  if (siswaWali.length === 0) {
+
+    daftar.innerHTML =
+      `
+      <div class="kosong">
+        Belum ada siswa yang menjadi
+        siswa wali Anda.
+      </div>
+      `;
+
+    return;
+  }
+
+
+  /*
+    Kita coba membaca jurnal dari tabel
+    jurnal_7_kaih.
+
+    Jika tabel belum dibuat, halaman
+    akan memberikan pesan yang jelas.
+  */
+
+  const ids =
+    siswaWali.map(
+      siswa => siswa.id
+    );
+
+
+  const hasil =
+    await supabaseClient
+      .from("jurnal_7_kaih")
+      .select("*")
+      .eq(
+        "tanggal",
+        tanggal
+      )
+      .in(
+        "siswa_id",
+        ids
+      );
+
+
+  if (hasil.error) {
+
+    daftar.innerHTML =
+      `
+      <div class="pesan"
+           style="display:block;
+                  background:#ffebee;
+                  color:#c62828;">
+
+        Tabel jurnal 7 KAIH belum tersedia
+        atau belum memiliki izin akses.
+
+        <br><br>
+
+        Detail:
+        ${hasil.error.message}
+
+      </div>
+      `;
+
+    return;
+  }
+
+
+  const data =
+    hasil.data || [];
+
+
+  daftar.innerHTML = "";
+
+
+  siswaWali.forEach(
+    (siswa,index) => {
+
+
+      const row =
+        data.find(
+          item =>
+            Number(item.siswa_id) ===
+            Number(siswa.id)
+        );
+
+
+      const nilai =
+        row || {};
+
+
+      const card =
+        document.createElement(
+          "div"
+        );
+
+
+      card.className =
+        "kaih";
+
+
+      card.innerHTML = `
+
+        <h3>
+          ${index + 1}.
+          ${siswa.nama || "-"}
+        </h3>
+
+        <p>
+          NISN:
+          ${siswa.nisn || "-"}
+        </p>
+
+        <div class="grid">
+
+          <div>
+
+            <label>
+              🌅 Bangun Pagi
+            </label>
+
+            <select
+              id="bangun-${siswa.id}"
+            >
+
+              <option value="">
+                Pilih
+              </option>
+
+              <option value="Ya"
+                ${nilai.bangun_pagi === "Ya"
+                  ? "selected"
+                  : ""}>
+                Ya
+              </option>
+
+              <option value="Tidak"
+                ${nilai.bangun_pagi === "Tidak"
+                  ? "selected"
+                  : ""}>
+                Tidak
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div>
+
+            <label>
+              🙏 Beribadah
+            </label>
+
+            <select
+              id="ibadah-${siswa.id}"
+            >
+
+              <option value="">
+                Pilih
+              </option>
+
+              <option value="Ya"
+                ${nilai.beribadah === "Ya"
+                  ? "selected"
+                  : ""}>
+                Ya
+              </option>
+
+              <option value="Tidak"
+                ${nilai.beribadah === "Tidak"
+                  ? "selected"
+                  : ""}>
+                Tidak
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div>
+
+            <label>
+              🏃 Berolahraga
+            </label>
+
+            <select
+              id="olahraga-${siswa.id}"
+            >
+
+              <option value="">
+                Pilih
+              </option>
+
+              <option value="Ya"
+                ${nilai.berolahraga === "Ya"
+                  ? "selected"
+                  : ""}>
+                Ya
+              </option>
+
+              <option value="Tidak"
+                ${nilai.berolahraga === "Tidak"
+                  ? "selected"
+                  : ""}>
+                Tidak
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div>
+
+            <label>
+              🍎 Makan Sehat
+            </label>
+
+            <select
+              id="makan-${siswa.id}"
+            >
+
+              <option value="">
+                Pilih
+              </option>
+
+              <option value="Ya"
+                ${nilai.makan_sehat === "Ya"
+                  ? "selected"
+                  : ""}>
+                Ya
+              </option>
+
+              <option value="Tidak"
+                ${nilai.makan_sehat === "Tidak"
+                  ? "selected"
+                  : ""}>
+                Tidak
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div>
+
+            <label>
+              📚 Gemar Belajar
+            </label>
+
+            <select
+              id="belajar-${siswa.id}"
+            >
+
+              <option value="">
+                Pilih
+              </option>
+
+              <option value="Ya"
+                ${nilai.gemar_belajar === "Ya"
+                  ? "selected"
+                  : ""}>
+                Ya
+              </option>
+
+              <option value="Tidak"
+                ${nilai.gemar_belajar === "Tidak"
+                  ? "selected"
+                  : ""}>
+                Tidak
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div>
+
+            <label>
+              🤝 Bermasyarakat
+            </label>
+
+            <select
+              id="bermasyarakat-${siswa.id}"
+            >
+
+              <option value="">
+                Pilih
+              </option>
+
+              <option value="Ya"
+                ${nilai.bermasyarakat === "Ya"
+                  ? "selected"
+                  : ""}>
+                Ya
+              </option>
+
+              <option value="Tidak"
+                ${nilai.bermasyarakat === "Tidak"
+                  ? "selected"
+                  : ""}>
+                Tidak
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div>
+
+            <label>
+              😴 Tidur Cepat
+            </label>
+
+            <select
+              id="tidur-${siswa.id}"
+            >
+
+              <option value="">
+                Pilih
+              </option>
+
+              <option value="Ya"
+                ${nilai.tidur_cepat === "Ya"
+                  ? "selected"
+                  : ""}>
+                Ya
+              </option>
+
+              <option value="Tidak"
+                ${nilai.tidur_cepat === "Tidak"
+                  ? "selected"
+                  : ""}>
+                Tidak
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <br>
+
+        <label>
+          Catatan Guru
+        </label>
+
+        <textarea
+          id="catatan-${siswa.id}"
+          placeholder="Catatan guru..."
+        >${nilai.catatan || ""}</textarea>
+
+
+        <br><br>
+
+        <button
+          class="btn-simpan"
+          onclick="simpanJurnal(${siswa.id})"
+        >
+          💾 Simpan Jurnal
+        </button>
+
+      `;
+
+
+      daftar.appendChild(card);
+
+    }
+  );
+
+}
+
+
+// =====================================
+// SIMPAN JURNAL
+// =====================================
+
+async function simpanJurnal(
+  siswaId
+) {
+
+  const tanggal =
+    document.getElementById(
+      "tanggal"
+    ).value;
+
+
+  if (!tanggal) {
+
+    tampilPesan(
+      "Silakan pilih tanggal."
+    );
+
+    return;
+  }
+
+
+  const data = {
+
+    siswa_id:
+      siswaId,
+
+    tanggal:
+      tanggal,
+
+    guru_id:
+      guruLogin.id,
+
+    bangun_pagi:
+      document.getElementById(
+        `bangun-${siswaId}`
+      ).value,
+
+    beribadah:
+      document.getElementById(
+        `ibadah-${siswaId}`
+      ).value,
+
+    berolahraga:
+      document.getElementById(
+        `olahraga-${siswaId}`
+      ).value,
+
+    makan_sehat:
+      document.getElementById(
+        `makan-${siswaId}`
+      ).value,
+
+    gemar_belajar:
+      document.getElementById(
+        `belajar-${siswaId}`
+      ).value,
+
+    bermasyarakat:
+      document.getElementById(
+        `bermasyarakat-${siswaId}`
+      ).value,
+
+    tidur_cepat:
+      document.getElementById(
+        `tidur-${siswaId}`
+      ).value,
+
+    catatan:
+      document.getElementById(
+        `catatan-${siswaId}`
+      ).value
+
+  };
+
+
+  /*
+    Upsert:
+    Jika siswa + tanggal sudah ada,
+    data diperbarui.
+  */
+
+  const hasil =
+    await supabaseClient
+      .from("jurnal_7_kaih")
+      .upsert(
+        data,
+        {
+          onConflict:
+            "siswa_id,tanggal"
+        }
+      );
+
+
+  if (hasil.error) {
+
+    tampilPesan(
+      "Gagal menyimpan jurnal: " +
+      hasil.error.message
+    );
+
+    return;
+  }
+
+
+  tampilPesan(
+    "Jurnal 7 KAIH berhasil disimpan.",
+    true
+  );
+
+
+  await ambilJurnal();
+
+}
+
+
+// =====================================
+// LOGOUT
+// =====================================
+
+async function logoutGuru() {
+
+  await supabaseClient.auth.signOut();
+
+  location.href =
+    "login-guru.html";
+
+}
+
+
+mulai();
+
+</script>
+
+</body>
+</html>
