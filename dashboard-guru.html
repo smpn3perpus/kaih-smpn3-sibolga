@@ -95,6 +95,7 @@ body {
 .menu-card p {
   color: #666;
   min-height: 42px;
+  line-height: 1.5;
 }
 
 .menu-card button {
@@ -120,6 +121,7 @@ body {
   color: #666;
   padding: 30px 15px;
   font-size: 14px;
+  line-height: 1.8;
 }
 
 .loading {
@@ -133,6 +135,7 @@ body {
   padding: 15px;
   border-radius: 10px;
   display: none;
+  margin-bottom: 20px;
 }
 
 @media(max-width:600px) {
@@ -145,11 +148,19 @@ body {
     padding: 18px;
   }
 
+  .menu {
+    grid-template-columns: 1fr;
+  }
+
 }
 </style>
 </head>
 
 <body>
+
+<!-- ==============================
+     HEADER
+================================ -->
 
 <div class="header">
 
@@ -163,15 +174,32 @@ body {
 
 </div>
 
+
 <div class="container">
+
+  <!-- ==============================
+       LOADING
+  =============================== -->
 
   <div id="loading" class="loading">
     Memuat data guru...
   </div>
 
+
+  <!-- ==============================
+       ERROR
+  =============================== -->
+
   <div id="error" class="error"></div>
 
+
+  <!-- ==============================
+       DASHBOARD
+  =============================== -->
+
   <div id="isiDashboard" style="display:none;">
+
+    <!-- DATA GURU -->
 
     <div class="welcome">
 
@@ -195,9 +223,14 @@ body {
     </div>
 
 
+    <!-- ==============================
+         MENU GURU
+    =============================== -->
+
     <div class="menu">
 
-      <!-- KEHADIRAN -->
+
+      <!-- KEHADIRAN SISWA -->
 
       <div class="menu-card">
 
@@ -211,7 +244,7 @@ body {
         </p>
 
         <button
-          onclick="buka('verifikasi-kehadiran.html')"
+          onclick="window.location.href='verifikasi-kehadiran.html'"
         >
           Buka Kehadiran
         </button>
@@ -233,7 +266,7 @@ body {
         </p>
 
         <button
-          onclick="buka('verifikasi-kehadiran.html')"
+          onclick="window.location.href='verifikasi-kehadiran.html'"
         >
           Verifikasi
         </button>
@@ -255,7 +288,7 @@ body {
         </p>
 
         <button
-          onclick="buka('rekap-kehadiran.html')"
+          onclick="window.location.href='rekap-kehadiran.html'"
         >
           Lihat Rekap
         </button>
@@ -263,7 +296,9 @@ body {
       </div>
 
 
-      <!-- KAIH -->
+      <!-- ==============================
+           JURNAL 7 KAIH
+      =============================== -->
 
       <div class="menu-card">
 
@@ -277,7 +312,7 @@ body {
         </p>
 
         <button
-          onclick="bukaJurnal()"
+          onclick="window.location.href='jurnal-7-kaih-guru.html'"
         >
           Buka Jurnal 7 KAIH
         </button>
@@ -306,12 +341,17 @@ body {
 
       </div>
 
+
     </div>
 
   </div>
 
 </div>
 
+
+<!-- ==============================
+     FOOTER
+================================ -->
 
 <div class="footer">
 
@@ -323,16 +363,25 @@ body {
 
   SMP Negeri 3 Sibolga
 
+  <br>
+
+  Sistem KAIH
+
 </div>
 
 
 <script>
+
+/* =================================
+   SUPABASE
+================================= */
 
 const SUPABASE_URL =
 "https://nnnvgbajiqlqrsaygxme.supabase.co";
 
 const SUPABASE_KEY =
 "sb_publishable_dHIoPw_gfvud74PH4UCp2w_yGzl9oDy";
+
 
 const supabaseClient =
 window.supabase.createClient(
@@ -341,140 +390,141 @@ window.supabase.createClient(
 );
 
 
-let guruLogin = null;
-
-
-// =====================================
-// MULAI
-// =====================================
+/* =================================
+   MULAI
+================================= */
 
 async function mulai() {
 
-  const hasil =
-    await supabaseClient.auth.getUser();
+  try {
 
-  const user =
-    hasil.data.user;
+    const hasil =
+      await supabaseClient.auth.getUser();
 
-
-  // Belum login
-
-  if (!user) {
-
-    window.location.href =
-      "login-guru.html";
-
-    return;
-
-  }
+    const user =
+      hasil.data.user;
 
 
-  // Ambil data guru
+    /* BELUM LOGIN */
 
-  const guru =
-    await supabaseClient
-      .from("guru")
-      .select(
-        "id,nama,username,auth_user_id"
-      )
-      .eq(
-        "auth_user_id",
-        user.id
-      )
-      .maybeSingle();
+    if (!user) {
+
+      window.location.href =
+        "login-guru.html";
+
+      return;
+
+    }
 
 
-  if (
-    guru.error ||
-    !guru.data
-  ) {
+    /* ===============================
+       AMBIL DATA GURU
+    =============================== */
+
+    const guru =
+      await supabaseClient
+        .from("guru")
+        .select(
+          "id,nama,username,auth_user_id"
+        )
+        .eq(
+          "auth_user_id",
+          user.id
+        )
+        .maybeSingle();
+
+
+    if (
+      guru.error ||
+      !guru.data
+    ) {
+
+      document.getElementById(
+        "loading"
+      ).style.display = "none";
+
+
+      const error =
+        document.getElementById(
+          "error"
+        );
+
+
+      error.style.display =
+        "block";
+
+
+      error.textContent =
+        "Akun login tidak terdaftar sebagai Guru.";
+
+
+      return;
+
+    }
+
+
+    /* ===============================
+       TAMPILKAN DATA GURU
+    =============================== */
+
+    document.getElementById(
+      "namaGuru"
+    ).textContent =
+      guru.data.nama || "-";
+
+
+    document.getElementById(
+      "usernameGuru"
+    ).textContent =
+      guru.data.username || "-";
+
+
+    /* ===============================
+       TAMPILKAN DASHBOARD
+    =============================== */
 
     document.getElementById(
       "loading"
-    ).style.display = "none";
+    ).style.display =
+      "none";
 
-    const error =
-      document.getElementById("error");
 
-    error.style.display = "block";
+    document.getElementById(
+      "isiDashboard"
+    ).style.display =
+      "block";
 
-    error.textContent =
-      "Akun login tidak terdaftar sebagai Guru.";
 
-    return;
+  } catch (error) {
+
+    document.getElementById(
+      "loading"
+    ).style.display =
+      "none";
+
+
+    const box =
+      document.getElementById(
+        "error"
+      );
+
+
+    box.style.display =
+      "block";
+
+
+    box.textContent =
+      "Terjadi kesalahan: " +
+      error.message;
 
   }
 
-
-  guruLogin =
-    guru.data;
-
-
-  document.getElementById(
-    "namaGuru"
-  ).textContent =
-    guruLogin.nama || "-";
-
-
-  document.getElementById(
-    "usernameGuru"
-  ).textContent =
-    guruLogin.username || "-";
-
-
-  document.getElementById(
-    "loading"
-  ).style.display =
-    "none";
-
-
-  document.getElementById(
-    "isiDashboard"
-  ).style.display =
-    "block";
-
 }
 
 
-// =====================================
-// BUKA HALAMAN
-// =====================================
-
-function buka(
-  halaman
-) {
-
-  window.location.href =
-    halaman;
-
-}
-
-
-// =====================================
-// JURNAL KAIH
-// =====================================
-
-function bukaJurnal() {
-
-  /*
-    Untuk sementara diarahkan
-    ke halaman utama KAIH.
-
-    Setelah kita mengetahui nama
-    file jurnal guru yang sebenarnya,
-    tombol ini akan diarahkan
-    ke halaman tersebut.
-  */
-
-  window.location.href =
-    "index.html";
-
-}
-
-
-// =====================================
-// LOGOUT
-// =====================================
+/* =================================
+   LOGOUT
+================================= */
 
 async function logoutGuru() {
 
@@ -485,6 +535,10 @@ async function logoutGuru() {
 
 }
 
+
+/* =================================
+   JALANKAN
+================================= */
 
 mulai();
 
