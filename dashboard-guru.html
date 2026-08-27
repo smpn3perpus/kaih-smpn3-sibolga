@@ -1,357 +1,450 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Dashboard Guru - KAIH SMP Negeri 3 Sibolga</title>
+<title>Dashboard Guru - Sistem KAIH SMP Negeri 3 Sibolga</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-* {
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+
+*{
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
 }
 
-body {
-  margin: 0;
-  background: #f4f7fb;
-  color: #222;
+body{
+  margin:0;
+  background:#f4f7fb;
+  color:#222;
 }
 
-.header {
-  background: linear-gradient(135deg,#0f4c81,#1565c0);
-  color: white;
-  text-align: center;
-  padding: 35px 20px;
+/* =========================
+   HEADER
+========================= */
+
+.header{
+  background:linear-gradient(135deg,#0f4c81,#1565c0);
+  color:white;
+  text-align:center;
+  padding:35px 20px;
 }
 
-.header h1 {
-  margin: 0 0 10px;
-  font-size: 30px;
+.header h1{
+  margin:0 0 10px;
+  font-size:30px;
 }
 
-.header p {
-  margin: 5px 0;
+.header p{
+  margin:5px 0;
 }
 
-.container {
-  max-width: 1100px;
-  margin: 25px auto;
-  padding: 0 15px;
+/* =========================
+   CONTAINER
+========================= */
+
+.container{
+  max-width:1100px;
+  margin:25px auto;
+  padding:0 15px;
 }
 
-.welcome {
-  background: white;
-  border-radius: 16px;
-  padding: 25px;
-  margin-bottom: 25px;
-  box-shadow: 0 4px 15px rgba(0,0,0,.08);
+/* =========================
+   WELCOME
+========================= */
+
+.welcome{
+  background:white;
+  border-radius:16px;
+  padding:25px;
+  margin-bottom:25px;
+  box-shadow:0 4px 15px rgba(0,0,0,.08);
 }
 
-.welcome h2 {
-  margin-top: 0;
-  color: #0f4c81;
+.welcome h2{
+  margin-top:0;
+  color:#0f4c81;
 }
 
-.info {
-  background: #eef5ff;
-  border-radius: 10px;
-  padding: 15px;
-  line-height: 1.8;
+.info{
+  background:#eef5ff;
+  border-radius:10px;
+  padding:15px;
+  line-height:1.8;
 }
 
-.menu {
-  display: grid;
+/* =========================
+   MENU
+========================= */
+
+.menu{
+  display:grid;
   grid-template-columns:
     repeat(auto-fit,minmax(230px,1fr));
-  gap: 18px;
+  gap:18px;
 }
 
-.menu-card {
-  background: white;
-  border-radius: 16px;
-  padding: 25px;
-  text-align: center;
-  box-shadow: 0 4px 15px rgba(0,0,0,.08);
-  transition: .2s;
+.menu-card{
+  background:white;
+  border-radius:16px;
+  padding:25px;
+  text-align:center;
+  box-shadow:0 4px 15px rgba(0,0,0,.08);
+  transition:.2s;
 }
 
-.menu-card:hover {
-  transform: translateY(-4px);
+.menu-card:hover{
+  transform:translateY(-4px);
 }
 
-.icon {
-  font-size: 45px;
-  margin-bottom: 12px;
+.icon{
+  font-size:45px;
+  margin-bottom:12px;
 }
 
-.menu-card h3 {
-  color: #0f4c81;
-  margin: 10px 0;
+.menu-card h3{
+  color:#0f4c81;
+  margin:10px 0;
 }
 
-.menu-card p {
-  color: #666;
-  min-height: 42px;
-  line-height: 1.5;
+.menu-card p{
+  color:#666;
+  min-height:45px;
+  line-height:1.5;
 }
 
-.menu-card button {
-  border: none;
-  border-radius: 9px;
-  padding: 12px 18px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  background: #1565c0;
+.menu-card button{
+  border:none;
+  border-radius:9px;
+  padding:12px 18px;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  background:#1565c0;
 }
 
-.menu-card button:hover {
-  opacity: .9;
+.menu-card button:hover{
+  opacity:.9;
 }
 
-.logout {
-  background: #c62828 !important;
+/* =========================
+   WARNA MENU
+========================= */
+
+.btn-kehadiran{
+  background:#1565c0 !important;
 }
 
-.footer {
-  text-align: center;
-  color: #666;
-  padding: 30px 15px;
-  font-size: 14px;
-  line-height: 1.8;
+.btn-kaih{
+  background:#6a1b9a !important;
 }
 
-.loading {
-  text-align: center;
-  padding: 40px;
+.btn-rekap{
+  background:#00838f !important;
 }
 
-.error {
-  background: #ffebee;
-  color: #c62828;
-  padding: 15px;
-  border-radius: 10px;
-  display: none;
-  margin-bottom: 20px;
+.logout{
+  background:#c62828 !important;
 }
 
-@media(max-width:600px) {
+/* =========================
+   LOADING
+========================= */
 
-  .header h1 {
-    font-size: 24px;
+.loading{
+  text-align:center;
+  padding:40px;
+}
+
+/* =========================
+   ERROR
+========================= */
+
+.error{
+  background:#ffebee;
+  color:#c62828;
+  padding:15px;
+  border-radius:10px;
+  display:none;
+  margin-bottom:20px;
+  line-height:1.6;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer{
+  text-align:center;
+  color:#666;
+  padding:30px 15px;
+  font-size:14px;
+  line-height:1.8;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:600px){
+
+  .header h1{
+    font-size:24px;
   }
 
-  .welcome {
-    padding: 18px;
+  .welcome{
+    padding:18px;
   }
 
-  .menu {
-    grid-template-columns: 1fr;
+  .menu{
+    grid-template-columns:1fr;
   }
 
 }
+
 </style>
+
 </head>
 
 <body>
 
-<!-- ==============================
+
+<!-- =========================
      HEADER
-================================ -->
+========================= -->
 
 <div class="header">
 
   <h1>👨‍🏫 Dashboard Guru</h1>
 
-  <p>Sistem KAIH</p>
+  <p>📖 Sistem 7 Kebiasaan Anak Indonesia Hebat</p>
 
-  <p>
-    SMP Negeri 3 Sibolga
-  </p>
+  <p>SMP Negeri 3 Sibolga</p>
 
 </div>
 
 
 <div class="container">
 
-  <!-- ==============================
-       LOADING
-  =============================== -->
 
-  <div id="loading" class="loading">
-    Memuat data guru...
-  </div>
+<!-- =========================
+     LOADING
+========================= -->
 
+<div
+  id="loading"
+  class="loading"
+>
 
-  <!-- ==============================
-       ERROR
-  =============================== -->
+  ⏳ Memuat data guru...
 
-  <div id="error" class="error"></div>
-
-
-  <!-- ==============================
-       DASHBOARD
-  =============================== -->
-
-  <div id="isiDashboard" style="display:none;">
-
-    <!-- DATA GURU -->
-
-    <div class="welcome">
-
-      <h2>
-        👋 Selamat Datang,
-        <span id="namaGuru">-</span>
-      </h2>
-
-      <div class="info">
-
-        <strong>Username:</strong>
-        <span id="usernameGuru">-</span>
-
-        <br>
-
-        <strong>Status:</strong>
-        Guru Wali
-
-      </div>
-
-    </div>
+</div>
 
 
-    <!-- ==============================
-         MENU GURU
-    =============================== -->
+<!-- =========================
+     ERROR
+========================= -->
 
-    <div class="menu">
-
-
-      <!-- KEHADIRAN SISWA -->
-
-      <div class="menu-card">
-
-        <div class="icon">📋</div>
-
-        <h3>Kehadiran Siswa</h3>
-
-        <p>
-          Melihat kehadiran siswa
-          yang menjadi siswa wali.
-        </p>
-
-        <button
-          onclick="window.location.href='verifikasi-kehadiran.html'"
-        >
-          Buka Kehadiran
-        </button>
-
-      </div>
+<div
+  id="error"
+  class="error"
+></div>
 
 
-      <!-- VERIFIKASI -->
+<!-- =========================
+     ISI DASHBOARD
+========================= -->
 
-      <div class="menu-card">
-
-        <div class="icon">✅</div>
-
-        <h3>Verifikasi Kehadiran</h3>
-
-        <p>
-          Memeriksa dan memverifikasi
-          kehadiran siswa.
-        </p>
-
-        <button
-          onclick="window.location.href='verifikasi-kehadiran.html'"
-        >
-          Verifikasi
-        </button>
-
-      </div>
+<div
+  id="isiDashboard"
+  style="display:none;"
+>
 
 
-      <!-- REKAP -->
+<!-- =========================
+     DATA GURU
+========================= -->
 
-      <div class="menu-card">
+<div class="welcome">
 
-        <div class="icon">📊</div>
+  <h2>
 
-        <h3>Rekap Kehadiran</h3>
+    👋 Selamat Datang,
 
-        <p>
-          Melihat rekap kehadiran
-          siswa berdasarkan bulan.
-        </p>
+    <span id="namaGuru">-</span>
 
-        <button
-          onclick="window.location.href='rekap-kehadiran.html'"
-        >
-          Lihat Rekap
-        </button>
-
-      </div>
+  </h2>
 
 
-      <!-- ==============================
-           JURNAL 7 KAIH
-      =============================== -->
+  <div class="info">
 
-      <div class="menu-card">
+    <strong>Username:</strong>
 
-        <div class="icon">📖</div>
+    <span id="usernameGuru">
+      -
+    </span>
 
-        <h3>Jurnal 7 KAIH</h3>
+    <br>
 
-        <p>
-          Mengisi dan melihat jurnal
-          7 Kebiasaan Anak Indonesia Hebat.
-        </p>
+    <strong>Status:</strong>
 
-        <button
-          onclick="window.location.href='jurnal-7-kaih-guru.html'"
-        >
-          Buka Jurnal 7 KAIH
-        </button>
+    Guru Wali
 
-      </div>
+    <br>
 
+    <strong>Fungsi:</strong>
 
-      <!-- LOGOUT -->
-
-      <div class="menu-card">
-
-        <div class="icon">🚪</div>
-
-        <h3>Keluar</h3>
-
-        <p>
-          Keluar dari akun Guru.
-        </p>
-
-        <button
-          class="logout"
-          onclick="logoutGuru()"
-        >
-          Keluar
-        </button>
-
-      </div>
-
-
-    </div>
+    Memantau dan memverifikasi data siswa
 
   </div>
 
 </div>
 
 
-<!-- ==============================
+<!-- =========================
+     MENU UTAMA
+========================= -->
+
+<div class="menu">
+
+
+<!-- =========================
+     KEHADIRAN + VERIFIKASI
+========================= -->
+
+<div class="menu-card">
+
+  <div class="icon">
+    📋
+  </div>
+
+  <h3>
+    Kehadiran & Verifikasi
+  </h3>
+
+  <p>
+    Melihat daftar kehadiran siswa wali
+    dan melakukan verifikasi kehadiran.
+  </p>
+
+  <button
+    class="btn-kehadiran"
+    onclick="bukaKehadiran()"
+  >
+
+    📋 Buka Kehadiran
+
+  </button>
+
+</div>
+
+
+<!-- =========================
+     JURNAL 7 KAIH
+========================= -->
+
+<div class="menu-card">
+
+  <div class="icon">
+    📖
+  </div>
+
+  <h3>
+    Jurnal 7 KAIH
+  </h3>
+
+  <p>
+    Melihat jurnal yang telah diisi siswa,
+    memberikan respons dan komentar.
+  </p>
+
+  <button
+    class="btn-kaih"
+    onclick="bukaKaih()"
+  >
+
+    📖 Pantau Jurnal
+
+  </button>
+
+</div>
+
+
+<!-- =========================
+     REKAP
+========================= -->
+
+<div class="menu-card">
+
+  <div class="icon">
+    📊
+  </div>
+
+  <h3>
+    Rekap Kehadiran
+  </h3>
+
+  <p>
+    Melihat rekap kehadiran siswa
+    berdasarkan periode.
+  </p>
+
+  <button
+    class="btn-rekap"
+    onclick="bukaRekap()"
+  >
+
+    📊 Lihat Rekap
+
+  </button>
+
+</div>
+
+
+<!-- =========================
+     LOGOUT
+========================= -->
+
+<div class="menu-card">
+
+  <div class="icon">
+    🚪
+  </div>
+
+  <h3>
+    Keluar
+  </h3>
+
+  <p>
+    Keluar dari akun Guru.
+  </p>
+
+  <button
+    class="logout"
+    onclick="logoutGuru()"
+  >
+
+    🚪 Keluar
+
+  </button>
+
+</div>
+
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
      FOOTER
-================================ -->
+========================= -->
 
 <div class="footer">
 
@@ -365,7 +458,7 @@ body {
 
   <br>
 
-  Sistem KAIH
+  Sistem 7 KAIH
 
 </div>
 
@@ -394,20 +487,20 @@ window.supabase.createClient(
    MULAI
 ================================= */
 
-async function mulai() {
+async function mulai(){
 
-  try {
+  try{
 
-    const hasil =
+    const hasilLogin =
       await supabaseClient.auth.getUser();
 
     const user =
-      hasil.data.user;
+      hasilLogin.data.user;
 
 
     /* BELUM LOGIN */
 
-    if (!user) {
+    if(!user){
 
       window.location.href =
         "login-guru.html";
@@ -418,10 +511,10 @@ async function mulai() {
 
 
     /* ===============================
-       AMBIL DATA GURU
+       DATA GURU
     =============================== */
 
-    const guru =
+    const hasilGuru =
       await supabaseClient
         .from("guru")
         .select(
@@ -434,14 +527,14 @@ async function mulai() {
         .maybeSingle();
 
 
-    if (
-      guru.error ||
-      !guru.data
-    ) {
+    if(
+      hasilGuru.error ||
+      !hasilGuru.data
+    ){
 
       document.getElementById(
         "loading"
-      ).style.display = "none";
+      ).style.display="none";
 
 
       const error =
@@ -450,12 +543,11 @@ async function mulai() {
         );
 
 
-      error.style.display =
-        "block";
+      error.style.display="block";
 
 
-      error.textContent =
-        "Akun login tidak terdaftar sebagai Guru.";
+      error.innerHTML =
+        "❌ Akun login tidak terdaftar sebagai Guru.";
 
 
       return;
@@ -463,25 +555,25 @@ async function mulai() {
     }
 
 
+    const guru =
+      hasilGuru.data;
+
+
     /* ===============================
-       TAMPILKAN DATA GURU
+       TAMPIL DATA
     =============================== */
 
     document.getElementById(
       "namaGuru"
     ).textContent =
-      guru.data.nama || "-";
+      guru.nama || "-";
 
 
     document.getElementById(
       "usernameGuru"
     ).textContent =
-      guru.data.username || "-";
+      guru.username || "-";
 
-
-    /* ===============================
-       TAMPILKAN DASHBOARD
-    =============================== */
 
     document.getElementById(
       "loading"
@@ -495,7 +587,12 @@ async function mulai() {
       "block";
 
 
-  } catch (error) {
+  }
+
+  catch(error){
+
+    console.error(error);
+
 
     document.getElementById(
       "loading"
@@ -514,7 +611,7 @@ async function mulai() {
 
 
     box.textContent =
-      "Terjadi kesalahan: " +
+      "❌ Terjadi kesalahan: " +
       error.message;
 
   }
@@ -523,12 +620,59 @@ async function mulai() {
 
 
 /* =================================
+   KEHADIRAN
+================================= */
+
+function bukaKehadiran(){
+
+  window.location.href =
+    "verifikasi-kehadiran.html";
+
+}
+
+
+/* =================================
+   JURNAL KAIH
+================================= */
+
+function bukaKaih(){
+
+  window.location.href =
+    "jurnal-7-kaih-guru.html";
+
+}
+
+
+/* =================================
+   REKAP
+================================= */
+
+function bukaRekap(){
+
+  window.location.href =
+    "rekap-kehadiran.html";
+
+}
+
+
+/* =================================
    LOGOUT
 ================================= */
 
-async function logoutGuru() {
+async function logoutGuru(){
 
-  await supabaseClient.auth.signOut();
+  try{
+
+    await supabaseClient.auth.signOut();
+
+  }
+
+  catch(error){
+
+    console.error(error);
+
+  }
+
 
   window.location.href =
     "login-guru.html";
@@ -545,4 +689,5 @@ mulai();
 </script>
 
 </body>
+
 </html>
