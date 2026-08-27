@@ -24,15 +24,20 @@ body{
   background:linear-gradient(135deg,#0f4c81,#1565c0);
   color:white;
   text-align:center;
-  padding:28px 15px;
+  padding:25px 15px;
 }
 
 .header h1{
   margin:0 0 8px;
+  font-size:28px;
+}
+
+.header p{
+  margin:5px 0;
 }
 
 .container{
-  max-width:1200px;
+  max-width:1250px;
   margin:25px auto;
   padding:0 15px;
 }
@@ -45,11 +50,16 @@ body{
   box-shadow:0 4px 15px rgba(0,0,0,.08);
 }
 
+.card h2{
+  margin-top:0;
+  color:#0f4c81;
+}
+
 .info{
   background:#eef5ff;
   padding:15px;
   border-radius:10px;
-  line-height:1.8;
+  line-height:1.9;
 }
 
 .filter{
@@ -62,20 +72,19 @@ body{
 input,
 select,
 textarea{
-  width:100%;
   padding:11px;
   border:1px solid #ccc;
   border-radius:8px;
   font-size:15px;
 }
 
-input[type="date"],
-input[type="time"]{
-  width:auto;
+input[type="date"]{
+  min-width:180px;
 }
 
 textarea{
-  min-height:80px;
+  width:100%;
+  min-height:90px;
   resize:vertical;
 }
 
@@ -88,69 +97,48 @@ button{
   cursor:pointer;
 }
 
+button:hover{
+  opacity:.9;
+}
+
 .btn-tampil{
   background:#1565c0;
 }
 
-.btn-simpan{
+.btn-like{
   background:#2e7d32;
+}
+
+.btn-kecewa{
+  background:#c62828;
+}
+
+.btn-simpan{
+  background:#1565c0;
   width:100%;
-  margin-top:15px;
+  margin-top:10px;
+}
+
+.btn-aktif{
+  box-shadow:0 0 0 3px rgba(0,0,0,.20);
+  transform:scale(1.02);
 }
 
 .btn-kembali{
   background:#616161;
+  margin-right:8px;
 }
 
 .btn-logout{
   background:#c62828;
 }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:15px;
-}
-
-.kaih{
-  border:1px solid #ddd;
-  border-radius:14px;
-  padding:20px;
-  margin-bottom:20px;
-  background:#fafafa;
-}
-
-.kaih h3{
-  color:#0f4c81;
-  margin-top:0;
-  border-bottom:2px solid #ddd;
-  padding-bottom:10px;
-}
-
-.item{
-  background:white;
-  padding:15px;
-  border-radius:10px;
-  border:1px solid #ddd;
-  margin-bottom:12px;
-}
-
-.item label{
-  display:block;
-  font-weight:bold;
-  margin-bottom:7px;
-}
-
-.sub{
-  margin-top:10px;
-  display:none;
-}
-
 .pesan{
   display:none;
-  padding:12px;
-  border-radius:8px;
-  margin:15px 0;
+  padding:13px;
+  border-radius:9px;
+  margin-top:15px;
+  font-weight:bold;
 }
 
 .sukses{
@@ -165,7 +153,121 @@ button{
 
 .loading{
   text-align:center;
+  padding:35px;
+  color:#666;
+}
+
+.kosong{
+  text-align:center;
   padding:30px;
+  background:#fafafa;
+  border-radius:10px;
+  color:#666;
+}
+
+.siswa-card{
+  border:2px solid #e0e0e0;
+  border-radius:15px;
+  margin-bottom:25px;
+  overflow:hidden;
+  background:white;
+}
+
+.siswa-header{
+  background:#eef5ff;
+  padding:18px;
+  border-bottom:1px solid #ddd;
+}
+
+.siswa-header h3{
+  margin:0 0 8px;
+  color:#0f4c81;
+}
+
+.kaih-item{
+  padding:18px;
+  border-bottom:1px solid #ddd;
+}
+
+.kaih-item:last-child{
+  border-bottom:none;
+}
+
+.kaih-judul{
+  font-size:18px;
+  font-weight:bold;
+  color:#0f4c81;
+  margin-bottom:12px;
+}
+
+.isian-siswa{
+  background:#fafafa;
+  border:1px solid #ddd;
+  border-radius:10px;
+  padding:15px;
+  margin-bottom:10px;
+}
+
+.isian-siswa strong{
+  display:block;
+  margin-bottom:7px;
+}
+
+.data-label{
+  color:#666;
+  font-size:13px;
+  margin-top:10px;
+}
+
+.data-value{
+  font-weight:bold;
+  margin-top:3px;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
+.respons{
+  background:#f8f9fa;
+  border:1px solid #ddd;
+  border-radius:10px;
+  padding:15px;
+}
+
+.respons-title{
+  font-weight:bold;
+  margin-bottom:10px;
+  color:#333;
+  font-size:17px;
+}
+
+.tombol-respons{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+
+.status-respons{
+  padding:8px 12px;
+  border-radius:8px;
+  display:inline-block;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+
+.status-suka{
+  background:#e8f5e9;
+  color:#2e7d32;
+}
+
+.status-kecewa{
+  background:#ffebee;
+  color:#c62828;
+}
+
+.status-belum{
+  background:#eeeeee;
+  color:#666;
 }
 
 .footer{
@@ -176,6 +278,7 @@ button{
 }
 
 @media(max-width:600px){
+
   .container{
     padding:10px;
   }
@@ -184,9 +287,31 @@ button{
     padding:16px;
   }
 
-  input[type="date"],
-  input[type="time"]{
+  .header h1{
+    font-size:22px;
+  }
+
+  .filter{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  input[type="date"]{
     width:100%;
+  }
+
+  .tombol-respons{
+    flex-direction:column;
+  }
+
+  .tombol-respons button{
+    width:100%;
+  }
+
+  .btn-kembali,
+  .btn-logout{
+    width:100%;
+    margin:4px 0;
   }
 }
 </style>
@@ -226,6 +351,11 @@ button{
     <strong>Siswa Wali:</strong>
     <span id="jumlahSiswa">0</span> siswa
 
+    <br>
+
+    <strong>Peran:</strong>
+    Guru Wali / Pemantau Jurnal 7 KAIH
+
   </div>
 
 </div>
@@ -235,7 +365,12 @@ button{
 
 <div class="card">
 
-  <h2>📅 Pilih Tanggal Jurnal</h2>
+  <h2>📅 Jurnal 7 KAIH Siswa</h2>
+
+  <p>
+    Guru dapat melihat jurnal yang telah diisi siswa
+    dan memberikan respons.
+  </p>
 
   <div class="filter">
 
@@ -262,13 +397,15 @@ button{
 
 <div class="card">
 
-  <h2>👨‍🎓 Jurnal Siswa Wali</h2>
+  <h2>
+    👨‍🎓 Jurnal Siswa Wali
+  </h2>
 
   <div
     id="loading"
     class="loading"
   >
-    Memuat siswa...
+    ⏳ Memuat jurnal siswa...
   </div>
 
   <div
@@ -285,9 +422,9 @@ button{
 
   <button
     class="btn-kembali"
-    onclick="location.href='dashboard-guru.html'"
+    onclick="kembaliVerifikasi()"
   >
-    ← Dashboard Guru
+    ← Verifikasi Kehadiran
   </button>
 
   <button
@@ -317,6 +454,10 @@ button{
 
 <script>
 
+/* =====================================================
+   SUPABASE
+===================================================== */
+
 const SUPABASE_URL =
 "https://nnnvgbajiqlqrsaygxme.supabase.co";
 
@@ -330,130 +471,237 @@ window.supabase.createClient(
 );
 
 
+/* =====================================================
+   VARIABEL
+===================================================== */
+
 let guruLogin = null;
+
 let siswaWali = [];
 
+/*
+   Menyimpan pilihan respons sementara.
 
-// =====================================
-// PESAN
-// =====================================
+   Contoh:
+   responsSementara[123] = "Suka";
+*/
 
-function tampilPesan(teks,sukses=false){
+const responsSementara = {};
+
+
+/* =====================================================
+   PESAN
+===================================================== */
+
+function tampilPesan(
+  teksPesan,
+  sukses=false
+){
 
   const box =
     document.getElementById("pesan");
 
-  box.textContent = teks;
+  box.textContent =
+    teksPesan;
 
   box.className =
     "pesan " +
-    (sukses ? "sukses" : "gagal");
+    (
+      sukses
+      ? "sukses"
+      : "gagal"
+    );
 
-  box.style.display = "block";
+  box.style.display =
+    "block";
+
 }
 
 
-// =====================================
-// MULAI
-// =====================================
+/* =====================================================
+   FORMAT TEKS
+===================================================== */
+
+function teks(nilai){
+
+  if(
+    nilai === null ||
+    nilai === undefined ||
+    nilai === ""
+  ){
+
+    return "-";
+
+  }
+
+  return String(nilai);
+
+}
+
+
+/* =====================================================
+   FORMAT TEXTAREA
+===================================================== */
+
+function teksInput(nilai){
+
+  if(
+    nilai === null ||
+    nilai === undefined
+  ){
+
+    return "";
+
+  }
+
+  return String(nilai)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;");
+
+}
+
+
+/* =====================================================
+   MULAI
+===================================================== */
 
 async function mulai(){
 
-  const hasil =
-    await supabaseClient.auth.getUser();
+  try{
 
-  const user =
-    hasil.data.user;
+    const hasilLogin =
+      await supabaseClient.auth.getUser();
 
-  if(!user){
+    const user =
+      hasilLogin.data.user;
 
-    location.href =
-      "login-guru.html";
 
-    return;
+    if(!user){
+
+      location.href =
+        "login-guru.html";
+
+      return;
+
+    }
+
+
+    /* =================================================
+       CARI DATA GURU
+    ================================================= */
+
+    const hasilGuru =
+      await supabaseClient
+        .from("guru")
+        .select(
+          "id,nama,username,auth_user_id"
+        )
+        .eq(
+          "auth_user_id",
+          user.id
+        )
+        .maybeSingle();
+
+
+    if(
+      hasilGuru.error ||
+      !hasilGuru.data
+    ){
+
+      console.error(
+        hasilGuru.error
+      );
+
+      alert(
+        "Akun login tidak terdaftar sebagai Guru."
+      );
+
+      await supabaseClient.auth.signOut();
+
+      location.href =
+        "login-guru.html";
+
+      return;
+
+    }
+
+
+    guruLogin =
+      hasilGuru.data;
+
+
+    document.getElementById(
+      "namaGuru"
+    ).textContent =
+      teks(guruLogin.nama);
+
+
+    document.getElementById(
+      "usernameGuru"
+    ).textContent =
+      teks(guruLogin.username);
+
+
+    /* =================================================
+       TANGGAL HARI INI
+    ================================================= */
+
+    const sekarang =
+      new Date();
+
+    const tahun =
+      sekarang.getFullYear();
+
+    const bulan =
+      String(
+        sekarang.getMonth()+1
+      ).padStart(2,"0");
+
+    const hari =
+      String(
+        sekarang.getDate()
+      ).padStart(2,"0");
+
+
+    document.getElementById(
+      "tanggal"
+    ).value =
+      `${tahun}-${bulan}-${hari}`;
+
+
+    /* =================================================
+       AMBIL SISWA WALI
+    ================================================= */
+
+    await ambilSiswa();
+
+
+    /* =================================================
+       AMBIL JURNAL
+    ================================================= */
+
+    await ambilJurnal();
+
   }
 
+  catch(error){
 
-  const guru =
-    await supabaseClient
-      .from("guru")
-      .select(
-        "id,nama,username,auth_user_id"
-      )
-      .eq(
-        "auth_user_id",
-        user.id
-      )
-      .maybeSingle();
+    console.error(error);
 
-
-  if(
-    guru.error ||
-    !guru.data
-  ){
-
-    alert(
-      "Akun login tidak terdaftar sebagai Guru."
+    tampilPesan(
+      "Terjadi kesalahan: " +
+      error.message
     );
 
-    await supabaseClient.auth.signOut();
-
-    location.href =
-      "login-guru.html";
-
-    return;
   }
-
-
-  guruLogin =
-    guru.data;
-
-
-  document.getElementById(
-    "namaGuru"
-  ).textContent =
-    guruLogin.nama || "-";
-
-
-  document.getElementById(
-    "usernameGuru"
-  ).textContent =
-    guruLogin.username || "-";
-
-
-  const sekarang =
-    new Date();
-
-  const tahun =
-    sekarang.getFullYear();
-
-  const bulan =
-    String(
-      sekarang.getMonth()+1
-    ).padStart(2,"0");
-
-  const hari =
-    String(
-      sekarang.getDate()
-    ).padStart(2,"0");
-
-
-  document.getElementById(
-    "tanggal"
-  ).value =
-    `${tahun}-${bulan}-${hari}`;
-
-
-  await ambilSiswa();
-
-  await ambilJurnal();
 
 }
 
 
-// =====================================
-// SISWA WALI
-// =====================================
+/* =====================================================
+   AMBIL SISWA WALI
+===================================================== */
 
 async function ambilSiswa(){
 
@@ -479,11 +727,23 @@ async function ambilSiswa(){
 
     document.getElementById(
       "loading"
-    ).textContent =
-      "Gagal mengambil siswa: " +
-      hasil.error.message;
+    ).innerHTML = `
+
+      <div class="pesan gagal"
+           style="display:block">
+
+        ❌ Gagal mengambil data siswa.
+
+        <br><br>
+
+        ${teks(hasil.error.message)}
+
+      </div>
+
+    `;
 
     return;
+
   }
 
 
@@ -496,24 +756,12 @@ async function ambilSiswa(){
   ).textContent =
     siswaWali.length;
 
-
-  document.getElementById(
-    "loading"
-  ).style.display =
-    "none";
-
-
-  document.getElementById(
-    "daftar"
-  ).style.display =
-    "block";
-
 }
 
 
-// =====================================
-// AMBIL JURNAL
-// =====================================
+/* =====================================================
+   AMBIL JURNAL
+===================================================== */
 
 async function ambilJurnal(){
 
@@ -530,6 +778,7 @@ async function ambilJurnal(){
     );
 
     return;
+
   }
 
 
@@ -539,23 +788,54 @@ async function ambilJurnal(){
     );
 
 
-  if(siswaWali.length===0){
+  const loading =
+    document.getElementById(
+      "loading"
+    );
 
-    daftar.innerHTML = `
-      <div class="loading">
-        Belum ada siswa yang menjadi siswa wali Anda.
+
+  loading.style.display =
+    "block";
+
+
+  daftar.style.display =
+    "none";
+
+
+  daftar.innerHTML =
+    "";
+
+
+  if(
+    siswaWali.length === 0
+  ){
+
+    loading.innerHTML = `
+
+      <div class="kosong">
+
+        👨‍🎓 Belum ada siswa yang menjadi
+        siswa wali Anda.
+
       </div>
+
     `;
 
     return;
+
   }
 
 
   const ids =
     siswaWali.map(
-      siswa => siswa.id
+      siswa =>
+        siswa.id
     );
 
+
+  /* =================================================
+     AMBIL JURNAL SISWA
+  ================================================= */
 
   const hasil =
     await supabaseClient
@@ -568,25 +848,34 @@ async function ambilJurnal(){
       .in(
         "siswa_id",
         ids
+      )
+      .order(
+        "siswa_id",
+        {
+          ascending:true
+        }
       );
 
 
   if(hasil.error){
 
-    daftar.innerHTML = `
+    loading.innerHTML = `
+
       <div class="pesan gagal"
            style="display:block">
 
-        Gagal membaca jurnal 7 KAIH.
+        ❌ Gagal membaca Jurnal 7 KAIH.
 
         <br><br>
 
-        ${hasil.error.message}
+        ${teks(hasil.error.message)}
 
       </div>
+
     `;
 
     return;
+
   }
 
 
@@ -594,7 +883,41 @@ async function ambilJurnal(){
     hasil.data || [];
 
 
-  daftar.innerHTML = "";
+  loading.style.display =
+    "none";
+
+
+  daftar.style.display =
+    "block";
+
+
+  if(data.length === 0){
+
+    daftar.innerHTML = `
+
+      <div class="kosong">
+
+        📭 Belum ada siswa yang mengisi
+        Jurnal 7 KAIH pada tanggal
+
+        <br><br>
+
+        <strong>${tanggal}</strong>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  /* =================================================
+     TAMPILKAN SISWA YANG SUDAH MENGISI
+  ================================================= */
+
+  let jumlahDitampilkan = 0;
 
 
   siswaWali.forEach(
@@ -603,30 +926,57 @@ async function ambilJurnal(){
       const row =
         data.find(
           item =>
-            Number(item.siswa_id) ===
-            Number(siswa.id)
+            String(item.siswa_id) ===
+            String(siswa.id)
         );
 
 
-      buatFormSiswa(
-        siswa,
-        row || {},
-        index
-      );
+      if(row){
+
+        jumlahDitampilkan++;
+
+
+        buatKartuSiswa(
+          siswa,
+          row,
+          index
+        );
+
+      }
 
     }
   );
 
+
+  if(jumlahDitampilkan === 0){
+
+    daftar.innerHTML = `
+
+      <div class="kosong">
+
+        📭 Belum ada jurnal yang diisi
+        oleh siswa wali pada tanggal
+
+        <br><br>
+
+        <strong>${tanggal}</strong>
+
+      </div>
+
+    `;
+
+  }
+
 }
 
 
-// =====================================
-// BUAT FORM SISWA
-// =====================================
+/* =====================================================
+   BUAT KARTU SISWA
+===================================================== */
 
-function buatFormSiswa(
+function buatKartuSiswa(
   siswa,
-  nilai,
+  row,
   index
 ){
 
@@ -641,654 +991,577 @@ function buatFormSiswa(
       "div"
     );
 
+
   card.className =
-    "kaih";
+    "siswa-card";
 
 
   card.innerHTML = `
 
-    <h3>
-      ${index+1}. ${siswa.nama || "-"}
-    </h3>
+    <!-- =========================
+         IDENTITAS SISWA
+    ========================== -->
 
-    <p>
-      <strong>NISN:</strong>
-      ${siswa.nisn || "-"}
-    </p>
+    <div class="siswa-header">
+
+      <h3>
+        👨‍🎓 ${index+1}. ${teks(siswa.nama)}
+      </h3>
+
+      <div>
+
+        <strong>NISN:</strong>
+        ${teks(siswa.nisn)}
+
+      </div>
+
+    </div>
 
 
-    <!-- 1 BANGUN PAGI -->
+    <!-- =========================
+         1 BANGUN PAGI
+    ========================== -->
 
-    <div class="item">
+    <div class="kaih-item">
 
-      <label>
+      <div class="kaih-judul">
         🌅 1. Bangun Pagi
-      </label>
+      </div>
 
-      <label>
-        Jam bangun pagi
-      </label>
+      <div class="isian-siswa">
 
-      <input
-        type="time"
-        id="bangun_${siswa.id}"
-        value="${nilai.jam_bangun || ""}"
-      >
+        <strong>Isian Siswa</strong>
+
+        <div class="data-label">
+          Jam bangun pagi
+        </div>
+
+        <div class="data-value">
+          ${teks(row.jam_bangun)}
+        </div>
+
+      </div>
 
     </div>
 
 
-    <!-- 2 MAKAN SEHAT -->
+    <!-- =========================
+         2 MAKAN SEHAT
+    ========================== -->
 
-    <div class="item">
+    <div class="kaih-item">
 
-      <label>
+      <div class="kaih-judul">
         🍚 2. Makan Sehat
-      </label>
+      </div>
 
-      <label>
-        Apakah siswa berpuasa?
-      </label>
+      <div class="isian-siswa">
 
-      <select
-        id="puasa_${siswa.id}"
-        onchange="ubahPuasa(${siswa.id})"
-      >
+        <strong>Isian Siswa</strong>
 
-        <option value="">
-          Pilih
-        </option>
-
-        <option value="Tidak"
-          ${nilai.puasa==="Tidak"?"selected":""}>
-          Tidak Puasa
-        </option>
-
-        <option value="Ya"
-          ${nilai.puasa==="Ya"?"selected":""}>
+        <div class="data-label">
           Puasa
-        </option>
+        </div>
 
-      </select>
+        <div class="data-value">
+          ${teks(row.puasa)}
+        </div>
 
+        <div class="data-label">
+          Menu Sarapan
+        </div>
 
-      <div
-        id="makanNormal_${siswa.id}"
-        class="sub"
-        style="${
-          nilai.puasa==="Ya"
-          ? "display:none"
-          : "display:block"
-        }"
-      >
+        <div class="data-value">
+          ${teks(row.menu_sarapan)}
+        </div>
 
-        <label>Menu Sarapan</label>
+        <div class="data-label">
+          Menu Makan Siang
+        </div>
 
-        <textarea
-          id="sarapan_${siswa.id}"
-          placeholder="Contoh: nasi, telur, sayur..."
-        >${nilai.menu_sarapan || ""}</textarea>
+        <div class="data-value">
+          ${teks(row.menu_siang)}
+        </div>
 
+        <div class="data-label">
+          Menu Makan Malam
+        </div>
 
-        <label>Makan Siang</label>
+        <div class="data-value">
+          ${teks(row.menu_malam)}
+        </div>
 
-        <textarea
-          id="siang_${siswa.id}"
-          placeholder="Menu makan siang..."
-        >${nilai.menu_siang || ""}</textarea>
+        <div class="data-label">
+          Menu Sahur
+        </div>
 
+        <div class="data-value">
+          ${teks(row.menu_sahur)}
+        </div>
 
-        <label>Makan Malam</label>
+        <div class="data-label">
+          Menu Berbuka
+        </div>
 
-        <textarea
-          id="malam_${siswa.id}"
-          placeholder="Menu makan malam..."
-        >${nilai.menu_malam || ""}</textarea>
-
-      </div>
-
-
-      <div
-        id="makanPuasa_${siswa.id}"
-        class="sub"
-        style="${
-          nilai.puasa==="Ya"
-          ? "display:block"
-          : "display:none"
-        }"
-      >
-
-        <label>Menu Sahur</label>
-
-        <textarea
-          id="sahur_${siswa.id}"
-          placeholder="Menu sahur..."
-        >${nilai.menu_sahur || ""}</textarea>
-
-
-        <label>Menu Berbuka</label>
-
-        <textarea
-          id="berbuka_${siswa.id}"
-          placeholder="Menu berbuka..."
-        >${nilai.menu_berbuka || ""}</textarea>
+        <div class="data-value">
+          ${teks(row.menu_berbuka)}
+        </div>
 
       </div>
 
     </div>
 
 
-    <!-- 3 OLAHRAGA -->
+    <!-- =========================
+         3 OLAHRAGA
+    ========================== -->
 
-    <div class="item">
+    <div class="kaih-item">
 
-      <label>
+      <div class="kaih-judul">
         🏃 3. Berolahraga
-      </label>
+      </div>
 
-      <select
-        id="olahraga_${siswa.id}"
-        onchange="ubahOlahraga(${siswa.id})"
-      >
+      <div class="isian-siswa">
 
-        <option value="">
-          Pilih
-        </option>
+        <strong>Isian Siswa</strong>
 
-        <option value="Ya"
-          ${nilai.olahraga==="Ya"?"selected":""}>
-          Ya
-        </option>
+        <div class="data-label">
+          Olahraga
+        </div>
 
-        <option value="Tidak"
-          ${nilai.olahraga==="Tidak"?"selected":""}>
-          Tidak
-        </option>
+        <div class="data-value">
+          ${teks(row.olahraga)}
+        </div>
 
-      </select>
-
-
-      <div
-        id="olahragaYa_${siswa.id}"
-        class="sub"
-        style="${
-          nilai.olahraga==="Ya"
-          ? "display:block"
-          : "display:none"
-        }"
-      >
-
-        <label>
+        <div class="data-label">
           Jenis olahraga
-        </label>
+        </div>
 
-        <input
-          type="text"
-          id="jenisOlahraga_${siswa.id}"
-          value="${nilai.jenis_olahraga || ""}"
-          placeholder="Contoh: jogging, sepak bola..."
-        >
+        <div class="data-value">
+          ${teks(row.jenis_olahraga)}
+        </div>
 
+        <div class="data-label">
+          Durasi olahraga
+        </div>
 
-        <label>
-          Durasi olahraga (menit)
-        </label>
+        <div class="data-value">
 
-        <input
-          type="number"
-          id="durasiOlahraga_${siswa.id}"
-          value="${nilai.durasi_olahraga || ""}"
-          min="0"
-          placeholder="Berapa menit?"
-        >
+          ${
+            row.durasi_olahraga !== null &&
+            row.durasi_olahraga !== undefined &&
+            row.durasi_olahraga !== ""
+            ? row.durasi_olahraga + " menit"
+            : "-"
+          }
 
-      </div>
+        </div>
 
-
-      <div
-        id="olahragaTidak_${siswa.id}"
-        class="sub"
-        style="${
-          nilai.olahraga==="Tidak"
-          ? "display:block"
-          : "display:none"
-        }"
-      >
-
-        <label>
+        <div class="data-label">
           Alasan tidak olahraga
-        </label>
+        </div>
 
-        <textarea
-          id="alasanOlahraga_${siswa.id}"
-          placeholder="Tuliskan alasan..."
-        >${nilai.alasan_olahraga || ""}</textarea>
+        <div class="data-value">
+          ${teks(row.alasan_olahraga)}
+        </div>
 
       </div>
 
     </div>
 
 
-    <!-- 4 BERMASYARAKAT -->
+    <!-- =========================
+         4 BERMASYARAKAT
+    ========================== -->
 
-    <div class="item">
+    <div class="kaih-item">
 
-      <label>
+      <div class="kaih-judul">
         🤝 4. Bermasyarakat
-      </label>
-
-      <select
-        id="bermasyarakat_${siswa.id}"
-        onchange="ubahMasyarakat(${siswa.id})"
-      >
-
-        <option value="">
-          Pilih
-        </option>
-
-        <option value="Ya"
-          ${nilai.bermasyarakat==="Ya"?"selected":""}>
-          Ya
-        </option>
-
-        <option value="Tidak"
-          ${nilai.bermasyarakat==="Tidak"?"selected":""}>
-          Tidak
-        </option>
-
-      </select>
-
-
-      <div
-        id="masyarakatYa_${siswa.id}"
-        class="sub"
-        style="${
-          nilai.bermasyarakat==="Ya"
-          ? "display:block"
-          : "display:none"
-        }"
-      >
-
-        <label>
-          Jenis kegiatan bermasyarakat
-        </label>
-
-        <textarea
-          id="jenisMasyarakat_${siswa.id}"
-          placeholder="Contoh: membantu orang tua, gotong royong..."
-        >${nilai.jenis_bermasyarakat || ""}</textarea>
-
       </div>
 
+      <div class="isian-siswa">
 
-      <div
-        id="masyarakatTidak_${siswa.id}"
-        class="sub"
-        style="${
-          nilai.bermasyarakat==="Tidak"
-          ? "display:block"
-          : "display:none"
-        }"
-      >
+        <strong>Isian Siswa</strong>
 
-        <label>
+        <div class="data-label">
+          Bermasyarakat
+        </div>
+
+        <div class="data-value">
+          ${teks(row.bermasyarakat)}
+        </div>
+
+        <div class="data-label">
+          Jenis kegiatan
+        </div>
+
+        <div class="data-value">
+          ${teks(row.jenis_bermasyarakat)}
+        </div>
+
+        <div class="data-label">
           Alasan tidak bermasyarakat
-        </label>
+        </div>
 
-        <textarea
-          id="alasanMasyarakat_${siswa.id}"
-          placeholder="Tuliskan alasan..."
-        >${nilai.alasan_bermasyarakat || ""}</textarea>
+        <div class="data-value">
+          ${teks(row.alasan_bermasyarakat)}
+        </div>
 
       </div>
 
     </div>
 
 
-    <!-- 5 BELAJAR MALAM -->
+    <!-- =========================
+         5 BELAJAR MALAM
+    ========================== -->
 
-    <div class="item">
+    <div class="kaih-item">
 
-      <label>
+      <div class="kaih-judul">
         📚 5. Belajar Malam
-      </label>
-
-      <select
-        id="belajar_${siswa.id}"
-        onchange="ubahBelajar(${siswa.id})"
-      >
-
-        <option value="">
-          Pilih
-        </option>
-
-        <option value="Ya"
-          ${nilai.belajar_malam==="Ya"?"selected":""}>
-          Ya
-        </option>
-
-        <option value="Tidak"
-          ${nilai.belajar_malam==="Tidak"?"selected":""}>
-          Tidak
-        </option>
-
-      </select>
-
-
-      <div
-        id="belajarYa_${siswa.id}"
-        class="sub"
-        style="${
-          nilai.belajar_malam==="Ya"
-          ? "display:block"
-          : "display:none"
-        }"
-      >
-
-        <label>
-          Apa yang dipelajari?
-        </label>
-
-        <textarea
-          id="materiBelajar_${siswa.id}"
-          placeholder="Contoh: Matematika, IPA..."
-        >${nilai.materi_belajar || ""}</textarea>
-
-
-        <label>
-          Durasi belajar (jam)
-        </label>
-
-        <input
-          type="number"
-          step="0.5"
-          min="0"
-          id="durasiBelajar_${siswa.id}"
-          value="${nilai.durasi_belajar || ""}"
-          placeholder="Contoh: 1.5"
-        >
-
       </div>
 
+      <div class="isian-siswa">
 
-      <div
-        id="belajarTidak_${siswa.id}"
-        class="sub"
-        style="${
-          nilai.belajar_malam==="Tidak"
-          ? "display:block"
-          : "display:none"
-        }"
-      >
+        <strong>Isian Siswa</strong>
 
-        <label>
-          Alasan tidak belajar malam
-        </label>
+        <div class="data-label">
+          Belajar malam
+        </div>
 
-        <textarea
-          id="alasanBelajar_${siswa.id}"
-          placeholder="Tuliskan alasan..."
-        >${nilai.alasan_belajar || ""}</textarea>
+        <div class="data-value">
+          ${teks(row.belajar_malam)}
+        </div>
+
+        <div class="data-label">
+          Materi yang dipelajari
+        </div>
+
+        <div class="data-value">
+          ${teks(row.materi_belajar)}
+        </div>
+
+        <div class="data-label">
+          Durasi belajar
+        </div>
+
+        <div class="data-value">
+
+          ${
+            row.durasi_belajar !== null &&
+            row.durasi_belajar !== undefined &&
+            row.durasi_belajar !== ""
+            ? row.durasi_belajar + " jam"
+            : "-"
+          }
+
+        </div>
+
+        <div class="data-label">
+          Alasan tidak belajar
+        </div>
+
+        <div class="data-value">
+          ${teks(row.alasan_belajar)}
+        </div>
 
       </div>
 
     </div>
 
 
-    <!-- 6 IBADAH -->
+    <!-- =========================
+         6 IBADAH
+    ========================== -->
 
-    <div class="item">
+    <div class="kaih-item">
 
-      <label>
+      <div class="kaih-judul">
         🙏 6. Ibadah
-      </label>
+      </div>
 
-      <select
-        id="ibadah_${siswa.id}"
-        onchange="ubahIbadah(${siswa.id})"
-      >
+      <div class="isian-siswa">
 
-        <option value="">
-          Pilih
-        </option>
+        <strong>Isian Siswa</strong>
 
-        <option value="Ya"
-          ${nilai.ibadah==="Ya"?"selected":""}>
-          Ya
-        </option>
+        <div class="data-label">
+          Ibadah
+        </div>
 
-        <option value="Tidak"
-          ${nilai.ibadah==="Tidak"?"selected":""}>
-          Tidak
-        </option>
+        <div class="data-value">
+          ${teks(row.ibadah)}
+        </div>
 
-      </select>
-
-
-      <div
-        id="ibadahYa_${siswa.id}"
-        class="sub"
-        style="${
-          nilai.ibadah==="Ya"
-          ? "display:block"
-          : "display:none"
-        }"
-      >
-
-        <label>
+        <div class="data-label">
           Jenis ibadah
-        </label>
+        </div>
 
-        <textarea
-          id="jenisIbadah_${siswa.id}"
-          placeholder="Contoh: shalat, mengaji, doa..."
-        >${nilai.jenis_ibadah || ""}</textarea>
+        <div class="data-value">
+          ${teks(row.jenis_ibadah)}
+        </div>
+
+        <div class="data-label">
+          Alasan tidak ibadah
+        </div>
+
+        <div class="data-value">
+          ${teks(row.alasan_ibadah)}
+        </div>
 
       </div>
 
+    </div>
 
-      <div
-        id="ibadahTidak_${siswa.id}"
-        class="sub"
-        style="${
-          nilai.ibadah==="Tidak"
-          ? "display:block"
-          : "display:none"
-        }"
-      >
+
+    <!-- =========================
+         7 TIDUR CEPAT
+    ========================== -->
+
+    <div class="kaih-item">
+
+      <div class="kaih-judul">
+        😴 7. Tidur Cepat
+      </div>
+
+      <div class="isian-siswa">
+
+        <strong>Isian Siswa</strong>
+
+        <div class="data-label">
+          Jam tidur
+        </div>
+
+        <div class="data-value">
+          ${teks(row.jam_tidur)}
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =========================
+         RESPONS GURU
+    ========================== -->
+
+    <div class="kaih-item">
+
+      <div class="respons">
+
+        <div class="respons-title">
+          👨‍🏫 Respons Guru
+        </div>
+
+
+        <div id="statusRespons_${row.id}">
+
+          ${
+            row.respons_guru
+            ? tampilRespons(row.respons_guru)
+            : `
+              <span class="status-respons status-belum">
+                Belum ada respons
+              </span>
+            `
+          }
+
+        </div>
+
+
+        <div class="tombol-respons">
+
+          <button
+            type="button"
+            class="btn-like ${
+              row.respons_guru === "Suka"
+              ? "btn-aktif"
+              : ""
+            }"
+            id="btnSuka_${row.id}"
+            onclick="pilihRespons(${row.id},'Suka')"
+          >
+            👍 Suka
+          </button>
+
+
+          <button
+            type="button"
+            class="btn-kecewa ${
+              row.respons_guru === "Kecewa"
+              ? "btn-aktif"
+              : ""
+            }"
+            id="btnKecewa_${row.id}"
+            onclick="pilihRespons(${row.id},'Kecewa')"
+          >
+            😞 Kecewa
+          </button>
+
+        </div>
+
 
         <label>
-          Alasan tidak ibadah
+          💬 Komentar Guru
         </label>
 
         <textarea
-          id="alasanIbadah_${siswa.id}"
-          placeholder="Tuliskan alasan..."
-        >${nilai.alasan_ibadah || ""}</textarea>
+          id="komentar_${row.id}"
+          placeholder="Tuliskan komentar atau pembinaan untuk siswa..."
+        >${teksInput(row.komentar_guru)}</textarea>
+
+
+        <button
+          type="button"
+          class="btn-simpan"
+          onclick="simpanRespons(${row.id})"
+        >
+          💾 Simpan Respons Guru
+        </button>
 
       </div>
 
     </div>
-
-
-    <!-- 7 TIDUR CEPAT -->
-
-    <div class="item">
-
-      <label>
-        😴 7. Tidur Cepat
-      </label>
-
-      <label>
-        Jam tidur
-      </label>
-
-      <input
-        type="time"
-        id="tidur_${siswa.id}"
-        value="${nilai.jam_tidur || ""}"
-      >
-
-    </div>
-
-
-    <button
-      class="btn-simpan"
-      onclick="simpanJurnal(${siswa.id})"
-    >
-      💾 SIMPAN JURNAL ${siswa.nama || ""}
-    </button>
 
   `;
 
 
   daftar.appendChild(card);
 
-}
 
+  /*
+    Jika jurnal sudah memiliki respons,
+    masukkan ke penyimpanan sementara
+    supaya tombol aktif tetap konsisten.
+  */
 
-// =====================================
-// TAMPILAN PILIHAN
-// =====================================
+  if(row.respons_guru){
 
-function ubahPuasa(id){
+    responsSementara[row.id] =
+      row.respons_guru;
 
-  const nilai =
-    document.getElementById(
-      `puasa_${id}`
-    ).value;
-
-  document.getElementById(
-    `makanNormal_${id}`
-  ).style.display =
-    nilai==="Ya"
-    ? "none"
-    : "block";
-
-  document.getElementById(
-    `makanPuasa_${id}`
-  ).style.display =
-    nilai==="Ya"
-    ? "block"
-    : "none";
-}
-
-
-function ubahOlahraga(id){
-
-  const nilai =
-    document.getElementById(
-      `olahraga_${id}`
-    ).value;
-
-  document.getElementById(
-    `olahragaYa_${id}`
-  ).style.display =
-    nilai==="Ya"
-    ? "block"
-    : "none";
-
-  document.getElementById(
-    `olahragaTidak_${id}`
-  ).style.display =
-    nilai==="Tidak"
-    ? "block"
-    : "none";
-}
-
-
-function ubahMasyarakat(id){
-
-  const nilai =
-    document.getElementById(
-      `bermasyarakat_${id}`
-    ).value;
-
-  document.getElementById(
-    `masyarakatYa_${id}`
-  ).style.display =
-    nilai==="Ya"
-    ? "block"
-    : "none";
-
-  document.getElementById(
-    `masyarakatTidak_${id}`
-  ).style.display =
-    nilai==="Tidak"
-    ? "block"
-    : "none";
-}
-
-
-function ubahBelajar(id){
-
-  const nilai =
-    document.getElementById(
-      `belajar_${id}`
-    ).value;
-
-  document.getElementById(
-    `belajarYa_${id}`
-  ).style.display =
-    nilai==="Ya"
-    ? "block"
-    : "none";
-
-  document.getElementById(
-    `belajarTidak_${id}`
-  ).style.display =
-    nilai==="Tidak"
-    ? "block"
-    : "none";
-}
-
-
-function ubahIbadah(id){
-
-  const nilai =
-    document.getElementById(
-      `ibadah_${id}`
-    ).value;
-
-  document.getElementById(
-    `ibadahYa_${id}`
-  ).style.display =
-    nilai==="Ya"
-    ? "block"
-    : "none";
-
-  document.getElementById(
-    `ibadahTidak_${id}`
-  ).style.display =
-    nilai==="Tidak"
-    ? "block"
-    : "none";
-}
-
-
-// =====================================
-// SIMPAN JURNAL
-// =====================================
-
-async function simpanJurnal(
-  siswaId
-){
-
-  const tanggal =
-    document.getElementById(
-      "tanggal"
-    ).value;
-
-
-  if(!tanggal){
-
-    tampilPesan(
-      "Tanggal belum dipilih."
-    );
-
-    return;
   }
 
+}
+
+
+/* =====================================================
+   TAMPIL RESPONS
+===================================================== */
+
+function tampilRespons(respons){
+
+  if(respons === "Suka"){
+
+    return `
+      <span class="status-respons status-suka">
+        👍 Suka
+      </span>
+    `;
+
+  }
+
+
+  if(respons === "Kecewa"){
+
+    return `
+      <span class="status-respons status-kecewa">
+        😞 Kecewa
+      </span>
+    `;
+
+  }
+
+
+  return `
+    <span class="status-respons status-belum">
+      ${teks(respons)}
+    </span>
+  `;
+
+}
+
+
+/* =====================================================
+   PILIH RESPONS GURU
+===================================================== */
+
+function pilihRespons(
+  id,
+  respons
+){
+
+  /*
+    SIMPAN PILIHAN SEMENTARA
+  */
+
+  responsSementara[id] =
+    respons;
+
+
+  /*
+    TAMPILKAN STATUS
+  */
+
+  const status =
+    document.getElementById(
+      "statusRespons_" + id
+    );
+
+
+  if(status){
+
+    status.innerHTML =
+      tampilRespons(respons);
+
+  }
+
+
+  /*
+    AKTIFKAN TOMBOL YANG DIPILIH
+  */
+
+  const btnSuka =
+    document.getElementById(
+      "btnSuka_" + id
+    );
+
+
+  const btnKecewa =
+    document.getElementById(
+      "btnKecewa_" + id
+    );
+
+
+  if(btnSuka){
+
+    btnSuka.classList.toggle(
+      "btn-aktif",
+      respons === "Suka"
+    );
+
+  }
+
+
+  if(btnKecewa){
+
+    btnKecewa.classList.toggle(
+      "btn-aktif",
+      respons === "Kecewa"
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   SIMPAN RESPONS GURU
+===================================================== */
+
+async function simpanRespons(id){
 
   if(!guruLogin){
 
@@ -1297,200 +1570,125 @@ async function simpanJurnal(
     );
 
     return;
+
   }
 
 
-  const data = {
+  /*
+    AMBIL KOMENTAR
+  */
 
-    siswa_id:
-      siswaId,
+  const textarea =
+    document.getElementById(
+      "komentar_" + id
+    );
 
-    tanggal:
-      tanggal,
 
-    guru_id:
+  const komentar =
+    textarea
+    ? textarea.value.trim()
+    : "";
+
+
+  /*
+    AMBIL RESPONS YANG DIPILIH
+  */
+
+  const respons =
+    responsSementara[id] || null;
+
+
+  /*
+    DATA YANG DISIMPAN
+  */
+
+  const updateData = {
+
+    respons_guru:
+      respons,
+
+    komentar_guru:
+      komentar || null,
+
+    direspons_oleh:
       guruLogin.id,
 
-    jam_bangun:
-      document.getElementById(
-        `bangun_${siswaId}`
-      ).value || null,
-
-
-    puasa:
-      document.getElementById(
-        `puasa_${siswaId}`
-      ).value || null,
-
-
-    menu_sarapan:
-      document.getElementById(
-        `sarapan_${siswaId}`
-      ).value || null,
-
-
-    menu_siang:
-      document.getElementById(
-        `siang_${siswaId}`
-      ).value || null,
-
-
-    menu_malam:
-      document.getElementById(
-        `malam_${siswaId}`
-      ).value || null,
-
-
-    menu_sahur:
-      document.getElementById(
-        `sahur_${siswaId}`
-      ).value || null,
-
-
-    menu_berbuka:
-      document.getElementById(
-        `berbuka_${siswaId}`
-      ).value || null,
-
-
-    olahraga:
-      document.getElementById(
-        `olahraga_${siswaId}`
-      ).value || null,
-
-
-    jenis_olahraga:
-      document.getElementById(
-        `jenisOlahraga_${siswaId}`
-      ).value || null,
-
-
-    durasi_olahraga:
-      document.getElementById(
-        `durasiOlahraga_${siswaId}`
-      ).value
-      ? Number(
-          document.getElementById(
-            `durasiOlahraga_${siswaId}`
-          ).value
-        )
-      : null,
-
-
-    alasan_olahraga:
-      document.getElementById(
-        `alasanOlahraga_${siswaId}`
-      ).value || null,
-
-
-    bermasyarakat:
-      document.getElementById(
-        `bermasyarakat_${siswaId}`
-      ).value || null,
-
-
-    jenis_bermasyarakat:
-      document.getElementById(
-        `jenisMasyarakat_${siswaId}`
-      ).value || null,
-
-
-    alasan_bermasyarakat:
-      document.getElementById(
-        `alasanMasyarakat_${siswaId}`
-      ).value || null,
-
-
-    belajar_malam:
-      document.getElementById(
-        `belajar_${siswaId}`
-      ).value || null,
-
-
-    materi_belajar:
-      document.getElementById(
-        `materiBelajar_${siswaId}`
-      ).value || null,
-
-
-    durasi_belajar:
-      document.getElementById(
-        `durasiBelajar_${siswaId}`
-      ).value
-      ? Number(
-          document.getElementById(
-            `durasiBelajar_${siswaId}`
-          ).value
-        )
-      : null,
-
-
-    alasan_belajar:
-      document.getElementById(
-        `alasanBelajar_${siswaId}`
-      ).value || null,
-
-
-    ibadah:
-      document.getElementById(
-        `ibadah_${siswaId}`
-      ).value || null,
-
-
-    jenis_ibadah:
-      document.getElementById(
-        `jenisIbadah_${siswaId}`
-      ).value || null,
-
-
-    alasan_ibadah:
-      document.getElementById(
-        `alasanIbadah_${siswaId}`
-      ).value || null,
-
-
-    jam_tidur:
-      document.getElementById(
-        `tidur_${siswaId}`
-      ).value || null
+    direspons_pada:
+      new Date().toISOString()
 
   };
 
 
+  /*
+    UPDATE JURNAL
+  */
+
   const hasil =
     await supabaseClient
       .from("jurnal_7_kaih")
-      .upsert(
-        data,
-        {
-          onConflict:
-            "siswa_id,tanggal"
-        }
+      .update(
+        updateData
+      )
+      .eq(
+        "id",
+        id
       );
 
 
   if(hasil.error){
 
+    console.error(
+      hasil.error
+    );
+
     tampilPesan(
-      "Gagal menyimpan jurnal: " +
+      "❌ Gagal menyimpan respons guru: " +
       hasil.error.message
     );
 
     return;
+
   }
 
 
+  /*
+    RESPONS SUDAH BERHASIL
+  */
+
+  responsSementara[id] =
+    respons;
+
+
   tampilPesan(
-    "Jurnal 7 KAIH berhasil disimpan.",
+    "✅ Respons guru berhasil disimpan.",
     true
   );
+
+
+  /*
+    REFRESH JURNAL
+  */
+
+  await ambilJurnal();
 
 }
 
 
-// =====================================
-// LOGOUT
-// =====================================
+/* =====================================================
+   KEMBALI KE VERIFIKASI KEHADIRAN
+===================================================== */
+
+function kembaliVerifikasi(){
+
+  location.href =
+    "verifikasi-kehadiran.html";
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
 
 async function logoutGuru(){
 
@@ -1502,9 +1700,9 @@ async function logoutGuru(){
 }
 
 
-// =====================================
-// JALANKAN
-// =====================================
+/* =====================================================
+   JALANKAN
+===================================================== */
 
 mulai();
 
