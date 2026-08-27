@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Data Siswa - KAIH SMP Negeri 3 Sibolga</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f3f6fa;
+    }
+
+    header {
+      background: #0f4c81;
+      color: white;
+      padding: 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 25px auto;
+      padding: 15px;
+    }
+
+    .kembali {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 10px 18px;
+      background: #0f4c81;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+
+    .box {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,.08);
+    }
+
+    .kosong {
+      text-align: center;
+      padding: 50px 20px;
+      color: #666;
+    }
+
+    .kosong .icon {
+      font-size: 55px;
+    }
+
+    .kosong h2 {
+      color: #333;
+    }
+
+    .info {
+      background: #eaf1f8;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+
+    .jumlah {
+      font-size: 20px;
+      font-weight: bold;
+      color: #0f4c81;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>KAIH SMP Negeri 3 Sibolga</h1>
+  <p>Data Siswa</p>
+</header>
+
+<div class="container">
+
+  <a href="dashboard.html" class="kembali">
+    ← Kembali ke Dashboard
+  </a>
+
+  <div class="box">
+
+    <div class="jumlah">
+      Jumlah Siswa: <span id="jumlah">0</span>
+    </div>
+
+    <div id="status"></div>
+
+    <div class="kosong">
+
+      <div class="icon">👨‍🎓</div>
+
+      <h2>Belum Ada Data Siswa</h2>
+
+      <p>
+        Data siswa belum dimasukkan ke dalam sistem.
+      </p>
+
+    </div>
+
+    <div class="info">
+      <strong>Data siswa belum tersedia.</strong><br>
+      Setelah sekolah memiliki daftar siswa,
+      data dapat dimasukkan ke sistem secara bertahap.
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+// ==========================================
+// SUPABASE
+// ==========================================
+
+const SUPABASE_URL =
+  "https://nnnvgbajiqlqrsaygxme.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_dHIoPw_gfvud74PH4UCp2w_yGzl9oDy";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+// ==========================================
+// CEK LOGIN & DATA SISWA
+// ==========================================
+
+async function mulai() {
+
+  const hasil =
+    await supabaseClient.auth.getUser();
+
+  if (hasil.error || !hasil.data.user) {
+
+    window.location.href = "index.html";
+
+    return;
+  }
+
+  ambilJumlahSiswa();
+}
+
+
+// ==========================================
+// HITUNG SISWA
+// ==========================================
+
+async function ambilJumlahSiswa() {
+
+  const hasil =
+    await supabaseClient
+      .from("siswa")
+      .select("*", {
+        count: "exact",
+        head: true
+      });
+
+  if (hasil.error) {
+
+    document.getElementById("status").textContent =
+      "Gagal membaca data siswa: " +
+      hasil.error.message;
+
+    return;
+  }
+
+  document.getElementById("jumlah").textContent =
+    hasil.count ?? 0;
+}
+
+
+mulai();
+
+</script>
+
+</body>
+</html>
