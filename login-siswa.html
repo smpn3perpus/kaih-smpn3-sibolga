@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Login Siswa - KAIH SMP Negeri 3 Sibolga</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -137,18 +138,21 @@
     </div>
 
 
-    <!-- LOGIN -->
+    <!-- ========================= -->
+    <!-- LOGIN SISWA -->
+    <!-- ========================= -->
 
     <div id="loginForm" class="login-form">
 
       <h2>🔐 Masuk</h2>
 
-      <label>Username</label>
+      <label>NISN</label>
 
       <input
         type="text"
-        id="loginUsername"
-        placeholder="Masukkan username"
+        id="loginNisn"
+        placeholder="Masukkan NISN"
+        autocomplete="username"
       >
 
       <label>Password</label>
@@ -157,6 +161,7 @@
         type="password"
         id="loginPassword"
         placeholder="Masukkan password"
+        autocomplete="current-password"
       >
 
       <button
@@ -176,7 +181,9 @@
     </div>
 
 
-    <!-- DAFTAR -->
+    <!-- ========================= -->
+    <!-- DAFTAR SISWA -->
+    <!-- ========================= -->
 
     <div id="daftarForm" class="daftar-form">
 
@@ -198,20 +205,13 @@
         placeholder="Masukkan NISN"
       >
 
-      <label>Username</label>
-
-      <input
-        type="text"
-        id="username"
-        placeholder="Buat username"
-      >
-
       <label>Password</label>
 
       <input
         type="password"
         id="password"
         placeholder="Minimal 6 karakter"
+        autocomplete="new-password"
       >
 
       <label>Kelas</label>
@@ -291,7 +291,7 @@ function tampilPesan(teks, sukses = false) {
 
 
 // =====================================================
-// TAMPIL LOGIN
+// LOGIN / DAFTAR
 // =====================================================
 
 function tampilLogin() {
@@ -307,10 +307,6 @@ function tampilLogin() {
 }
 
 
-// =====================================================
-// TAMPIL DAFTAR
-// =====================================================
-
 async function tampilDaftar() {
 
   document.getElementById("loginForm").style.display =
@@ -325,7 +321,6 @@ async function tampilDaftar() {
   await ambilKelas();
 
   await ambilGuru();
-
 }
 
 
@@ -430,7 +425,7 @@ async function ambilGuru() {
 
 
 // =====================================================
-// DAFTAR SISWA VIA EDGE FUNCTION
+// DAFTAR SISWA
 // =====================================================
 
 async function daftarSiswa() {
@@ -440,13 +435,6 @@ async function daftarSiswa() {
 
   const nisn =
     document.getElementById("nisn").value.trim();
-
-  const username =
-    document
-      .getElementById("username")
-      .value
-      .trim()
-      .toLowerCase();
 
   const password =
     document.getElementById("password").value;
@@ -461,7 +449,6 @@ async function daftarSiswa() {
   if (
     !nama ||
     !nisn ||
-    !username ||
     !password ||
     !kelas_id ||
     !guru_wali_id
@@ -497,7 +484,6 @@ async function daftarSiswa() {
         body: {
           nama: nama,
           nisn: nisn,
-          username: username,
           password: password,
           kelas_id: kelas_id,
           guru_wali_id: guru_wali_id
@@ -533,13 +519,13 @@ async function daftarSiswa() {
 
 
   tampilPesan(
-    "🎉 Akun siswa berhasil dibuat! Silakan login.",
+    "🎉 Akun siswa berhasil dibuat! Silakan login menggunakan NISN.",
     true
   );
 
 
-  document.getElementById("loginUsername").value =
-    username;
+  document.getElementById("loginNisn").value =
+    nisn;
 
   document.getElementById("loginPassword").value =
     "";
@@ -559,32 +545,34 @@ async function daftarSiswa() {
 
 async function loginSiswa() {
 
-  const username =
+  const nisn =
     document
-      .getElementById("loginUsername")
+      .getElementById("loginNisn")
       .value
-      .trim()
-      .toLowerCase();
+      .trim();
 
   const password =
-    document.getElementById("loginPassword").value;
+    document
+      .getElementById("loginPassword")
+      .value;
 
 
-  if (!username || !password) {
+  if (!nisn || !password) {
 
     tampilPesan(
-      "Username dan password harus diisi."
+      "NISN dan password harus diisi."
     );
 
     return;
   }
 
 
-  // Email internal yang sama dengan Edge Function
+  // Email internal dibuat sama
+  // dengan yang dibuat oleh Edge Function.
 
   const email =
-    username +
-    "@siswa.kaih-smp3sibolga.sch.id";
+    nisn +
+    "@gmail.com";
 
 
   tampilPesan(
