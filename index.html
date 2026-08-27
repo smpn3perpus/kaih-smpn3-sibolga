@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAIH SMP Negeri 3 Sibolga</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #0f4c81, #1976d2);
+    }
+
+    .login-box {
+      width: 90%;
+      max-width: 420px;
+      background: white;
+      padding: 35px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.2);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 5px;
+      color: #0f4c81;
+    }
+
+    .subtitle {
+      margin-bottom: 25px;
+      color: #666;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 8px;
+      background: #0f4c81;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #08365c;
+    }
+
+    .info {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #777;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-box">
+
+    <h1>KAIH</h1>
+
+    <div class="subtitle">
+      SMP Negeri 3 Sibolga
+    </div>
+
+    <input
+      type="email"
+      id="email"
+      placeholder="Email"
+      autocomplete="username"
+    >
+
+    <input
+      type="password"
+      id="password"
+      placeholder="Password"
+      autocomplete="current-password"
+    >
+
+    <button onclick="login()">
+      LOGIN
+    </button>
+
+    <div class="info">
+      Sistem Jurnal 7 Kebiasaan Anak Indonesia Hebat
+    </div>
+
+  </div>
+
+  <script>
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      if (!email || !password) {
+        alert("Email dan password harus diisi.");
+        return;
+      }
+
+      alert("Halaman login sudah siap. Koneksi Supabase akan kita pasang pada langkah berikutnya.");
+    }
+  </script>
+
+</body>
+</html>
