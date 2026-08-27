@@ -1,1427 +1,1559 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Verifikasi Kehadiran Guru</title>
+<title>Verifikasi Kehadiran Guru</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+<style>
+*{
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
 
-    body {
-      margin: 0;
-      background: #f4f7fb;
-      color: #222;
-    }
+body{
+  margin:0;
+  background:#f4f7fb;
+  color:#222;
+}
 
-    .header {
-      background: #0f4c81;
-      color: white;
-      padding: 22px 15px;
-      text-align: center;
-    }
+.header{
+  background:#0f4c81;
+  color:white;
+  text-align:center;
+  padding:25px 15px;
+}
 
-    .container {
-      max-width: 1200px;
-      margin: 25px auto;
-      padding: 0 15px;
-    }
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:20px;
+}
 
-    .card {
-      background: white;
-      border-radius: 15px;
-      padding: 22px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.08);
-    }
+.card{
+  background:white;
+  border-radius:15px;
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
 
-    h2 {
-      color: #0f4c81;
-      margin-top: 0;
-    }
+h2{
+  color:#0f4c81;
+  margin-top:0;
+}
 
-    .info {
-      background: #eef5ff;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      line-height: 1.8;
-    }
+.info{
+  background:#eef5ff;
+  padding:15px;
+  border-radius:10px;
+  line-height:1.8;
+}
 
-    .filter {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
+.filter{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+  margin-top:15px;
+}
 
-    select,
-    input {
-      padding: 11px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 15px;
-    }
+select,
+input{
+  padding:11px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:15px;
+}
 
-    button {
-      border: none;
-      border-radius: 8px;
-      padding: 10px 14px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
+button{
+  padding:11px 16px;
+  border:none;
+  border-radius:8px;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
 
-    .btn-verifikasi {
-      background: #2e7d32;
-    }
+.btn-tampil{
+  background:#1565c0;
+}
 
-    .btn-tampil {
-      background: #1565c0;
-    }
+.btn-verifikasi{
+  background:#2e7d32;
+}
 
-    .btn-logout {
-      background: #c62828;
-      margin-top: 15px;
-    }
+.btn-rekap{
+  background:#6a1b9a;
+}
 
-    .btn-rekap {
-      background: #1565c0;
-    }
+.btn-logout{
+  background:#c62828;
+  margin-top:15px;
+}
 
-    .table-wrap {
-      overflow-x: auto;
-    }
+.table-wrap{
+  overflow-x:auto;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      min-width: 750px;
-    }
+table{
+  width:100%;
+  min-width:750px;
+  border-collapse:collapse;
+  margin-top:15px;
+}
 
-    th,
-    td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      text-align: center;
-    }
+th,
+td{
+  border:1px solid #ddd;
+  padding:10px;
+  text-align:center;
+}
 
-    th {
-      background: #0f4c81;
-      color: white;
-    }
+th{
+  background:#0f4c81;
+  color:white;
+}
 
-    .badge {
-      display: inline-block;
-      padding: 5px 8px;
-      border-radius: 6px;
-      font-weight: bold;
-      font-size: 13px;
-    }
+td:nth-child(2){
+  text-align:left;
+}
 
-    .hadir {
-      background: #e8f5e9;
-      color: #2e7d32;
-    }
+.badge{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:6px;
+  font-weight:bold;
+  font-size:13px;
+}
 
-    .sakit {
-      background: #fff8e1;
-      color: #f57f17;
-    }
+.hadir{
+  background:#e8f5e9;
+  color:#2e7d32;
+}
 
-    .izin {
-      background: #e3f2fd;
-      color: #1565c0;
-    }
+.sakit{
+  background:#fff8e1;
+  color:#f57f17;
+}
 
-    .alpa {
-      background: #ffebee;
-      color: #c62828;
-    }
+.izin{
+  background:#e3f2fd;
+  color:#1565c0;
+}
 
-    .belum {
-      background: #eeeeee;
-      color: #555;
-    }
+.alpa{
+  background:#ffebee;
+  color:#c62828;
+}
 
-    .terverifikasi {
-      background: #e8f5e9;
-      color: #2e7d32;
-    }
+.belum{
+  background:#eeeeee;
+  color:#555;
+}
 
-    .pesan {
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      display: none;
-    }
+.pesan{
+  display:none;
+  padding:12px;
+  border-radius:8px;
+  margin-top:15px;
+}
 
-    .rekap-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
+.rekap-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  flex-wrap:wrap;
+}
 
-    .judul-bulan {
-      font-size: 16px;
-      color: #555;
-      font-weight: normal;
-    }
+.judul-bulan{
+  color:#666;
+}
 
-    .persen {
-      font-weight: bold;
-    }
+.persen{
+  font-weight:bold;
+}
 
-    .kosong {
-      text-align: center;
-      padding: 20px;
-      color: #666;
-    }
+.kosong{
+  text-align:center;
+  padding:20px;
+  color:#666;
+}
 
-    @media(max-width:700px) {
-      table {
-        font-size: 12px;
-      }
+@media(max-width:700px){
 
-      th,
-      td {
-        padding: 7px 5px;
-      }
+  .container{
+    padding:10px;
+  }
 
-      .rekap-header {
-        display: block;
-      }
-    }
-  </style>
+  table{
+    font-size:12px;
+  }
+
+  th,
+  td{
+    padding:7px 5px;
+  }
+
+}
+</style>
 </head>
 
 <body>
 
 <div class="header">
-  <h1>👨‍🏫 Verifikasi Kehadiran</h1>
-  <p>SMP Negeri 3 Sibolga</p>
+
+<h1>👨‍🏫 Verifikasi Kehadiran Guru</h1>
+
+<p>SMP Negeri 3 Sibolga</p>
+
 </div>
+
 
 <div class="container">
 
-  <!-- INFORMASI GURU -->
-  <div class="card">
 
-    <h2>
-      👋 Selamat Datang,
-      <span id="namaGuru">Memuat...</span>
-    </h2>
+<!-- ============================= -->
+<!-- INFORMASI GURU -->
+<!-- ============================= -->
 
-    <div class="info">
+<div class="card">
 
-      <strong>Username:</strong>
-      <span id="usernameGuru">-</span>
+<h2>
+👋 Selamat Datang,
+<span id="namaGuru">Memuat...</span>
+</h2>
 
-      <br><br>
+<div class="info">
 
-      <strong>Status:</strong>
-      Guru Wali
+<strong>Username:</strong>
+<span id="usernameGuru">-</span>
 
-      <br><br>
+<br>
 
-      <strong>Siswa Wali:</strong>
-      <span id="jumlahSiswa">0</span> siswa
+<strong>Status:</strong>
+Guru Wali
 
-    </div>
+<br>
 
-    <div id="pesan" class="pesan"></div>
+<strong>Siswa Wali:</strong>
+<span id="jumlahSiswa">0</span> siswa
 
-    <div class="filter">
+</div>
 
-      <input
-        type="date"
-        id="tanggal"
-      >
-
-      <button
-        class="btn-tampil"
-        onclick="ambilData()"
-      >
-        🔄 Tampilkan Kehadiran
-      </button>
-
-    </div>
-
-  </div>
+<div id="pesan" class="pesan"></div>
 
 
-  <!-- VERIFIKASI KEHADIRAN -->
-  <div class="card">
+<div class="filter">
 
-    <h2>📋 Daftar Kehadiran Siswa Wali</h2>
+<input
+type="date"
+id="tanggal"
+>
 
-    <div class="table-wrap">
+<button
+class="btn-tampil"
+onclick="ambilData()"
+>
+🔄 Tampilkan Kehadiran
+</button>
 
-      <table>
+<button
+class="btn-rekap"
+onclick="document.getElementById('bagianRekap').scrollIntoView({behavior:'smooth'})"
+>
+📊 Lihat Rekap
+</button>
 
-        <thead>
+</div>
 
-          <tr>
-            <th>No</th>
-            <th>Nama Siswa</th>
-            <th>NISN</th>
-            <th>Kelas</th>
-            <th>Status Siswa</th>
-            <th>Status Final</th>
-            <th>Verifikasi / Edit</th>
-          </tr>
-
-        </thead>
-
-        <tbody id="tabelData">
-
-          <tr>
-            <td colspan="7">
-              Memuat data...
-            </td>
-          </tr>
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-  </div>
+</div>
 
 
-  <!-- REKAP KEHADIRAN BULAN INI -->
-  <div class="card">
 
-    <div class="rekap-header">
+<!-- ============================= -->
+<!-- KEHADIRAN HARIAN -->
+<!-- ============================= -->
 
-      <div>
-        <h2>📊 Rekap Kehadiran Bulan Ini</h2>
+<div class="card">
 
-        <div class="judul-bulan">
-          <span id="judulBulan">Memuat...</span>
-        </div>
-      </div>
+<h2>
+📋 Daftar Kehadiran Siswa Wali
+</h2>
 
-      <div class="filter">
+<div class="table-wrap">
 
-        <select id="bulanRekap">
+<table>
 
-          <option value="1">Januari</option>
-          <option value="2">Februari</option>
-          <option value="3">Maret</option>
-          <option value="4">April</option>
-          <option value="5">Mei</option>
-          <option value="6">Juni</option>
-          <option value="7">Juli</option>
-          <option value="8">Agustus</option>
-          <option value="9">September</option>
-          <option value="10">Oktober</option>
-          <option value="11">November</option>
-          <option value="12">Desember</option>
+<thead>
 
-        </select>
+<tr>
 
-        <select id="tahunRekap"></select>
+<th>No</th>
 
-        <button
-          class="btn-rekap"
-          onclick="ambilRekap()"
-        >
-          📊 Tampilkan Rekap
-        </button>
+<th>Nama Siswa</th>
 
-      </div>
+<th>NISN</th>
 
-    </div>
+<th>Kelas</th>
+
+<th>Status Siswa</th>
+
+<th>Status Final</th>
+
+<th>Verifikasi / Edit</th>
+
+</tr>
+
+</thead>
 
 
-    <div class="table-wrap">
+<tbody id="tabelData">
 
-      <table>
+<tr>
 
-        <thead>
+<td colspan="7">
+Memuat data...
+</td>
 
-          <tr>
-            <th>No</th>
-            <th>Nama Siswa</th>
-            <th>Hadir</th>
-            <th>Sakit</th>
-            <th>Izin</th>
-            <th>Alpa</th>
-            <th>Total</th>
-            <th>% Kehadiran</th>
-          </tr>
+</tr>
 
-        </thead>
+</tbody>
 
-        <tbody id="tabelRekap">
+</table>
 
-          <tr>
-            <td colspan="8">
-              Memuat rekap...
-            </td>
-          </tr>
+</div>
 
-        </tbody>
-
-      </table>
-
-    </div>
-
-  </div>
+</div>
 
 
-  <!-- KETERANGAN -->
-  <div class="card">
 
-    <h2>ℹ️ Keterangan</h2>
+<!-- ============================= -->
+<!-- REKAP -->
+<!-- ============================= -->
 
-    <p>
-      Guru Wali dapat memeriksa dan mengubah
-      status kehadiran siswa yang menjadi walinya.
-    </p>
+<div
+class="card"
+id="bagianRekap"
+>
 
-    <p>
-      Rekap kehadiran dihitung berdasarkan
-      data absensi siswa pada bulan yang dipilih.
-    </p>
+<div class="rekap-header">
 
-    <p>
-      Jika guru sudah memverifikasi,
-      <strong>Status Final</strong> digunakan
-      dalam perhitungan rekap.
-    </p>
+<div>
 
-    <button
-      class="btn-logout"
-      onclick="logoutGuru()"
-    >
-      🚪 Keluar
-    </button>
+<h2>
+📊 Rekap Kehadiran
+</h2>
 
-  </div>
+<div class="judul-bulan">
+
+Periode:
+<span id="judulBulan">
+Memuat...
+</span>
+
+</div>
+
+</div>
+
+
+<div class="filter">
+
+<select id="bulanRekap">
+
+<option value="1">Januari</option>
+<option value="2">Februari</option>
+<option value="3">Maret</option>
+<option value="4">April</option>
+<option value="5">Mei</option>
+<option value="6">Juni</option>
+<option value="7">Juli</option>
+<option value="8">Agustus</option>
+<option value="9">September</option>
+<option value="10">Oktober</option>
+<option value="11">November</option>
+<option value="12">Desember</option>
+
+</select>
+
+
+<select id="tahunRekap"></select>
+
+
+<button
+class="btn-rekap"
+onclick="ambilRekap()"
+>
+📊 Tampilkan Rekap
+</button>
+
+</div>
+
+</div>
+
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>No</th>
+
+<th>Nama Siswa</th>
+
+<th>Hadir</th>
+
+<th>Sakit</th>
+
+<th>Izin</th>
+
+<th>Alpa</th>
+
+<th>Total</th>
+
+<th>% Kehadiran</th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="tabelRekap">
+
+<tr>
+
+<td colspan="8">
+Memuat rekap...
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+
+<!-- ============================= -->
+<!-- KETERANGAN -->
+<!-- ============================= -->
+
+<div class="card">
+
+<h2>
+ℹ️ Keterangan
+</h2>
+
+<p>
+Guru Wali dapat memeriksa dan memverifikasi
+kehadiran siswa yang memilihnya sebagai Guru Wali.
+</p>
+
+<p>
+<strong>Status Final</strong> digunakan sebagai
+status resmi setelah guru melakukan verifikasi.
+</p>
+
+<p>
+Rekap dihitung berdasarkan seluruh data
+kehadiran siswa pada bulan yang dipilih.
+</p>
+
+
+<button
+class="btn-logout"
+onclick="logoutGuru()"
+>
+🚪 Keluar
+</button>
+
+</div>
+
 
 </div>
 
 
 <script>
 
-const SUPABASE_URL =
-  "https://nnnvgbajiqlqrsaygxme.supabase.co";
+/* ==========================================
+   SUPABASE
+========================================== */
 
-/*
-  GUNAKAN PUBLISHABLE KEY YANG SUDAH ADA
-  DI FILE ANDA SEKARANG.
-*/
+const SUPABASE_URL =
+"https://nnnvgbajiqlqrsaygxme.supabase.co";
+
+
 const SUPABASE_KEY =
-  "sb_publishable_dHIoPw_gfvud74PH4UCp2w_yGzl9oDy";
+"sb_publishable_dHIoPw_gfvud74PH4UCp2w_yGzl9oDy";
 
 
 const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
 
 
 let guruLogin = null;
+
 let daftarSiswaWali = [];
 
 
-// =====================================
-// PESAN
-// =====================================
+
+/* ==========================================
+   PESAN
+========================================== */
 
 function tampilPesan(
-  teks,
-  sukses = false
-) {
+teks,
+sukses=false
+){
 
-  const box =
-    document.getElementById("pesan");
+const box =
+document.getElementById("pesan");
 
-  box.textContent = teks;
+box.textContent =
+teks;
 
-  box.style.display = "block";
+box.style.display =
+"block";
 
-  box.style.background =
-    sukses
-      ? "#e8f5e9"
-      : "#ffebee";
+box.style.background =
+sukses
+? "#e8f5e9"
+: "#ffebee";
 
-  box.style.color =
-    sukses
-      ? "#2e7d32"
-      : "#c62828";
-}
-
-
-// =====================================
-// NORMALISASI STATUS
-// =====================================
-
-function normalisasiStatus(status) {
-
-  if (!status) {
-    return "";
-  }
-
-  const nilai =
-    String(status)
-      .trim()
-      .toLowerCase();
-
-  if (nilai === "hadir")
-    return "Hadir";
-
-  if (nilai === "sakit")
-    return "Sakit";
-
-  if (nilai === "izin")
-    return "Izin";
-
-  if (
-    nilai === "alpa" ||
-    nilai === "alpha" ||
-    nilai === "tanpa keterangan"
-  ) {
-    return "Alpa";
-  }
-
-  return status;
-}
-
-
-// =====================================
-// MULAI
-// =====================================
-
-async function mulai() {
-
-  const hasil =
-    await supabaseClient.auth.getUser();
-
-  const user =
-    hasil.data.user;
-
-
-  if (!user) {
-
-    window.location.href =
-      "login-guru.html";
-
-    return;
-  }
-
-
-  const guru =
-    await supabaseClient
-      .from("guru")
-      .select(
-        "id, nama, username, auth_user_id"
-      )
-      .eq(
-        "auth_user_id",
-        user.id
-      )
-      .maybeSingle();
-
-
-  if (
-    guru.error ||
-    !guru.data
-  ) {
-
-    await supabaseClient.auth.signOut();
-
-    window.location.href =
-      "login-guru.html";
-
-    return;
-  }
-
-
-  guruLogin =
-    guru.data;
-
-
-  document.getElementById(
-    "namaGuru"
-  ).textContent =
-    guruLogin.nama || "-";
-
-
-  document.getElementById(
-    "usernameGuru"
-  ).textContent =
-    guruLogin.username || "-";
-
-
-  await ambilSiswaWali();
-
-
-  const sekarang =
-    new Date();
-
-
-  const tahun =
-    sekarang.getFullYear();
-
-
-  const bulan =
-    sekarang.getMonth() + 1;
-
-
-  const hari =
-    String(
-      sekarang.getDate()
-    ).padStart(2, "0");
-
-
-  document.getElementById(
-    "tanggal"
-  ).value =
-    `${tahun}-${String(bulan).padStart(2, "0")}-${hari}`;
-
-
-  document.getElementById(
-    "bulanRekap"
-  ).value =
-    bulan;
-
-
-  isiPilihanTahun();
-
-
-  document.getElementById(
-    "tahunRekap"
-  ).value =
-    tahun;
-
-
-  await ambilData();
-
-  await ambilRekap();
+box.style.color =
+sukses
+? "#2e7d32"
+: "#c62828";
 
 }
 
 
-// =====================================
-// PILIHAN TAHUN
-// =====================================
 
-function isiPilihanTahun() {
+/* ==========================================
+   NORMALISASI STATUS
+========================================== */
 
-  const select =
-    document.getElementById(
-      "tahunRekap"
-    );
+function normalisasiStatus(status){
 
+if(!status){
+return "";
+}
 
-  const tahunSekarang =
-    new Date().getFullYear();
-
-
-  select.innerHTML = "";
+const nilai =
+String(status)
+.trim()
+.toLowerCase();
 
 
-  for (
-    let tahun =
-      tahunSekarang - 2;
-    tahun <=
-      tahunSekarang + 1;
-    tahun++
-  ) {
+if(nilai==="hadir"){
+return "Hadir";
+}
 
-    const option =
-      document.createElement(
-        "option"
-      );
+if(nilai==="sakit"){
+return "Sakit";
+}
 
-    option.value =
-      tahun;
+if(nilai==="izin"){
+return "Izin";
+}
 
-    option.textContent =
-      tahun;
+if(
+nilai==="alpa" ||
+nilai==="alpha" ||
+nilai==="tanpa keterangan"
+){
+return "Alpa";
+}
 
-    select.appendChild(
-      option
-    );
-
-  }
+return status;
 
 }
 
 
-// =====================================
-// AMBIL SISWA WALI
-// =====================================
 
-async function ambilSiswaWali() {
+/* ==========================================
+   MULAI
+========================================== */
 
-  const hasil =
-    await supabaseClient
-      .from("siswa")
-      .select(
-        "id, nama, nisn, kelas_id"
-      )
-      .eq(
-        "guru_wali_id",
-        guruLogin.id
-      )
-      .order(
-        "nama",
-        {
-          ascending: true
-        }
-      );
+async function mulai(){
 
+try{
 
-  if (hasil.error) {
+const hasil =
+await supabaseClient.auth.getUser();
 
-    tampilPesan(
-      "Gagal mengambil siswa wali: " +
-      hasil.error.message
-    );
 
-    return;
-  }
+const user =
+hasil.data.user;
 
 
-  daftarSiswaWali =
-    hasil.data || [];
+if(!user){
 
+window.location.href =
+"login-guru.html";
 
-  document.getElementById(
-    "jumlahSiswa"
-  ).textContent =
-    daftarSiswaWali.length;
-}
-
-
-// =====================================
-// AMBIL KEHADIRAN HARIAN
-// =====================================
-
-async function ambilData() {
-
-  const tanggal =
-    document.getElementById(
-      "tanggal"
-    ).value;
-
-
-  if (!tanggal) {
-
-    tampilPesan(
-      "Silakan pilih tanggal."
-    );
-
-    return;
-  }
-
-
-  const tbody =
-    document.getElementById(
-      "tabelData"
-    );
-
-
-  if (
-    daftarSiswaWali.length === 0
-  ) {
-
-    tbody.innerHTML =
-      `<tr>
-        <td colspan="7">
-          Belum ada siswa yang memilih
-          Anda sebagai Guru Wali.
-        </td>
-      </tr>`;
-
-    return;
-  }
-
-
-  const ids =
-    daftarSiswaWali.map(
-      siswa => siswa.id
-    );
-
-
-  const hasil =
-    await supabaseClient
-      .from("kehadiran")
-      .select(`
-        id,
-        siswa_id,
-        tanggal,
-        status_siswa,
-        status_verifikasi,
-        status_final
-      `)
-      .eq(
-        "tanggal",
-        tanggal
-      )
-      .in(
-        "siswa_id",
-        ids
-      )
-      .order(
-        "siswa_id",
-        {
-          ascending: true
-        }
-      );
-
-
-  if (hasil.error) {
-
-    tampilPesan(
-      "Gagal mengambil kehadiran: " +
-      hasil.error.message
-    );
-
-    return;
-  }
-
-
-  const data =
-    hasil.data || [];
-
-
-  tbody.innerHTML = "";
-
-
-  let nomor = 1;
-
-
-  for (
-    const siswa of daftarSiswaWali
-  ) {
-
-    const row =
-      data.find(
-        item =>
-          Number(item.siswa_id) ===
-          Number(siswa.id)
-      );
-
-
-    let statusSiswa =
-      row
-        ? normalisasiStatus(
-            row.status_siswa
-          )
-        : "Belum mengisi";
-
-
-    let statusFinal =
-      row
-        ? normalisasiStatus(
-            row.status_final ||
-            row.status_siswa
-          )
-        : "Belum mengisi";
-
-
-    let statusVerifikasi =
-      row
-        ? (
-            row.status_verifikasi ||
-            "Belum diverifikasi"
-          )
-        : "-";
-
-
-    const kelas =
-      await ambilNamaKelas(
-        siswa.kelas_id
-      );
-
-
-    const tr =
-      document.createElement(
-        "tr"
-      );
-
-
-    if (!row) {
-
-      tr.innerHTML = `
-
-        <td>${nomor}</td>
-
-        <td>${siswa.nama || "-"}</td>
-
-        <td>${siswa.nisn || "-"}</td>
-
-        <td>${kelas}</td>
-
-        <td>
-          <span class="badge belum">
-            Belum mengisi
-          </span>
-        </td>
-
-        <td>
-          <span class="badge belum">
-            -
-          </span>
-        </td>
-
-        <td>
-          <span class="badge belum">
-            Belum ada data
-          </span>
-        </td>
-
-      `;
-
-    } else {
-
-      tr.innerHTML = `
-
-        <td>${nomor}</td>
-
-        <td>${siswa.nama || "-"}</td>
-
-        <td>${siswa.nisn || "-"}</td>
-
-        <td>${kelas}</td>
-
-        <td>
-          ${badgeStatus(statusSiswa)}
-        </td>
-
-        <td>
-          ${badgeStatus(statusFinal)}
-          <br>
-          <small>
-            ${statusVerifikasi}
-          </small>
-        </td>
-
-        <td>
-
-          <select
-            id="status-${row.id}"
-          >
-
-            <option value="Hadir"
-              ${statusFinal === "Hadir"
-                ? "selected"
-                : ""}>
-              Hadir
-            </option>
-
-            <option value="Sakit"
-              ${statusFinal === "Sakit"
-                ? "selected"
-                : ""}>
-              Sakit
-            </option>
-
-            <option value="Izin"
-              ${statusFinal === "Izin"
-                ? "selected"
-                : ""}>
-              Izin
-            </option>
-
-            <option value="Alpa"
-              ${statusFinal === "Alpa"
-                ? "selected"
-                : ""}>
-              Alpa
-            </option>
-
-          </select>
-
-          <br><br>
-
-          <button
-            class="btn-verifikasi"
-            onclick="verifikasi(${row.id})"
-          >
-            ✓ Verifikasi
-          </button>
-
-        </td>
-
-      `;
-    }
-
-
-    tbody.appendChild(tr);
-
-    nomor++;
-  }
+return;
 
 }
 
 
-// =====================================
-// BADGE STATUS
-// =====================================
+/* ==============================
+   AMBIL DATA GURU
+============================== */
 
-function badgeStatus(status) {
-
-  let kelas =
-    "belum";
-
-
-  const nilai =
-    normalisasiStatus(status);
-
-
-  if (nilai === "Hadir")
-    kelas = "hadir";
-
-  if (nilai === "Sakit")
-    kelas = "sakit";
-
-  if (nilai === "Izin")
-    kelas = "izin";
-
-  if (nilai === "Alpa")
-    kelas = "alpa";
+const guru =
+await supabaseClient
+.from("guru")
+.select(
+"id,nama,username,auth_user_id"
+)
+.eq(
+"auth_user_id",
+user.id
+)
+.maybeSingle();
 
 
-  return `
-    <span class="badge ${kelas}">
-      ${nilai || "-"}
-    </span>
-  `;
+if(
+guru.error ||
+!guru.data
+){
+
+await supabaseClient.auth.signOut();
+
+window.location.href =
+"login-guru.html";
+
+return;
+
 }
 
 
-// =====================================
-// NAMA KELAS
-// =====================================
+guruLogin =
+guru.data;
+
+
+document.getElementById(
+"namaGuru"
+).textContent =
+guruLogin.nama || "-";
+
+
+document.getElementById(
+"usernameGuru"
+).textContent =
+guruLogin.username || "-";
+
+
+/* ==============================
+   AMBIL SISWA WALI
+============================== */
+
+await ambilSiswaWali();
+
+
+/* ==============================
+   TANGGAL SEKARANG
+============================== */
+
+const sekarang =
+new Date();
+
+
+const tahun =
+sekarang.getFullYear();
+
+
+const bulan =
+sekarang.getMonth()+1;
+
+
+const hari =
+String(
+sekarang.getDate()
+).padStart(2,"0");
+
+
+document.getElementById(
+"tanggal"
+).value =
+`${tahun}-${String(bulan).padStart(2,"0")}-${hari}`;
+
+
+document.getElementById(
+"bulanRekap"
+).value =
+bulan;
+
+
+isiPilihanTahun();
+
+
+document.getElementById(
+"tahunRekap"
+).value =
+tahun;
+
+
+/* ==============================
+   TAMPILKAN DATA
+============================== */
+
+await ambilData();
+
+await ambilRekap();
+
+}catch(error){
+
+console.error(error);
+
+tampilPesan(
+"Terjadi kesalahan: "+
+error.message
+);
+
+}
+
+}
+
+
+
+/* ==========================================
+   PILIHAN TAHUN
+========================================== */
+
+function isiPilihanTahun(){
+
+const select =
+document.getElementById(
+"tahunRekap"
+);
+
+
+const sekarang =
+new Date();
+
+
+const tahun =
+sekarang.getFullYear();
+
+
+select.innerHTML="";
+
+
+for(
+let t=tahun-2;
+t<=tahun+1;
+t++
+){
+
+const option =
+document.createElement(
+"option"
+);
+
+option.value =
+t;
+
+option.textContent =
+t;
+
+select.appendChild(
+option
+);
+
+}
+
+}
+
+
+
+/* ==========================================
+   AMBIL SISWA WALI
+========================================== */
+
+async function ambilSiswaWali(){
+
+const hasil =
+await supabaseClient
+.from("siswa")
+.select(
+"id,nama,nisn,kelas_id"
+)
+.eq(
+"guru_wali_id",
+guruLogin.id
+)
+.order(
+"nama",
+{
+ascending:true
+}
+);
+
+
+if(hasil.error){
+
+tampilPesan(
+"Gagal mengambil siswa wali: "+
+hasil.error.message
+);
+
+return;
+
+}
+
+
+daftarSiswaWali =
+hasil.data || [];
+
+
+document.getElementById(
+"jumlahSiswa"
+).textContent =
+daftarSiswaWali.length;
+
+}
+
+
+
+/* ==========================================
+   NAMA KELAS
+========================================== */
 
 async function ambilNamaKelas(
-  kelasId
-) {
+kelasId
+){
 
-  if (!kelasId)
-    return "-";
-
-
-  const hasil =
-    await supabaseClient
-      .from("kelas")
-      .select("*")
-      .eq(
-        "id",
-        kelasId
-      )
-      .maybeSingle();
-
-
-  if (
-    hasil.error ||
-    !hasil.data
-  ) {
-
-    return "-";
-  }
-
-
-  return (
-    hasil.data.nama ||
-    hasil.data.nama_kelas ||
-    hasil.data.name ||
-    "-"
-  );
+if(!kelasId){
+return "-";
 }
 
 
-// =====================================
-// VERIFIKASI
-// =====================================
-
-async function verifikasi(id) {
-
-  const select =
-    document.getElementById(
-      "status-" + id
-    );
-
-
-  if (!select) {
-
-    tampilPesan(
-      "Data kehadiran tidak ditemukan."
-    );
-
-    return;
-  }
+const hasil =
+await supabaseClient
+.from("kelas")
+.select("*")
+.eq(
+"id",
+kelasId
+)
+.maybeSingle();
 
 
-  const status =
-    select.value;
+if(
+hasil.error ||
+!hasil.data
+){
 
-
-  if (!guruLogin) {
-
-    tampilPesan(
-      "Data guru belum tersedia."
-    );
-
-    return;
-  }
-
-
-  const hasil =
-    await supabaseClient
-      .from("kehadiran")
-      .update({
-
-        status_final:
-          status,
-
-        status_verifikasi:
-          "Terverifikasi",
-
-        diverifikasi_oleh:
-          guruLogin.id
-
-      })
-      .eq(
-        "id",
-        id
-      );
-
-
-  if (hasil.error) {
-
-    tampilPesan(
-      "Gagal memverifikasi: " +
-      hasil.error.message
-    );
-
-    return;
-  }
-
-
-  tampilPesan(
-    "Kehadiran berhasil diverifikasi.",
-    true
-  );
-
-
-  await ambilData();
-
-  await ambilRekap();
+return "-";
 
 }
 
 
-// =====================================
-// REKAP KEHADIRAN BULANAN
-// =====================================
-
-async function ambilRekap() {
-
-  const bulan =
-    Number(
-      document.getElementById(
-        "bulanRekap"
-      ).value
-    );
-
-
-  const tahun =
-    Number(
-      document.getElementById(
-        "tahunRekap"
-      ).value
-    );
-
-
-  const namaBulan = [
-    "",
-    "Januari",
-    "Februari",
-    "Maret",
-    "April",
-    "Mei",
-    "Juni",
-    "Juli",
-    "Agustus",
-    "September",
-    "Oktober",
-    "November",
-    "Desember"
-  ];
-
-
-  document.getElementById(
-    "judulBulan"
-  ).textContent =
-    namaBulan[bulan] +
-    " " +
-    tahun;
-
-
-  const tbody =
-    document.getElementById(
-      "tabelRekap"
-    );
-
-
-  if (
-    daftarSiswaWali.length === 0
-  ) {
-
-    tbody.innerHTML =
-      `<tr>
-        <td colspan="8" class="kosong">
-          Belum ada siswa yang memilih
-          Anda sebagai Guru Wali.
-        </td>
-      </tr>`;
-
-    return;
-  }
-
-
-  const awal =
-    `${tahun}-${String(bulan).padStart(2, "0")}-01`;
-
-
-  const tanggalAkhir =
-    new Date(
-      tahun,
-      bulan,
-      0
-    );
-
-
-  const akhir =
-    `${tahun}-${String(bulan).padStart(2, "0")}-${String(
-      tanggalAkhir.getDate()
-    ).padStart(2, "0")}`;
-
-
-  const ids =
-    daftarSiswaWali.map(
-      siswa => siswa.id
-    );
-
-
-  const hasil =
-    await supabaseClient
-      .from("kehadiran")
-      .select(`
-        siswa_id,
-        tanggal,
-        status_siswa,
-        status_final
-      `)
-      .in(
-        "siswa_id",
-        ids
-      )
-      .gte(
-        "tanggal",
-        awal
-      )
-      .lte(
-        "tanggal",
-        akhir
-      );
-
-
-  if (hasil.error) {
-
-    tbody.innerHTML =
-      `<tr>
-        <td colspan="8" class="kosong">
-          Gagal mengambil rekap:
-          ${hasil.error.message}
-        </td>
-      </tr>`;
-
-    return;
-  }
-
-
-  const data =
-    hasil.data || [];
-
-
-  tbody.innerHTML = "";
-
-
-  let nomor = 1;
-
-
-  daftarSiswaWali.forEach(
-    siswa => {
-
-      const dataSiswa =
-        data.filter(
-          row =>
-            Number(row.siswa_id) ===
-            Number(siswa.id)
-        );
-
-
-      let hadir = 0;
-      let sakit = 0;
-      let izin = 0;
-      let alpa = 0;
-
-
-      dataSiswa.forEach(
-        row => {
-
-          /*
-            Jika guru sudah melakukan
-            verifikasi, gunakan status_final.
-
-            Jika belum diverifikasi,
-            gunakan status_siswa.
-          */
-
-          const status =
-            normalisasiStatus(
-              row.status_final ||
-              row.status_siswa
-            );
-
-
-          if (status === "Hadir") {
-
-            hadir++;
-
-          } else if (
-            status === "Sakit"
-          ) {
-
-            sakit++;
-
-          } else if (
-            status === "Izin"
-          ) {
-
-            izin++;
-
-          } else if (
-            status === "Alpa"
-          ) {
-
-            alpa++;
-
-          }
-
-        }
-      );
-
-
-      const total =
-        hadir +
-        sakit +
-        izin +
-        alpa;
-
-
-      let persentase = 0;
-
-
-      if (total > 0) {
-
-        persentase =
-          Math.round(
-            (hadir / total) * 100
-          );
-
-      }
-
-
-      const tr =
-        document.createElement(
-          "tr"
-        );
-
-
-      tr.innerHTML = `
-
-        <td>
-          ${nomor}
-        </td>
-
-        <td>
-          <strong>
-            ${siswa.nama || "-"}
-          </strong>
-        </td>
-
-        <td>
-          ${hadir}
-        </td>
-
-        <td>
-          ${sakit}
-        </td>
-
-        <td>
-          ${izin}
-        </td>
-
-        <td>
-          ${alpa}
-        </td>
-
-        <td>
-          <strong>
-            ${total}
-          </strong>
-        </td>
-
-        <td class="persen">
-          ${persentase}%
-        </td>
-
-      `;
-
-
-      tbody.appendChild(tr);
-
-      nomor++;
-
-    }
-  );
+return (
+hasil.data.nama ||
+hasil.data.nama_kelas ||
+hasil.data.name ||
+"-"
+);
 
 }
 
 
-// =====================================
-// LOGOUT
-// =====================================
 
-async function logoutGuru() {
+/* ==========================================
+   DATA KEHADIRAN HARIAN
+========================================== */
 
-  await supabaseClient.auth.signOut();
+async function ambilData(){
 
-  window.location.href =
-    "login-guru.html";
+const tanggal =
+document.getElementById(
+"tanggal"
+).value;
+
+
+if(!tanggal){
+
+tampilPesan(
+"Silakan pilih tanggal."
+);
+
+return;
 
 }
 
+
+const tbody =
+document.getElementById(
+"tabelData"
+);
+
+
+if(
+daftarSiswaWali.length===0
+){
+
+tbody.innerHTML = `
+<tr>
+<td colspan="7">
+Belum ada siswa yang memilih
+Anda sebagai Guru Wali.
+</td>
+</tr>
+`;
+
+return;
+
+}
+
+
+const ids =
+daftarSiswaWali.map(
+siswa=>siswa.id
+);
+
+
+const hasil =
+await supabaseClient
+.from("kehadiran")
+.select(`
+id,
+siswa_id,
+tanggal,
+status_siswa,
+status_verifikasi,
+status_final
+`)
+.eq(
+"tanggal",
+tanggal
+)
+.in(
+"siswa_id",
+ids
+)
+.order(
+"siswa_id",
+{
+ascending:true
+}
+);
+
+
+if(hasil.error){
+
+tampilPesan(
+"Gagal mengambil kehadiran: "+
+hasil.error.message
+);
+
+return;
+
+}
+
+
+const data =
+hasil.data || [];
+
+
+tbody.innerHTML="";
+
+
+let nomor=1;
+
+
+for(
+const siswa of daftarSiswaWali
+){
+
+const row =
+data.find(
+item =>
+Number(item.siswa_id) ===
+Number(siswa.id)
+);
+
+
+const kelas =
+await ambilNamaKelas(
+siswa.kelas_id
+);
+
+
+if(!row){
+
+const tr =
+document.createElement(
+"tr"
+);
+
+
+tr.innerHTML = `
+
+<td>${nomor}</td>
+
+<td>${siswa.nama || "-"}</td>
+
+<td>${siswa.nisn || "-"}</td>
+
+<td>${kelas}</td>
+
+<td>
+<span class="badge belum">
+Belum mengisi
+</span>
+</td>
+
+<td>
+<span class="badge belum">
+-
+</span>
+</td>
+
+<td>
+<span class="badge belum">
+Belum ada data
+</span>
+</td>
+
+`;
+
+
+tbody.appendChild(tr);
+
+nomor++;
+
+continue;
+
+}
+
+
+const statusSiswa =
+normalisasiStatus(
+row.status_siswa
+);
+
+
+const statusFinal =
+normalisasiStatus(
+row.status_final ||
+row.status_siswa
+);
+
+
+const statusVerifikasi =
+row.status_verifikasi ||
+"Belum diverifikasi";
+
+
+const tr =
+document.createElement(
+"tr"
+);
+
+
+tr.innerHTML = `
+
+<td>${nomor}</td>
+
+<td>${siswa.nama || "-"}</td>
+
+<td>${siswa.nisn || "-"}</td>
+
+<td>${kelas}</td>
+
+<td>
+${badgeStatus(statusSiswa)}
+</td>
+
+<td>
+${badgeStatus(statusFinal)}
+<br>
+<small>
+${statusVerifikasi}
+</small>
+</td>
+
+<td>
+
+<select
+id="status-${row.id}"
+>
+
+<option
+value="Hadir"
+${statusFinal==="Hadir"?"selected":""}
+>
+Hadir
+</option>
+
+<option
+value="Sakit"
+${statusFinal==="Sakit"?"selected":""}
+>
+Sakit
+</option>
+
+<option
+value="Izin"
+${statusFinal==="Izin"?"selected":""}
+>
+Izin
+</option>
+
+<option
+value="Alpa"
+${statusFinal==="Alpa"?"selected":""}
+>
+Alpa
+</option>
+
+</select>
+
+<br><br>
+
+<button
+class="btn-verifikasi"
+onclick="verifikasi(${row.id})"
+>
+✓ Verifikasi
+</button>
+
+</td>
+
+`;
+
+
+tbody.appendChild(tr);
+
+nomor++;
+
+}
+
+}
+
+
+
+/* ==========================================
+   BADGE
+========================================== */
+
+function badgeStatus(status){
+
+const nilai =
+normalisasiStatus(status);
+
+
+let kelas =
+"belum";
+
+
+if(nilai==="Hadir"){
+kelas="hadir";
+}
+
+if(nilai==="Sakit"){
+kelas="sakit";
+}
+
+if(nilai==="Izin"){
+kelas="izin";
+}
+
+if(nilai==="Alpa"){
+kelas="alpa";
+}
+
+
+return `
+<span class="badge ${kelas}">
+${nilai || "-"}
+</span>
+`;
+
+}
+
+
+
+/* ==========================================
+   VERIFIKASI
+========================================== */
+
+async function verifikasi(id){
+
+const select =
+document.getElementById(
+"status-"+id
+);
+
+
+if(!select){
+
+tampilPesan(
+"Data kehadiran tidak ditemukan."
+);
+
+return;
+
+}
+
+
+const status =
+select.value;
+
+
+if(!guruLogin){
+
+tampilPesan(
+"Data guru belum tersedia."
+);
+
+return;
+
+}
+
+
+const hasil =
+await supabaseClient
+.from("kehadiran")
+.update({
+
+status_final:
+status,
+
+status_verifikasi:
+"Terverifikasi",
+
+diverifikasi_oleh:
+guruLogin.id
+
+})
+.eq(
+"id",
+id
+);
+
+
+if(hasil.error){
+
+tampilPesan(
+"Gagal memverifikasi: "+
+hasil.error.message
+);
+
+return;
+
+}
+
+
+tampilPesan(
+"Kehadiran berhasil diverifikasi.",
+true
+);
+
+
+await ambilData();
+
+await ambilRekap();
+
+}
+
+
+
+/* ==========================================
+   REKAP
+========================================== */
+
+async function ambilRekap(){
+
+const bulan =
+Number(
+document.getElementById(
+"bulanRekap"
+).value
+);
+
+
+const tahun =
+Number(
+document.getElementById(
+"tahunRekap"
+).value
+);
+
+
+const namaBulan = [
+"",
+"Januari",
+"Februari",
+"Maret",
+"April",
+"Mei",
+"Juni",
+"Juli",
+"Agustus",
+"September",
+"Oktober",
+"November",
+"Desember"
+];
+
+
+document.getElementById(
+"judulBulan"
+).textContent =
+namaBulan[bulan]+" "+tahun;
+
+
+const tbody =
+document.getElementById(
+"tabelRekap"
+);
+
+
+if(
+daftarSiswaWali.length===0
+){
+
+tbody.innerHTML = `
+<tr>
+<td colspan="8" class="kosong">
+Belum ada siswa yang memilih
+Anda sebagai Guru Wali.
+</td>
+</tr>
+`;
+
+return;
+
+}
+
+
+const awal =
+`${tahun}-${String(bulan).padStart(2,"0")}-01`;
+
+
+const tanggalAkhir =
+new Date(
+tahun,
+bulan,
+0
+);
+
+
+const akhir =
+`${tahun}-${String(bulan).padStart(2,"0")}-${String(
+tanggalAkhir.getDate()
+).padStart(2,"0")}`;
+
+
+const ids =
+daftarSiswaWali.map(
+siswa=>siswa.id
+);
+
+
+const hasil =
+await supabaseClient
+.from("kehadiran")
+.select(`
+siswa_id,
+tanggal,
+status_siswa,
+status_final
+`)
+.in(
+"siswa_id",
+ids
+)
+.gte(
+"tanggal",
+awal
+)
+.lte(
+"tanggal",
+akhir
+);
+
+
+if(hasil.error){
+
+tbody.innerHTML = `
+<tr>
+<td colspan="8" class="kosong">
+Gagal mengambil rekap:
+${hasil.error.message}
+</td>
+</tr>
+`;
+
+return;
+
+}
+
+
+const data =
+hasil.data || [];
+
+
+tbody.innerHTML="";
+
+
+let nomor=1;
+
+
+daftarSiswaWali.forEach(
+siswa=>{
+
+
+const dataSiswa =
+data.filter(
+row =>
+Number(row.siswa_id) ===
+Number(siswa.id)
+);
+
+
+let hadir=0;
+let sakit=0;
+let izin=0;
+let alpa=0;
+
+
+dataSiswa.forEach(
+row=>{
+
+const status =
+normalisasiStatus(
+row.status_final ||
+row.status_siswa
+);
+
+
+if(status==="Hadir"){
+hadir++;
+}
+
+else if(status==="Sakit"){
+sakit++;
+}
+
+else if(status==="Izin"){
+izin++;
+}
+
+else if(status==="Alpa"){
+alpa++;
+}
+
+}
+);
+
+
+const total =
+hadir+sakit+izin+alpa;
+
+
+const persentase =
+total>0
+? Math.round(
+(hadir/total)*100
+)
+:0;
+
+
+const tr =
+document.createElement(
+"tr"
+);
+
+
+tr.innerHTML = `
+
+<td>
+${nomor}
+</td>
+
+<td>
+<strong>
+${siswa.nama || "-"}
+</strong>
+</td>
+
+<td>
+${hadir}
+</td>
+
+<td>
+${sakit}
+</td>
+
+<td>
+${izin}
+</td>
+
+<td>
+${alpa}
+</td>
+
+<td>
+<strong>
+${total}
+</strong>
+</td>
+
+<td class="persen">
+${persentase}%
+</td>
+
+`;
+
+
+tbody.appendChild(tr);
+
+nomor++;
+
+});
+
+}
+
+
+
+/* ==========================================
+   LOGOUT
+========================================== */
+
+async function logoutGuru(){
+
+await supabaseClient.auth.signOut();
+
+window.location.href =
+"login-guru.html";
+
+}
+
+
+
+/* ==========================================
+   JALANKAN
+========================================== */
 
 mulai();
 
