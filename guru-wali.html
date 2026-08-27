@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Guru Wali - KAIH SMP Negeri 3 Sibolga</title>
+  <title>Siswa & Guru Wali - KAIH SMP Negeri 3 Sibolga</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -60,6 +60,21 @@
       margin-bottom: 20px;
     }
 
+    .jumlah {
+      margin-bottom: 20px;
+      font-weight: bold;
+      color: #0f4c81;
+    }
+
+    input {
+      padding: 10px;
+      width: 300px;
+      max-width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -84,6 +99,12 @@
       margin: 15px 0;
       color: #c62828;
     }
+
+    @media (max-width: 700px) {
+      table {
+        font-size: 13px;
+      }
+    }
   </style>
 </head>
 
@@ -91,7 +112,7 @@
 
 <header>
   <h1>KAIH SMP Negeri 3 Sibolga</h1>
-  <p>Guru Wali</p>
+  <p>Daftar Siswa & Guru Wali</p>
 </header>
 
 <div class="container">
@@ -103,8 +124,19 @@
   <div class="box">
 
     <div class="judul">
-      👨‍🏫 Daftar Guru Wali
+      👨‍🎓 Siswa & Guru Wali
     </div>
+
+    <div class="jumlah">
+      Jumlah Siswa: <span id="jumlah">0</span>
+    </div>
+
+    <input
+      type="text"
+      id="cari"
+      placeholder="Cari nama siswa..."
+      onkeyup="cariSiswa()"
+    >
 
     <div id="status"></div>
 
@@ -113,6 +145,7 @@
       <thead>
         <tr>
           <th>No</th>
+          <th>Nama Siswa</th>
           <th>Kelas</th>
           <th>Guru Wali</th>
         </tr>
@@ -148,6 +181,13 @@ const supabaseClient =
 
 
 // ==========================================
+// DATA
+// ==========================================
+
+let semuaSiswa = [];
+
+
+// ==========================================
 // CEK LOGIN
 // ==========================================
 
@@ -172,6 +212,21 @@ async function mulai() {
 // ==========================================
 
 async function ambilData() {
+
+  const siswaResult =
+    await supabaseClient
+      .from("siswa")
+      .select("*");
+
+  if (siswaResult.error) {
+
+    document.getElementById("status").textContent =
+      "Gagal mengambil siswa: " +
+      siswaResult.error.message;
+
+    return;
+  }
+
 
   const kelasResult =
     await supabaseClient
@@ -218,7 +273,14 @@ async function ambilData() {
   }
 
 
+  semuaSiswa = siswaResult.data || [];
+
+  document.getElementById("jumlah").textContent =
+    semuaSiswa.length;
+
+
   tampilkan(
+    semuaSiswa,
     kelasResult.data || [],
     guruResult.data || [],
     waliResult.data || []
@@ -227,10 +289,15 @@ async function ambilData() {
 
 
 // ==========================================
-// TAMPILKAN
+// TAMPILKAN DATA
 // ==========================================
 
-function tampilkan(kelasData, guruData, waliData) {
+function tampilkan(
+  siswaData,
+  kelasData,
+  guruData,
+  waliData
+) {
 
   const tabel =
     document.getElementById("daftar");
@@ -238,45 +305,58 @@ function tampilkan(kelasData, guruData, waliData) {
   tabel.innerHTML = "";
 
 
-  kelasData.forEach(function(kelas, index) {
+  siswaData.forEach(function(siswa, index) {
 
-    const namaKelas =
-      kelas.nama ||
-      kelas.name ||
-      kelas.nama_kelas ||
-      kelas.kelas ||
-      "-";
+    const kelas =
+      kelasData.find(function(item) {
 
-
-    const hubungan =
-      waliData.find(function(item) {
-
-        return item.kelas_id === kelas.id;
+        return item.id === siswa.kelas_id;
 
       });
 
 
+    let namaKelas = "-";
     let namaGuru = "-";
 
 
-    if (hubungan) {
+    if (kelas) {
 
-      const guru =
-        guruData.find(function(item) {
+      namaKelas =
+        kelas.nama ||
+        kelas.name ||
+        kelas.nama_kelas ||
+        kelas.kelas ||
+        "-";
 
-          return item.id === hubungan.guru_id;
+
+      const hubungan =
+        waliData.find(function(item) {
+
+          return item.kelas_id === kelas.id;
 
         });
 
 
-      if (guru) {
+      if (hubungan) {
 
-        namaGuru =
-          guru.nama ||
-          guru.name ||
-          guru.nama_guru ||
-          guru.guru ||
-          "-";
+        const guru =
+          guruData.find(function(item) {
+
+            return item.id === hubungan.guru_id;
+
+          });
+
+
+        if (guru) {
+
+          namaGuru =
+            guru.nama ||
+            guru.name ||
+            guru.nama_guru ||
+            guru.guru ||
+            "-";
+
+        }
 
       }
 
@@ -289,10 +369,99 @@ function tampilkan(kelasData, guruData, waliData) {
 
     baris.innerHTML = `
       <td>${index + 1}</td>
-      <td>${namaKelas}</td>
+
+      <td>
+        ${siswa.nama || "-"}
+      </td>
+
+      <td>
+        ${namaKelas}
+      </td>
+
       <td class="${namaGuru === "-" ? "kosong" : ""}">
         ${namaGuru}
       </td>
+    `;
+
+
+    tabel.appendChild(baris);
+
+  });
+
+}
+
+
+// ==========================================
+// PENCARIAN
+// ==========================================
+
+function cariSiswa() {
+
+  const kata =
+    document
+      .getElementById("cari")
+      .value
+      .toLowerCase();
+
+
+  const hasil =
+    semuaSiswa.filter(function(siswa) {
+
+      return (siswa.nama || "")
+        .toLowerCase()
+        .includes(kata);
+
+    });
+
+
+  // Untuk sementara pencarian hanya memfilter
+  // data siswa yang sudah diambil.
+  // Relasi kelas dan guru wali tetap dibaca
+  // saat halaman dimuat.
+
+  const kelasKosong = [];
+  const guruKosong = [];
+  const waliKosong = [];
+
+  // Muat ulang data jika pencarian digunakan.
+  // Cara sederhana: panggil ambilData kembali.
+
+  if (kata === "") {
+
+    ambilData();
+
+  } else {
+
+    tampilkanHasilPencarian(hasil);
+
+  }
+
+}
+
+
+// ==========================================
+// HASIL PENCARIAN
+// ==========================================
+
+function tampilkanHasilPencarian(data) {
+
+  const tabel =
+    document.getElementById("daftar");
+
+  tabel.innerHTML = "";
+
+
+  data.forEach(function(siswa, index) {
+
+    const baris =
+      document.createElement("tr");
+
+
+    baris.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${siswa.nama || "-"}</td>
+      <td>-</td>
+      <td class="kosong">-</td>
     `;
 
 
