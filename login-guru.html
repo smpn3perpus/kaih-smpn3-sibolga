@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Guru - KAIH</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #e8f1ff, #f8fbff);
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      margin: 20px;
+      background: white;
+      padding: 30px;
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.12);
+    }
+
+    h1 {
+      text-align: center;
+      color: #0f4c81;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 7px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ccc;
+      border-radius: 9px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 14px;
+      border: none;
+      border-radius: 9px;
+      background: #0f4c81;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .6;
+    }
+
+    #pesan {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <h1>👨‍🏫 Login Guru</h1>
+
+  <div class="subtitle">
+    SMP Negeri 3 Sibolga
+  </div>
+
+  <label for="username">
+    Username
+  </label>
+
+  <input
+    id="username"
+    type="text"
+    placeholder="Masukkan username"
+    autocomplete="username"
+  >
+
+  <label for="password">
+    Password
+  </label>
+
+  <input
+    id="password"
+    type="password"
+    placeholder="Masukkan password"
+    autocomplete="current-password"
+  >
+
+  <button
+    id="tombolLogin"
+    onclick="loginGuru()"
+  >
+    🔐 LOGIN GURU
+  </button>
+
+  <div id="pesan"></div>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+  "https://nnnvgbajiqlqrsaygxme.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_dHIoPw_gfvud74PH4UCp2w_yGzl9oDy";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+// ======================================
+// PESAN
+// ======================================
+
+function tampilPesan(teks, sukses = false) {
+
+  const pesan =
+    document.getElementById("pesan");
+
+  pesan.textContent = teks;
+
+  pesan.style.display = "block";
+
+  pesan.style.background =
+    sukses ? "#e8f5e9" : "#ffebee";
+
+  pesan.style.color =
+    sukses ? "#2e7d32" : "#c62828";
+}
+
+
+// ======================================
+// LOGIN GURU
+// ======================================
+
+async function loginGuru() {
+
+  const username =
+    document.getElementById("username")
+      .value
+      .trim();
+
+  const password =
+    document.getElementById("password")
+      .value;
+
+  if (!username || !password) {
+
+    tampilPesan(
+      "Username dan password wajib diisi."
+    );
+
+    return;
+  }
+
+
+  const tombol =
+    document.getElementById(
+      "tombolLogin"
+    );
+
+  tombol.disabled = true;
+
+  tombol.textContent =
+    "Memproses...";
+
+
+  try {
+
+    /*
+      Username guru diubah menjadi
+      email internal yang sama dengan
+      yang digunakan function buat-akun-guru.
+    */
+
+    const email =
+      username
+        .toLowerCase()
+        .replace(/[^a-z0-9._-]/g, "") +
+      "@guru.smpn3sibolga.local";
+
+
+    const hasil =
+      await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+
+    if (hasil.error) {
+
+      throw new Error(
+        "Username atau password salah."
+      );
+    }
+
+
+    const user =
+      hasil.data.user;
+
+
+    if (!user) {
+
+      throw new Error(
+        "Akun guru tidak ditemukan."
+      );
+    }
+
+
+    // Pastikan akun tersebut memang guru
+    const guru =
+      await supabaseClient
+        .from("guru")
+        .select("id, nama, username, auth_user_id")
+        .eq(
+          "auth_user_id",
+          user.id
+        )
+        .maybeSingle();
+
+
+    if (guru.error) {
+
+      await supabaseClient.auth.signOut();
+
+      throw new Error(
+        guru.error.message
+      );
+    }
+
+
+    if (!guru.data) {
+
+      await supabaseClient.auth.signOut();
+
+      throw new Error(
+        "Akun ini bukan akun guru."
+      );
+    }
+
+
+    tampilPesan(
+      "Login berhasil. Mengarahkan...",
+      true
+    );
+
+
+    setTimeout(function() {
+
+      window.location.href =
+        "verifikasi-kehadiran.html";
+
+    }, 500);
+
+
+  } catch (error) {
+
+    tampilPesan(
+      error.message ||
+      "Login gagal."
+    );
+
+    tombol.disabled = false;
+
+    tombol.textContent =
+      "🔐 LOGIN GURU";
+  }
+
+}
+
+</script>
+
+</body>
+</html>
