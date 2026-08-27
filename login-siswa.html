@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Login Siswa - KAIH SMP Negeri 3 Sibolga</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -138,9 +137,7 @@
     </div>
 
 
-    <!-- ========================= -->
     <!-- LOGIN -->
-    <!-- ========================= -->
 
     <div id="loginForm" class="login-form">
 
@@ -152,7 +149,6 @@
         type="text"
         id="loginUsername"
         placeholder="Masukkan username"
-        autocomplete="username"
       >
 
       <label>Password</label>
@@ -161,7 +157,6 @@
         type="password"
         id="loginPassword"
         placeholder="Masukkan password"
-        autocomplete="current-password"
       >
 
       <button
@@ -181,9 +176,7 @@
     </div>
 
 
-    <!-- ========================= -->
     <!-- DAFTAR -->
-    <!-- ========================= -->
 
     <div id="daftarForm" class="daftar-form">
 
@@ -197,7 +190,6 @@
         placeholder="Masukkan nama lengkap"
       >
 
-
       <label>NISN</label>
 
       <input
@@ -206,16 +198,13 @@
         placeholder="Masukkan NISN"
       >
 
-
       <label>Username</label>
 
       <input
         type="text"
         id="username"
         placeholder="Buat username"
-        autocomplete="username"
       >
-
 
       <label>Password</label>
 
@@ -223,9 +212,7 @@
         type="password"
         id="password"
         placeholder="Minimal 6 karakter"
-        autocomplete="new-password"
       >
-
 
       <label>Kelas</label>
 
@@ -233,13 +220,11 @@
         <option value="">Memuat kelas...</option>
       </select>
 
-
       <label>Guru Wali</label>
 
       <select id="guruWali">
         <option value="">Memuat guru...</option>
       </select>
-
 
       <button
         class="btn-daftar"
@@ -247,7 +232,6 @@
       >
         📝 BUAT AKUN SISWA
       </button>
-
 
       <button
         class="btn-kembali"
@@ -307,7 +291,7 @@ function tampilPesan(teks, sukses = false) {
 
 
 // =====================================================
-// LOGIN / DAFTAR
+// TAMPIL LOGIN
 // =====================================================
 
 function tampilLogin() {
@@ -323,6 +307,10 @@ function tampilLogin() {
 }
 
 
+// =====================================================
+// TAMPIL DAFTAR
+// =====================================================
+
 async function tampilDaftar() {
 
   document.getElementById("loginForm").style.display =
@@ -337,6 +325,7 @@ async function tampilDaftar() {
   await ambilKelas();
 
   await ambilGuru();
+
 }
 
 
@@ -361,13 +350,11 @@ async function ambilKelas() {
     return;
   }
 
-
   const select =
     document.getElementById("kelas");
 
   select.innerHTML =
     '<option value="">Pilih kelas</option>';
-
 
   (hasil.data || []).forEach(function(kelas) {
 
@@ -413,13 +400,11 @@ async function ambilGuru() {
     return;
   }
 
-
   const select =
     document.getElementById("guruWali");
 
   select.innerHTML =
     '<option value="">Pilih guru wali</option>';
-
 
   (hasil.data || []).forEach(function(guru) {
 
@@ -445,35 +430,7 @@ async function ambilGuru() {
 
 
 // =====================================================
-// CEK USERNAME
-// =====================================================
-
-async function cekUsername(username) {
-
-  const hasil =
-    await supabaseClient
-      .from("siswa")
-      .select("id")
-      .eq("username", username)
-      .limit(1);
-
-  if (hasil.error) {
-
-    return {
-      error: hasil.error
-    };
-
-  }
-
-  return {
-    ada: (hasil.data || []).length > 0
-  };
-
-}
-
-
-// =====================================================
-// DAFTAR SISWA
+// DAFTAR SISWA VIA EDGE FUNCTION
 // =====================================================
 
 async function daftarSiswa() {
@@ -500,8 +457,6 @@ async function daftarSiswa() {
   const guru_wali_id =
     document.getElementById("guruWali").value;
 
-
-  // VALIDASI
 
   if (
     !nama ||
@@ -531,115 +486,46 @@ async function daftarSiswa() {
 
 
   tampilPesan(
-    "Memeriksa username..."
-  );
-
-
-  const cek =
-    await cekUsername(username);
-
-
-  if (cek.error) {
-
-    tampilPesan(
-      "Gagal memeriksa username: " +
-      cek.error.message
-    );
-
-    return;
-  }
-
-
-  if (cek.ada) {
-
-    tampilPesan(
-      "Username sudah digunakan. Silakan pilih username lain."
-    );
-
-    return;
-  }
-
-
-  // EMAIL INTERNAL VALID
-  // Dipakai hanya untuk Supabase Auth.
-
-  const email =
-    username +
-    "@kaihsmpn3sibolga.com";
-
-
-  tampilPesan(
     "Membuat akun siswa..."
   );
 
 
-  const akun =
-    await supabaseClient.auth.signUp({
+  const hasil =
+    await supabaseClient.functions.invoke(
+      "buat-akun-siswa",
+      {
+        body: {
+          nama: nama,
+          nisn: nisn,
+          username: username,
+          password: password,
+          kelas_id: kelas_id,
+          guru_wali_id: guru_wali_id
+        }
+      }
+    );
 
-      email: email,
 
-      password: password
-
-    });
-
-
-  if (akun.error) {
+  if (hasil.error) {
 
     tampilPesan(
       "Gagal membuat akun: " +
-      akun.error.message
+      hasil.error.message
     );
 
     return;
   }
 
 
-  const user =
-    akun.data.user;
+  const data =
+    hasil.data;
 
 
-  if (!user) {
-
-    tampilPesan(
-      "Akun belum berhasil dibuat."
-    );
-
-    return;
-  }
-
-
-  // SIMPAN DATA SISWA
-
-  tampilPesan(
-    "Menyimpan data siswa..."
-  );
-
-
-  const simpan =
-    await supabaseClient
-      .from("siswa")
-      .insert({
-
-        id: user.id,
-
-        nama: nama,
-
-        nisn: nisn,
-
-        username: username,
-
-        kelas_id: kelas_id,
-
-        guru_wali_id: guru_wali_id
-
-      });
-
-
-  if (simpan.error) {
+  if (!data || !data.success) {
 
     tampilPesan(
-      "Akun dibuat tetapi data siswa gagal disimpan: " +
-      simpan.error.message
+      data?.message ||
+      "Gagal membuat akun siswa."
     );
 
     return;
@@ -657,7 +543,6 @@ async function daftarSiswa() {
 
   document.getElementById("loginPassword").value =
     "";
-
 
   setTimeout(function() {
 
@@ -682,9 +567,7 @@ async function loginSiswa() {
       .toLowerCase();
 
   const password =
-    document
-      .getElementById("loginPassword")
-      .value;
+    document.getElementById("loginPassword").value;
 
 
   if (!username || !password) {
@@ -697,9 +580,11 @@ async function loginSiswa() {
   }
 
 
+  // Email internal yang sama dengan Edge Function
+
   const email =
     username +
-    "@kaihsmpn3sibolga.com";
+    "@siswa.kaih-smp3sibolga.sch.id";
 
 
   tampilPesan(
