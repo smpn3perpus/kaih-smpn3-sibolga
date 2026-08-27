@@ -24,6 +24,11 @@
       padding: 20px;
     }
 
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
     .container {
       max-width: 1100px;
       margin: 25px auto;
@@ -48,12 +53,17 @@
       padding: 25px;
       border-radius: 12px;
       text-align: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,.08);
     }
 
     .card h2 {
       font-size: 32px;
       color: #0f4c81;
       margin: 0;
+    }
+
+    .card p {
+      color: #666;
     }
 
     .logout {
@@ -68,6 +78,7 @@
 
     #status {
       margin-top: 10px;
+      color: #c62828;
     }
   </style>
 </head>
@@ -83,24 +94,24 @@
 
   <div class="welcome">
     <h2>Selamat Datang, Admin 👋</h2>
-    <p id="emailAdmin">Memeriksa akun...</p>
+    <p id="akun">Memeriksa akun...</p>
     <p id="status"></p>
   </div>
 
   <div class="cards">
 
     <div class="card">
-      <h2 id="jumlahGuru">0</h2>
+      <h2 id="guru">0</h2>
       <p>Guru</p>
     </div>
 
     <div class="card">
-      <h2 id="jumlahKelas">0</h2>
+      <h2 id="kelas">0</h2>
       <p>Kelas</p>
     </div>
 
     <div class="card">
-      <h2 id="jumlahSiswa">0</h2>
+      <h2 id="siswa">0</h2>
       <p>Siswa</p>
     </div>
 
@@ -111,14 +122,21 @@
 
   </div>
 
-  <button class="logout" onclick="logout()">Keluar</button>
+  <button class="logout" onclick="keluar()">Keluar</button>
 
 </div>
 
 <script>
 
-const SUPABASE_URL = "https://nnnvgbajiqlqrsaygxme.supabase.co/rest/v1/";
-const SUPABASE_KEY = "sb_publishable_dHIoPw_gfvud74PH4UCp2w_yGzl9oDy";
+// ===============================
+// SUPABASE
+// ===============================
+
+const SUPABASE_URL =
+  "https://nnnvgbajiqlqrsaygxme.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_dHIoPw_gfvud74PH4UCp2w_yGzl9oDy";
 
 const supabaseClient =
   window.supabase.createClient(
@@ -127,70 +145,109 @@ const supabaseClient =
   );
 
 
+// ===============================
+// MULAI
+// ===============================
+
 async function mulai() {
 
-  const { data, error } =
+  const hasil =
     await supabaseClient.auth.getUser();
 
-  if (error || !data.user) {
-    window.location.href = "index.html";
+  if (hasil.error || !hasil.data.user) {
+
+    document.getElementById("status").textContent =
+      "Sesi login tidak ditemukan.";
+
+    setTimeout(function() {
+      window.location.href = "index.html";
+    }, 1500);
+
     return;
   }
 
-  document.getElementById("emailAdmin").textContent =
-    "Login sebagai: " + data.user.email;
+  const user = hasil.data.user;
+
+  document.getElementById("akun").textContent =
+    "Login sebagai: " + user.email;
 
   await hitungData();
 }
 
 
+// ===============================
+// HITUNG DATA
+// ===============================
+
 async function hitungData() {
 
-  const hasilGuru =
+  const guru =
     await supabaseClient
       .from("guru")
-      .select("*", { count: "exact", head: true });
+      .select("*", {
+        count: "exact",
+        head: true
+      });
 
-  const hasilKelas =
+  const kelas =
     await supabaseClient
       .from("kelas")
-      .select("*", { count: "exact", head: true });
+      .select("*", {
+        count: "exact",
+        head: true
+      });
 
-  const hasilSiswa =
+  const siswa =
     await supabaseClient
       .from("siswa")
-      .select("*", { count: "exact", head: true });
+      .select("*", {
+        count: "exact",
+        head: true
+      });
 
 
-  if (hasilGuru.error) {
+  if (guru.error) {
+
     document.getElementById("status").textContent =
-      "Guru: " + hasilGuru.error.message;
+      "Guru: " + guru.error.message;
+
   } else {
-    document.getElementById("jumlahGuru").textContent =
-      hasilGuru.count ?? 0;
+
+    document.getElementById("guru").textContent =
+      guru.count ?? 0;
   }
 
 
-  if (hasilKelas.error) {
+  if (kelas.error) {
+
     document.getElementById("status").textContent =
-      "Kelas: " + hasilKelas.error.message;
+      "Kelas: " + kelas.error.message;
+
   } else {
-    document.getElementById("jumlahKelas").textContent =
-      hasilKelas.count ?? 0;
+
+    document.getElementById("kelas").textContent =
+      kelas.count ?? 0;
   }
 
 
-  if (hasilSiswa.error) {
+  if (siswa.error) {
+
     document.getElementById("status").textContent =
-      "Siswa: " + hasilSiswa.error.message;
+      "Siswa: " + siswa.error.message;
+
   } else {
-    document.getElementById("jumlahSiswa").textContent =
-      hasilSiswa.count ?? 0;
+
+    document.getElementById("siswa").textContent =
+      siswa.count ?? 0;
   }
 }
 
 
-async function logout() {
+// ===============================
+// KELUAR
+// ===============================
+
+async function keluar() {
 
   await supabaseClient.auth.signOut();
 
