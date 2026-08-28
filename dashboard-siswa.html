@@ -1,14 +1,23 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Dashboard Siswa - KAIH</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+  </script>
 
   <style>
+
     * {
       box-sizing: border-box;
       font-family: Arial, sans-serif;
@@ -17,7 +26,11 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background: linear-gradient(135deg, #e8f1ff, #f8fbff);
+      background: linear-gradient(
+        135deg,
+        #e8f1ff,
+        #f8fbff
+      );
       color: #222;
     }
 
@@ -110,53 +123,146 @@
       cursor: pointer;
     }
 
+    .loading {
+      text-align: center;
+      margin-top: 15px;
+      color: #555;
+      display: none;
+    }
+
+    .error {
+      margin-top: 15px;
+      padding: 12px;
+      background: #ffebee;
+      color: #c62828;
+      border-radius: 8px;
+      display: none;
+    }
+
     @media (max-width: 600px) {
+
       .menu,
       .info {
         grid-template-columns: 1fr;
       }
+
     }
+
   </style>
+
 </head>
 
 <body>
 
   <div class="header">
-    <h1>🎓 KAIH SMP Negeri 3 Sibolga</h1>
-    <p>Portal Siswa</p>
+
+    <h1>
+      🎓 KAIH SMP Negeri 3 Sibolga
+    </h1>
+
+    <p>
+      Portal Siswa
+    </p>
+
   </div>
+
 
   <div class="container">
 
     <div class="welcome">
 
       <h2>
+
         👋 Selamat Datang,
-        <span id="namaSiswa">Siswa</span>
+
+        <span id="namaSiswa">
+          Siswa
+        </span>
+
       </h2>
 
       <p>
-        Login sebagai: <strong>Siswa</strong>
+        Login sebagai:
+        <strong>Siswa</strong>
       </p>
+
 
       <div class="info">
 
         <div>
-          <strong>NISN</strong><br>
-          <span id="nisnSiswa">-</span>
+
+          <strong>
+            NISN
+          </strong>
+
+          <br>
+
+          <span id="nisnSiswa">
+            -
+          </span>
+
         </div>
 
-        <div>
-          <strong>Kelas</strong><br>
-          <span id="kelasSiswa">-</span>
-        </div>
 
         <div>
-          <strong>Guru Wali</strong><br>
-          <span id="guruWaliSiswa">-</span>
+
+          <strong>
+            Kelas
+          </strong>
+
+          <br>
+
+          <span id="kelasSiswa">
+            -
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <strong>
+            Guru Wali
+          </strong>
+
+          <br>
+
+          <span id="guruWaliSiswa">
+            -
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <strong>
+            Auth User ID
+          </strong>
+
+          <br>
+
+          <span id="authUserSiswa">
+            -
+          </span>
+
         </div>
 
       </div>
+
+
+      <div
+        id="loading"
+        class="loading"
+      >
+        ⏳ Mengambil data siswa...
+      </div>
+
+
+      <div
+        id="errorBox"
+        class="error"
+      ></div>
 
     </div>
 
@@ -167,17 +273,28 @@
         class="kehadiran"
         onclick="bukaKehadiran()"
       >
-        📋<br>
+
+        📋
+        <br>
+
         Kehadiran
+
       </button>
+
 
       <button
         class="jurnal"
         onclick="bukaJurnal()"
       >
-        ⭐<br>
-        Jurnal 7 Kebiasaan<br>
+
+        ⭐
+        <br>
+
+        Jurnal 7 Kebiasaan
+        <br>
+
         Anak Indonesia Hebat
+
       </button>
 
     </div>
@@ -187,13 +304,19 @@
       class="logout"
       onclick="logout()"
     >
+
       🚪 Keluar
+
     </button>
 
   </div>
 
 
 <script>
+
+/* =====================================================
+   SUPABASE
+===================================================== */
 
 const SUPABASE_URL =
   "https://nnnvgbajiqlqrsaygxme.supabase.co";
@@ -208,65 +331,278 @@ const supabaseClient =
   );
 
 
-// ========================================
-// CEK LOGIN
-// ========================================
+/* =====================================================
+   VARIABEL
+===================================================== */
+
+let siswaLogin = null;
+
+
+/* =====================================================
+   CEK LOGIN
+===================================================== */
 
 async function cekLogin() {
 
-  const hasil =
-    await supabaseClient.auth.getUser();
+  try {
 
-  const user =
-    hasil.data.user;
+    tampilLoading(true);
 
-  if (!user) {
 
-    window.location.href =
-      "login-siswa.html";
+    const hasil =
+      await supabaseClient
+        .auth
+        .getUser();
 
-    return;
+
+    if (hasil.error) {
+
+      throw hasil.error;
+
+    }
+
+
+    const user =
+      hasil.data.user;
+
+
+    console.log(
+      "USER LOGIN:",
+      user
+    );
+
+
+    if (!user) {
+
+      window.location.href =
+        "login-siswa.html";
+
+      return;
+
+    }
+
+
+    await ambilDataSiswa(user);
+
+
+    tampilLoading(false);
+
   }
 
-  await ambilDataSiswa(user);
+  catch (error) {
+
+    console.error(
+      "ERROR CEK LOGIN:",
+      error
+    );
+
+
+    tampilLoading(false);
+
+    tampilError(
+      "❌ Terjadi kesalahan: " +
+      (error.message || error)
+    );
+
+  }
 
 }
 
 
-// ========================================
-// AMBIL DATA SISWA
-// ========================================
+/* =====================================================
+   AMBIL DATA SISWA
+===================================================== */
 
 async function ambilDataSiswa(user) {
 
-  const hasil =
+  console.log(
+    "======================================"
+  );
+
+  console.log(
+    "MENCARI DATA SISWA"
+  );
+
+  console.log(
+    "AUTH USER ID:",
+    user.id
+  );
+
+
+  /*
+  =====================================================
+  CARA UTAMA:
+  CARI BERDASARKAN auth_user_id
+  =====================================================
+  */
+
+  let hasil =
     await supabaseClient
       .from("siswa")
-      .select("*")
-      .eq("nisn", user.email.split("@")[0])
+      .select(`
+        id,
+        nama,
+        nisn,
+        username,
+        kelas_id,
+        guru_wali_id,
+        auth_user_id
+      `)
+      .eq(
+        "auth_user_id",
+        user.id
+      )
       .maybeSingle();
+
 
   if (hasil.error) {
 
     console.error(
-      hasil.error.message
+      "ERROR CARI SISWA DENGAN AUTH ID:",
+      hasil.error
     );
 
-    return;
+    throw hasil.error;
+
   }
 
-  const siswa =
+
+  let siswa =
     hasil.data;
+
+
+  /*
+  =====================================================
+  CADANGAN:
+  JIKA auth_user_id BELUM TERISI,
+  CARI DENGAN NISN DARI EMAIL
+  =====================================================
+  */
+
+  if (!siswa && user.email) {
+
+    const nisn =
+      user.email
+        .split("@")[0]
+        .trim();
+
+
+    console.log(
+      "AUTH USER ID TIDAK DITEMUKAN."
+    );
+
+    console.log(
+      "Mencoba mencari dengan NISN:",
+      nisn
+    );
+
+
+    const cadangan =
+      await supabaseClient
+        .from("siswa")
+        .select(`
+          id,
+          nama,
+          nisn,
+          username,
+          kelas_id,
+          guru_wali_id,
+          auth_user_id
+        `)
+        .eq(
+          "nisn",
+          nisn
+        )
+        .maybeSingle();
+
+
+    if (cadangan.error) {
+
+      console.error(
+        "ERROR CARI SISWA DENGAN NISN:",
+        cadangan.error
+      );
+
+      throw cadangan.error;
+
+    }
+
+
+    siswa =
+      cadangan.data;
+
+  }
+
+
+  /*
+  =====================================================
+  SISWA TIDAK DITEMUKAN
+  =====================================================
+  */
 
   if (!siswa) {
 
-    console.log(
-      "Data siswa tidak ditemukan."
+    throw new Error(
+      "Data siswa tidak ditemukan. " +
+      "Pastikan auth_user_id pada tabel siswa " +
+      "sudah terhubung dengan akun login."
     );
 
-    return;
   }
 
+
+  /*
+  =====================================================
+  DATA SISWA DITEMUKAN
+  =====================================================
+  */
+
+  siswaLogin =
+    siswa;
+
+
+  console.log(
+    "DATA SISWA:",
+    siswa
+  );
+
+
+  console.log(
+    "ID SISWA:",
+    siswa.id
+  );
+
+  console.log(
+    "NAMA:",
+    siswa.nama
+  );
+
+  console.log(
+    "NISN:",
+    siswa.nisn
+  );
+
+  console.log(
+    "KELAS ID:",
+    siswa.kelas_id
+  );
+
+  console.log(
+    "GURU WALI ID:",
+    siswa.guru_wali_id
+  );
+
+  console.log(
+    "AUTH USER ID:",
+    siswa.auth_user_id
+  );
+
+
+  /*
+  =====================================================
+  TAMPIL NAMA
+  =====================================================
+  */
 
   document.getElementById(
     "namaSiswa"
@@ -274,65 +610,289 @@ async function ambilDataSiswa(user) {
     siswa.nama || "-";
 
 
+  /*
+  =====================================================
+  TAMPIL NISN
+  =====================================================
+  */
+
   document.getElementById(
     "nisnSiswa"
   ).textContent =
     siswa.nisn || "-";
 
 
-  // Ambil nama kelas
-  if (siswa.kelas_id) {
+  /*
+  =====================================================
+  TAMPIL AUTH USER ID
+  =====================================================
+  */
 
-    const kelas =
-      await supabaseClient
-        .from("kelas")
-        .select("*")
-        .eq("id", siswa.kelas_id)
-        .maybeSingle();
-
-    if (kelas.data) {
-
-      document.getElementById(
-        "kelasSiswa"
-      ).textContent =
-        kelas.data.nama ||
-        kelas.data.nama_kelas ||
-        kelas.data.name ||
-        "-";
-
-    }
-  }
+  document.getElementById(
+    "authUserSiswa"
+  ).textContent =
+    siswa.auth_user_id ||
+    user.id ||
+    "-";
 
 
-  // Ambil nama guru wali
-  if (siswa.guru_wali_id) {
+  /*
+  =====================================================
+  AMBIL KELAS
+  =====================================================
+  */
 
-    const guru =
-      await supabaseClient
-        .from("guru")
-        .select("*")
-        .eq("id", siswa.guru_wali_id)
-        .maybeSingle();
+  await ambilKelas(
+    siswa.kelas_id
+  );
 
-    if (guru.data) {
 
-      document.getElementById(
-        "guruWaliSiswa"
-      ).textContent =
-        guru.data.nama ||
-        guru.data.nama_guru ||
-        guru.data.name ||
-        "-";
+  /*
+  =====================================================
+  AMBIL GURU WALI
+  =====================================================
+  */
 
-    }
-  }
+  await ambilGuruWali(
+    siswa.guru_wali_id
+  );
+
+
+  console.log(
+    "DATA SISWA SELESAI DIMUAT"
+  );
+
+  console.log(
+    "======================================"
+  );
 
 }
 
 
-// ========================================
-// KEHADIRAN
-// ========================================
+/* =====================================================
+   AMBIL KELAS
+===================================================== */
+
+async function ambilKelas(
+  kelasId
+) {
+
+  const elemen =
+    document.getElementById(
+      "kelasSiswa"
+    );
+
+
+  if (!kelasId) {
+
+    elemen.textContent =
+      "⚠️ Belum terhubung";
+
+    console.warn(
+      "kelas_id siswa kosong"
+    );
+
+    return;
+
+  }
+
+
+  console.log(
+    "Mencari kelas dengan ID:",
+    kelasId
+  );
+
+
+  const hasil =
+    await supabaseClient
+      .from("kelas")
+      .select("*")
+      .eq(
+        "id",
+        kelasId
+      )
+      .maybeSingle();
+
+
+  if (hasil.error) {
+
+    console.error(
+      "ERROR AMBIL KELAS:",
+      hasil.error
+    );
+
+    elemen.textContent =
+      "⚠️ Gagal mengambil kelas";
+
+    return;
+
+  }
+
+
+  if (!hasil.data) {
+
+    elemen.textContent =
+      "⚠️ Kelas tidak ditemukan";
+
+    return;
+
+  }
+
+
+  const kelas =
+    hasil.data;
+
+
+  console.log(
+    "DATA KELAS:",
+    kelas
+  );
+
+
+  elemen.textContent =
+    kelas.nama ||
+    kelas.nama_kelas ||
+    kelas.name ||
+    "-";
+
+}
+
+
+/* =====================================================
+   AMBIL GURU WALI
+===================================================== */
+
+async function ambilGuruWali(
+  guruWaliId
+) {
+
+  const elemen =
+    document.getElementById(
+      "guruWaliSiswa"
+    );
+
+
+  if (
+    guruWaliId === null ||
+    guruWaliId === undefined ||
+    guruWaliId === ""
+  ) {
+
+    elemen.textContent =
+      "⚠️ Belum terhubung";
+
+    console.warn(
+      "guru_wali_id siswa kosong"
+    );
+
+    return;
+
+  }
+
+
+  console.log(
+    "Mencari guru wali dengan ID:",
+    guruWaliId
+  );
+
+
+  /*
+  =====================================================
+  PASTIKAN ID MENJADI ANGKA
+  =====================================================
+  */
+
+  const guruId =
+    Number(guruWaliId);
+
+
+  if (
+    !Number.isInteger(guruId)
+  ) {
+
+    elemen.textContent =
+      "⚠️ ID guru tidak valid";
+
+    console.error(
+      "guru_wali_id bukan angka:",
+      guruWaliId
+    );
+
+    return;
+
+  }
+
+
+  /*
+  =====================================================
+  CARI GURU
+  =====================================================
+  */
+
+  const hasil =
+    await supabaseClient
+      .from("guru")
+      .select("*")
+      .eq(
+        "id",
+        guruId
+      )
+      .maybeSingle();
+
+
+  if (hasil.error) {
+
+    console.error(
+      "ERROR AMBIL GURU:",
+      hasil.error
+    );
+
+    elemen.textContent =
+      "⚠️ Gagal mengambil guru";
+
+    return;
+
+  }
+
+
+  if (!hasil.data) {
+
+    elemen.textContent =
+      "⚠️ Guru tidak ditemukan";
+
+    console.warn(
+      "Guru dengan ID " +
+      guruId +
+      " tidak ditemukan"
+    );
+
+    return;
+
+  }
+
+
+  const guru =
+    hasil.data;
+
+
+  console.log(
+    "DATA GURU WALI:",
+    guru
+  );
+
+
+  elemen.textContent =
+    guru.nama ||
+    guru.nama_guru ||
+    guru.name ||
+    "-";
+
+}
+
+
+/* =====================================================
+   KEHADIRAN
+===================================================== */
 
 function bukaKehadiran() {
 
@@ -342,9 +902,9 @@ function bukaKehadiran() {
 }
 
 
-// ========================================
-// JURNAL KAIH
-// ========================================
+/* =====================================================
+   JURNAL KAIH
+===================================================== */
 
 function bukaJurnal() {
 
@@ -354,13 +914,80 @@ function bukaJurnal() {
 }
 
 
-// ========================================
-// LOGOUT
-// ========================================
+/* =====================================================
+   LOADING
+===================================================== */
+
+function tampilLoading(
+  tampil
+) {
+
+  const loading =
+    document.getElementById(
+      "loading"
+    );
+
+
+  if (!loading) return;
+
+
+  loading.style.display =
+    tampil
+    ? "block"
+    : "none";
+
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+function tampilError(
+  pesan
+) {
+
+  const box =
+    document.getElementById(
+      "errorBox"
+    );
+
+
+  if (!box) return;
+
+
+  box.textContent =
+    pesan;
+
+  box.style.display =
+    "block";
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
 
 async function logout() {
 
-  await supabaseClient.auth.signOut();
+  try {
+
+    await supabaseClient
+      .auth
+      .signOut();
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "ERROR LOGOUT:",
+      error
+    );
+
+  }
+
 
   window.location.href =
     "login-siswa.html";
@@ -368,9 +995,21 @@ async function logout() {
 }
 
 
-cekLogin();
+/* =====================================================
+   MULAI
+===================================================== */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+
+    cekLogin();
+
+  }
+);
 
 </script>
 
 </body>
 </html>
+```
