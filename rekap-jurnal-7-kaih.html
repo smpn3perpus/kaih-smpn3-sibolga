@@ -1,0 +1,1253 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Rekap Jurnal 7 KAIH - SMP Negeri 3 Sibolga</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Library Excel -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<style>
+
+*{
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  margin:0;
+  background:#f4f7fb;
+  color:#222;
+}
+
+/* HEADER */
+
+.header{
+  background:linear-gradient(135deg,#0f4c81,#1565c0);
+  color:white;
+  text-align:center;
+  padding:30px 15px;
+}
+
+.header h1{
+  margin:0 0 8px;
+  font-size:28px;
+}
+
+.header p{
+  margin:5px 0;
+}
+
+/* CONTAINER */
+
+.container{
+  max-width:1250px;
+  margin:25px auto;
+  padding:0 15px;
+}
+
+/* CARD */
+
+.card{
+  background:white;
+  border-radius:16px;
+  padding:22px;
+  margin-bottom:20px;
+  box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
+
+.card h2{
+  margin-top:0;
+  color:#0f4c81;
+}
+
+/* INFO */
+
+.info{
+  background:#eef5ff;
+  padding:15px;
+  border-radius:10px;
+  line-height:1.8;
+}
+
+/* FILTER */
+
+.filter{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+input{
+  padding:11px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:15px;
+}
+
+button{
+  border:none;
+  border-radius:8px;
+  padding:11px 16px;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:hover{
+  opacity:.9;
+}
+
+.btn-tampil{
+  background:#1565c0;
+}
+
+.btn-download{
+  background:#2e7d32;
+}
+
+.btn-kembali{
+  background:#616161;
+}
+
+.btn-logout{
+  background:#c62828;
+}
+
+/* STATISTIK */
+
+.statistik{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+}
+
+.stat{
+  padding:20px;
+  border-radius:12px;
+  text-align:center;
+  color:white;
+}
+
+.stat h3{
+  margin:0 0 8px;
+  font-size:15px;
+}
+
+.stat strong{
+  font-size:30px;
+}
+
+.stat-total{
+  background:#1565c0;
+}
+
+.stat-sudah{
+  background:#2e7d32;
+}
+
+.stat-belum{
+  background:#c62828;
+}
+
+/* TABLE */
+
+.table-wrapper{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:1200px;
+}
+
+th,
+td{
+  border:1px solid #ddd;
+  padding:10px;
+  text-align:center;
+  vertical-align:middle;
+}
+
+th{
+  background:#0f4c81;
+  color:white;
+}
+
+td.nama{
+  text-align:left;
+  font-weight:bold;
+}
+
+.status-sudah{
+  background:#e8f5e9;
+  color:#2e7d32;
+  font-weight:bold;
+}
+
+.status-belum{
+  background:#ffebee;
+  color:#c62828;
+  font-weight:bold;
+}
+
+.status-suka{
+  color:#2e7d32;
+  font-weight:bold;
+}
+
+.status-kecewa{
+  color:#c62828;
+  font-weight:bold;
+}
+
+.status-kosong{
+  color:#777;
+}
+
+/* LOADING */
+
+.loading{
+  text-align:center;
+  padding:35px;
+  color:#666;
+}
+
+/* PESAN */
+
+.pesan{
+  display:none;
+  padding:13px;
+  border-radius:9px;
+  margin-top:15px;
+  font-weight:bold;
+}
+
+.sukses{
+  background:#e8f5e9;
+  color:#2e7d32;
+}
+
+.gagal{
+  background:#ffebee;
+  color:#c62828;
+}
+
+/* FOOTER */
+
+.footer{
+  text-align:center;
+  color:#666;
+  padding:30px 15px;
+  font-size:14px;
+  line-height:1.8;
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+  .statistik{
+    grid-template-columns:1fr;
+  }
+
+  .header h1{
+    font-size:22px;
+  }
+
+  .card{
+    padding:16px;
+  }
+
+  .filter{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .filter input,
+  .filter button{
+    width:100%;
+  }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<!-- HEADER -->
+
+<div class="header">
+
+  <h1>📊 Rekap Jurnal 7 KAIH</h1>
+
+  <p>7 Kebiasaan Anak Indonesia Hebat</p>
+
+  <p>SMP Negeri 3 Sibolga</p>
+
+</div>
+
+
+<div class="container">
+
+
+<!-- INFORMASI GURU -->
+
+<div class="card">
+
+  <h2>
+    👨‍🏫 Guru:
+    <span id="namaGuru">Memuat...</span>
+  </h2>
+
+  <div class="info">
+
+    <strong>Username:</strong>
+    <span id="usernameGuru">-</span>
+
+    <br>
+
+    <strong>Jumlah Siswa Wali:</strong>
+    <span id="jumlahSiswa">0</span>
+    siswa
+
+    <br>
+
+    <strong>Peran:</strong>
+    Guru Wali / Pemantau Jurnal 7 KAIH
+
+  </div>
+
+</div>
+
+
+<!-- FILTER -->
+
+<div class="card">
+
+  <h2>📅 Pilih Tanggal</h2>
+
+  <div class="filter">
+
+    <input
+      type="date"
+      id="tanggal"
+    >
+
+    <button
+      class="btn-tampil"
+      onclick="tampilkanRekap()"
+    >
+      🔄 Tampilkan Rekap
+    </button>
+
+    <button
+      class="btn-download"
+      onclick="downloadExcel()"
+    >
+      📥 Download Rekap
+    </button>
+
+  </div>
+
+  <div
+    id="pesan"
+    class="pesan"
+  ></div>
+
+</div>
+
+
+<!-- STATISTIK -->
+
+<div class="card">
+
+  <h2>📈 Statistik Jurnal</h2>
+
+  <div class="statistik">
+
+    <div class="stat stat-total">
+
+      <h3>Total Siswa Wali</h3>
+
+      <strong id="totalSiswa">
+        0
+      </strong>
+
+    </div>
+
+
+    <div class="stat stat-sudah">
+
+      <h3>Sudah Mengisi</h3>
+
+      <strong id="sudahMengisi">
+        0
+      </strong>
+
+    </div>
+
+
+    <div class="stat stat-belum">
+
+      <h3>Belum Mengisi</h3>
+
+      <strong id="belumMengisi">
+        0
+      </strong>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- REKAP -->
+
+<div class="card">
+
+  <h2>
+    📋 Rekap Jurnal Siswa
+  </h2>
+
+  <div
+    id="loading"
+    class="loading"
+  >
+    ⏳ Memuat data...
+  </div>
+
+  <div
+    id="tableContainer"
+    style="display:none;"
+  >
+
+    <div class="table-wrapper">
+
+      <table id="tabelRekap">
+
+        <thead>
+
+          <tr>
+
+            <th>No</th>
+
+            <th>Nama Siswa</th>
+
+            <th>NISN</th>
+
+            <th>Kelas</th>
+
+            <th>Bangun Pagi</th>
+
+            <th>Makan Sehat</th>
+
+            <th>Olahraga</th>
+
+            <th>Bermasyarakat</th>
+
+            <th>Belajar Malam</th>
+
+            <th>Ibadah</th>
+
+            <th>Tidur Cepat</th>
+
+            <th>Respons Guru</th>
+
+            <th>Komentar Guru</th>
+
+            <th>Status</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody id="isiTabel">
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- NAVIGASI -->
+
+<div class="card">
+
+  <button
+    class="btn-kembali"
+    onclick="kembaliDashboard()"
+  >
+    ← Dashboard Guru
+  </button>
+
+  <button
+    class="btn-logout"
+    onclick="logoutGuru()"
+  >
+    🚪 Keluar
+  </button>
+
+</div>
+
+
+</div>
+
+
+<!-- FOOTER -->
+
+<div class="footer">
+
+  <strong>
+    Created by MR. Rahmat Batubara, S.T.P
+  </strong>
+
+  <br>
+
+  SMP Negeri 3 Sibolga
+
+  <br>
+
+  Sistem 7 KAIH
+
+</div>
+
+
+<script>
+
+/* =====================================
+   SUPABASE
+===================================== */
+
+const SUPABASE_URL =
+"https://nnnvgbajiqlqrsaygxme.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_dHIoPw_gfvud74PH4UCp2w_yGzl9oDy";
+
+const supabaseClient =
+window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+
+/* =====================================
+   VARIABEL
+===================================== */
+
+let guruLogin = null;
+
+let siswaWali = [];
+
+let dataRekap = [];
+
+
+/* =====================================
+   TANGGAL HARI INI
+===================================== */
+
+function tanggalHariIni(){
+
+  const sekarang = new Date();
+
+  const tahun =
+    sekarang.getFullYear();
+
+  const bulan =
+    String(
+      sekarang.getMonth()+1
+    ).padStart(2,"0");
+
+  const hari =
+    String(
+      sekarang.getDate()
+    ).padStart(2,"0");
+
+  return `${tahun}-${bulan}-${hari}`;
+
+}
+
+
+/* =====================================
+   ESCAPE HTML
+===================================== */
+
+function aman(nilai){
+
+  if(
+    nilai === null ||
+    nilai === undefined
+  ){
+
+    return "";
+
+  }
+
+  return String(nilai)
+
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =====================================
+   PESAN
+===================================== */
+
+function tampilPesan(
+  teks,
+  sukses=false
+){
+
+  const box =
+    document.getElementById("pesan");
+
+  box.textContent = teks;
+
+  box.className =
+    "pesan " +
+    (
+      sukses
+      ? "sukses"
+      : "gagal"
+    );
+
+  box.style.display = "block";
+
+}
+
+
+/* =====================================
+   MULAI
+===================================== */
+
+async function mulai(){
+
+  try{
+
+    const hasilLogin =
+      await supabaseClient.auth.getUser();
+
+    const user =
+      hasilLogin.data.user;
+
+
+    if(!user){
+
+      window.location.href =
+        "login-guru.html";
+
+      return;
+
+    }
+
+
+    /* AMBIL GURU */
+
+    const hasilGuru =
+      await supabaseClient
+        .from("guru")
+        .select(
+          "id,nama,username,auth_user_id"
+        )
+        .eq(
+          "auth_user_id",
+          user.id
+        )
+        .maybeSingle();
+
+
+    if(
+      hasilGuru.error ||
+      !hasilGuru.data
+    ){
+
+      alert(
+        "Akun login tidak terdaftar sebagai Guru."
+      );
+
+      await supabaseClient.auth.signOut();
+
+      window.location.href =
+        "login-guru.html";
+
+      return;
+
+    }
+
+
+    guruLogin =
+      hasilGuru.data;
+
+
+    document.getElementById(
+      "namaGuru"
+    ).textContent =
+      guruLogin.nama || "-";
+
+
+    document.getElementById(
+      "usernameGuru"
+    ).textContent =
+      guruLogin.username || "-";
+
+
+    document.getElementById(
+      "tanggal"
+    ).value =
+      tanggalHariIni();
+
+
+    /* AMBIL SISWA */
+
+    await ambilSiswa();
+
+
+    /* TAMPILKAN REKAP */
+
+    await tampilkanRekap();
+
+  }
+
+  catch(error){
+
+    console.error(error);
+
+    tampilPesan(
+      "❌ Terjadi kesalahan: " +
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =====================================
+   AMBIL SISWA WALI
+===================================== */
+
+async function ambilSiswa(){
+
+  const hasil =
+    await supabaseClient
+      .from("siswa")
+      .select(
+        "id,nama,nisn,kelas_id"
+      )
+      .eq(
+        "guru_wali_id",
+        guruLogin.id
+      )
+      .order(
+        "nama",
+        {
+          ascending:true
+        }
+      );
+
+
+  if(hasil.error){
+
+    throw hasil.error;
+
+  }
+
+
+  siswaWali =
+    hasil.data || [];
+
+
+  document.getElementById(
+    "jumlahSiswa"
+  ).textContent =
+    siswaWali.length;
+
+}
+
+
+/* =====================================
+   TAMPILKAN REKAP
+===================================== */
+
+async function tampilkanRekap(){
+
+  const tanggal =
+    document.getElementById(
+      "tanggal"
+    ).value;
+
+
+  if(!tanggal){
+
+    tampilPesan(
+      "Silakan pilih tanggal."
+    );
+
+    return;
+
+  }
+
+
+  const loading =
+    document.getElementById(
+      "loading"
+    );
+
+  const container =
+    document.getElementById(
+      "tableContainer"
+    );
+
+
+  loading.style.display =
+    "block";
+
+  loading.textContent =
+    "⏳ Memuat rekap jurnal...";
+
+  container.style.display =
+    "none";
+
+
+  /* RESET */
+
+  document.getElementById(
+    "isiTabel"
+  ).innerHTML = "";
+
+
+  /* TOTAL */
+
+  document.getElementById(
+    "totalSiswa"
+  ).textContent =
+    siswaWali.length;
+
+
+  if(
+    siswaWali.length === 0
+  ){
+
+    loading.textContent =
+      "📭 Belum ada siswa wali.";
+
+    return;
+
+  }
+
+
+  const ids =
+    siswaWali.map(
+      siswa => siswa.id
+    );
+
+
+  /* AMBIL JURNAL */
+
+  const hasil =
+    await supabaseClient
+      .from("jurnal_7_kaih")
+      .select("*")
+      .eq(
+        "tanggal",
+        tanggal
+      )
+      .in(
+        "siswa_id",
+        ids
+      );
+
+
+  if(hasil.error){
+
+    loading.textContent =
+      "❌ Gagal mengambil jurnal.";
+
+    tampilPesan(
+      hasil.error.message
+    );
+
+    return;
+
+  }
+
+
+  const jurnal =
+    hasil.data || [];
+
+
+  dataRekap = [];
+
+
+  let sudah = 0;
+
+
+  const tbody =
+    document.getElementById(
+      "isiTabel"
+    );
+
+
+  /* =================================
+     BUAT REKAP SETIAP SISWA
+  ================================= */
+
+  siswaWali.forEach(
+    (siswa,index)=>{
+
+      const row =
+        jurnal.find(
+          item =>
+            String(item.siswa_id) ===
+            String(siswa.id)
+        );
+
+
+      if(row){
+
+        sudah++;
+
+      }
+
+
+      const status =
+        row
+        ? "Sudah Mengisi"
+        : "Belum Mengisi";
+
+
+      const kelas =
+        siswa.kelas_id
+        ? siswa.kelas_id
+        : "-";
+
+
+      const tr =
+        document.createElement("tr");
+
+
+      tr.innerHTML = `
+
+        <td>
+          ${index+1}
+        </td>
+
+        <td class="nama">
+          ${aman(siswa.nama)}
+        </td>
+
+        <td>
+          ${aman(siswa.nisn || "-")}
+        </td>
+
+        <td>
+          ${aman(kelas)}
+        </td>
+
+        <td>
+          ${row
+            ? aman(row.jam_bangun || "-")
+            : "-"
+          }
+        </td>
+
+        <td>
+          ${row
+            ? aman(row.menu_sarapan || "-")
+            : "-"
+          }
+        </td>
+
+        <td>
+          ${row
+            ? aman(row.jenis_olahraga || "-")
+            : "-"
+          }
+        </td>
+
+        <td>
+          ${row
+            ? aman(row.jenis_bermasyarakat || "-")
+            : "-"
+          }
+        </td>
+
+        <td>
+          ${row
+            ? aman(row.materi_belajar || "-")
+            : "-"
+          }
+        </td>
+
+        <td>
+          ${row
+            ? aman(row.jenis_ibadah || "-")
+            : "-"
+          }
+        </td>
+
+        <td>
+          ${row
+            ? aman(row.jam_tidur || "-")
+            : "-"
+          }
+        </td>
+
+        <td>
+
+          ${
+            row && row.respons_guru === "Suka"
+            ?
+            '<span class="status-suka">👍 Suka</span>'
+            :
+            row && row.respons_guru === "Kecewa"
+            ?
+            '<span class="status-kecewa">😞 Kecewa</span>'
+            :
+            '<span class="status-kosong">-</span>'
+          }
+
+        </td>
+
+        <td>
+          ${row
+            ? aman(row.komentar_guru || "-")
+            : "-"
+          }
+        </td>
+
+        <td class="${
+          row
+          ? "status-sudah"
+          : "status-belum"
+        }">
+
+          ${
+            row
+            ? "✅ Sudah"
+            : "❌ Belum"
+          }
+
+        </td>
+
+      `;
+
+
+      tbody.appendChild(tr);
+
+
+      /* DATA UNTUK EXCEL */
+
+      dataRekap.push({
+
+        "No":
+          index+1,
+
+        "Nama Siswa":
+          siswa.nama || "",
+
+        "NISN":
+          siswa.nisn || "",
+
+        "Kelas":
+          kelas,
+
+        "Tanggal":
+          tanggal,
+
+        "Bangun Pagi":
+          row?.jam_bangun || "",
+
+        "Makan Sehat":
+          row?.menu_sarapan || "",
+
+        "Olahraga":
+          row?.jenis_olahraga || "",
+
+        "Bermasyarakat":
+          row?.jenis_bermasyarakat || "",
+
+        "Belajar Malam":
+          row?.materi_belajar || "",
+
+        "Ibadah":
+          row?.jenis_ibadah || "",
+
+        "Tidur Cepat":
+          row?.jam_tidur || "",
+
+        "Respons Guru":
+          row?.respons_guru || "",
+
+        "Komentar Guru":
+          row?.komentar_guru || "",
+
+        "Status":
+          row
+          ? "Sudah Mengisi"
+          : "Belum Mengisi"
+
+      });
+
+    }
+  );
+
+
+  const belum =
+    siswaWali.length - sudah;
+
+
+  document.getElementById(
+    "sudahMengisi"
+  ).textContent =
+    sudah;
+
+
+  document.getElementById(
+    "belumMengisi"
+  ).textContent =
+    belum;
+
+
+  loading.style.display =
+    "none";
+
+  container.style.display =
+    "block";
+
+}
+
+
+/* =====================================
+   DOWNLOAD EXCEL
+===================================== */
+
+function downloadExcel(){
+
+  if(
+    dataRekap.length === 0
+  ){
+
+    tampilPesan(
+      "Belum ada data rekap untuk di-download."
+    );
+
+    return;
+
+  }
+
+
+  const tanggal =
+    document.getElementById(
+      "tanggal"
+    ).value;
+
+
+  const worksheet =
+    XLSX.utils.json_to_sheet(
+      dataRekap
+    );
+
+
+  const workbook =
+    XLSX.utils.book_new();
+
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    worksheet,
+    "Rekap Jurnal"
+  );
+
+
+  const namaFile =
+    `Rekap_Jurnal_7_KAIH_${tanggal}.xlsx`;
+
+
+  XLSX.writeFile(
+    workbook,
+    namaFile
+  );
+
+
+  tampilPesan(
+    "✅ Rekap berhasil di-download.",
+    true
+  );
+
+}
+
+
+/* =====================================
+   DASHBOARD
+===================================== */
+
+function kembaliDashboard(){
+
+  window.location.href =
+    "dashboard-guru.html";
+
+}
+
+
+/* =====================================
+   LOGOUT
+===================================== */
+
+async function logoutGuru(){
+
+  try{
+
+    await supabaseClient
+      .auth
+      .signOut();
+
+  }
+
+  catch(error){
+
+    console.error(error);
+
+  }
+
+
+  window.location.href =
+    "login-guru.html";
+
+}
+
+
+/* =====================================
+   JALANKAN
+===================================== */
+
+mulai();
+
+</script>
+
+</body>
+</html>
+```
