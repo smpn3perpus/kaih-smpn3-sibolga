@@ -46,7 +46,7 @@ function tanggalHariIni(){
       sekarang.getDate()
     ).padStart(2,"0");
 
-  return `${tahun}-${bulan}-${hari}`;
+  return tahun + "-" + bulan + "-" + hari;
 }
 
 
@@ -62,10 +62,14 @@ function tampilPesan(
   const box =
     document.getElementById("pesan");
 
-  if(!box) return;
+  if(!box){
 
-  box.textContent =
-    teks;
+    console.log(teks);
+
+    return;
+  }
+
+  box.textContent = teks;
 
   box.className =
     "pesan " +
@@ -75,8 +79,7 @@ function tampilPesan(
       : "gagal"
     );
 
-  box.style.display =
-    "block";
+  box.style.display = "block";
 }
 
 
@@ -88,7 +91,7 @@ function radioValue(nama){
 
   const elemen =
     document.querySelector(
-      `input[name="${nama}"]:checked`
+      'input[name="' + nama + '"]:checked'
     );
 
   return elemen
@@ -108,32 +111,36 @@ function setRadio(
 
   document
     .querySelectorAll(
-      `input[name="${nama}"]`
+      'input[name="' + nama + '"]'
     )
-    .forEach(
-      function(input){
+    .forEach(function(input){
 
-        input.checked =
-          input.value === nilai;
+      input.checked =
+        input.value === nilai;
 
-      }
-    );
+    });
 
 }
 
 
 /* =====================================================
-   CEK LOGIN
+   CEK LOGIN SISWA
 ===================================================== */
 
 async function cekLogin(){
 
   try{
 
+    tampilPesan(
+      "⏳ Memeriksa akun siswa..."
+    );
+
+
     const hasil =
       await supabaseClient
         .auth
         .getUser();
+
 
     if(hasil.error){
 
@@ -141,8 +148,16 @@ async function cekLogin(){
 
     }
 
+
     const user =
       hasil.data.user;
+
+
+    console.log(
+      "USER AUTH:",
+      user
+    );
+
 
     if(!user){
 
@@ -153,12 +168,23 @@ async function cekLogin(){
 
     }
 
+
+    /* ===============================================
+       AMBIL DATA SISWA
+    =============================================== */
+
     await ambilSiswa(user);
+
+
+    /* ===============================================
+       TANGGAL OTOMATIS
+    =============================================== */
 
     const tanggal =
       document.getElementById(
         "tanggal"
       );
+
 
     if(tanggal){
 
@@ -167,7 +193,13 @@ async function cekLogin(){
 
     }
 
+
+    /* ===============================================
+       MUAT JURNAL
+    =============================================== */
+
     await muatJurnal();
+
 
   }
   catch(error){
@@ -177,9 +209,13 @@ async function cekLogin(){
       error
     );
 
+
     tampilPesan(
-      "❌ Terjadi kesalahan: " +
-      (error.message || error)
+      "❌ " +
+      (
+        error.message ||
+        error
+      )
     );
 
   }
@@ -198,18 +234,18 @@ async function ambilSiswa(user){
   );
 
   console.log(
-    "USER LOGIN:",
-    user
+    "MENCARI DATA SISWA"
   );
 
   console.log(
-    "MENCARI DATA SISWA..."
+    "AUTH USER ID:",
+    user.id
   );
 
 
   /* =================================================
      CARA 1
-     Cari berdasarkan auth_user_id
+     auth_user_id
   ================================================= */
 
   let hasil =
@@ -234,7 +270,7 @@ async function ambilSiswa(user){
   if(hasil.error){
 
     console.error(
-      "ERROR CARI SISWA:",
+      "ERROR AUTH_USER_ID:",
       hasil.error
     );
 
@@ -249,11 +285,14 @@ async function ambilSiswa(user){
 
   /* =================================================
      CARA 2
-     Jika auth_user_id tidak ditemukan,
-     gunakan NISN dari email
+     JIKA BELUM TERHUBUNG,
+     CARI BERDASARKAN NISN DARI EMAIL
   ================================================= */
 
-  if(!siswa && user.email){
+  if(
+    !siswa &&
+    user.email
+  ){
 
     const nisn =
       user.email
@@ -262,7 +301,7 @@ async function ambilSiswa(user){
 
 
     console.log(
-      "Mencari berdasarkan NISN:",
+      "Mencari NISN:",
       nisn
     );
 
@@ -306,35 +345,71 @@ async function ambilSiswa(user){
   if(!siswa){
 
     throw new Error(
-      "Data siswa tidak ditemukan. Pastikan akun login sudah terhubung dengan data siswa."
+      "Data siswa tidak ditemukan."
     );
 
   }
 
 
   console.log(
-    "DATA SISWA DITEMUKAN:",
+    "SISWA DITEMUKAN:",
     siswa
   );
 
 
-  console.log(
-    "ID SISWA:",
-    siswa.id
-  );
+  /* =================================================
+     PASTIKAN ID SISWA VALID
+  ================================================= */
 
-  console.log(
-    "GURU WALI ID:",
-    siswa.guru_wali_id
-  );
+  if(
+    siswa.id === null ||
+    siswa.id === undefined
+  ){
 
+    throw new Error(
+      "ID siswa kosong."
+    );
+
+  }
+
+
+  /* =================================================
+     PASTIKAN GURU WALI ADA
+  ================================================= */
+
+  if(
+    siswa.guru_wali_id === null ||
+    siswa.guru_wali_id === undefined
+  ){
+
+    throw new Error(
+      "Guru wali siswa belum terhubung."
+    );
+
+  }
+
+
+  /* =================================================
+     SIMPAN DATA SISWA
+  ================================================= */
 
   siswaLogin =
     siswa;
 
 
+  console.log(
+    "ID SISWA:",
+    siswaLogin.id
+  );
+
+  console.log(
+    "GURU WALI ID:",
+    siswaLogin.guru_wali_id
+  );
+
+
   /* =================================================
-     TAMPIL DATA SISWA
+     TAMPIL NAMA
   ================================================= */
 
   const namaSiswa =
@@ -350,6 +425,10 @@ async function ambilSiswa(user){
   }
 
 
+  /* =================================================
+     TAMPIL NISN
+  ================================================= */
+
   const nisnSiswa =
     document.getElementById(
       "nisnSiswa"
@@ -364,12 +443,12 @@ async function ambilSiswa(user){
 
 
   /* =================================================
-     KELAS
+     TAMPIL KELAS
   ================================================= */
 
   if(siswa.kelas_id){
 
-    const kelas =
+    const hasilKelas =
       await supabaseClient
         .from("kelas")
         .select("*")
@@ -381,8 +460,8 @@ async function ambilSiswa(user){
 
 
     if(
-      !kelas.error &&
-      kelas.data
+      !hasilKelas.error &&
+      hasilKelas.data
     ){
 
       const kelasSiswa =
@@ -390,12 +469,13 @@ async function ambilSiswa(user){
           "kelasSiswa"
         );
 
+
       if(kelasSiswa){
 
         kelasSiswa.textContent =
-          kelas.data.nama ||
-          kelas.data.nama_kelas ||
-          kelas.data.name ||
+          hasilKelas.data.nama ||
+          hasilKelas.data.nama_kelas ||
+          hasilKelas.data.name ||
           "-";
 
       }
@@ -406,7 +486,7 @@ async function ambilSiswa(user){
 
 
   /* =================================================
-     GURU WALI
+     TAMPIL GURU WALI
   ================================================= */
 
   const guruWaliSiswa =
@@ -415,81 +495,55 @@ async function ambilSiswa(user){
     );
 
 
-  if(siswa.guru_wali_id){
+  const hasilGuru =
+    await supabaseClient
+      .from("guru")
+      .select("*")
+      .eq(
+        "id",
+        siswa.guru_wali_id
+      )
+      .maybeSingle();
 
-    console.log(
-      "MENGAMBIL GURU DENGAN ID:",
-      siswa.guru_wali_id
+
+  if(hasilGuru.error){
+
+    console.error(
+      "ERROR GURU:",
+      hasilGuru.error
     );
 
-
-    const guru =
-      await supabaseClient
-        .from("guru")
-        .select("*")
-        .eq(
-          "id",
-          siswa.guru_wali_id
-        )
-        .maybeSingle();
-
-
-    if(
-      !guru.error &&
-      guru.data
-    ){
-
-      if(guruWaliSiswa){
-
-        guruWaliSiswa.textContent =
-          guru.data.nama ||
-          guru.data.nama_guru ||
-          guru.data.name ||
-          "-";
-
-      }
-
-
-      console.log(
-        "DATA GURU WALI:",
-        guru.data
-      );
-
-    }
-    else{
-
-      if(guruWaliSiswa){
-
-        guruWaliSiswa.textContent =
-          "⚠️ Guru tidak ditemukan";
-
-      }
-
-
-      console.warn(
-        "Guru wali tidak ditemukan:",
-        guru.error
-      );
-
-    }
+    throw hasilGuru.error;
 
   }
-  else{
-
-    if(guruWaliSiswa){
-
-      guruWaliSiswa.textContent =
-        "⚠️ Belum terhubung";
-
-    }
 
 
-    console.warn(
-      "guru_wali_id siswa masih kosong:",
-      siswa.id
+  if(!hasilGuru.data){
+
+    throw new Error(
+      "Guru wali dengan ID " +
+      siswa.guru_wali_id +
+      " tidak ditemukan."
     );
 
   }
+
+
+  if(guruWaliSiswa){
+
+    guruWaliSiswa.textContent =
+      hasilGuru.data.nama ||
+      hasilGuru.data.nama_guru ||
+      hasilGuru.data.name ||
+      "-";
+
+  }
+
+
+  console.log(
+    "GURU WALI:",
+    hasilGuru.data
+  );
 
 
   console.log(
@@ -500,8 +554,7 @@ async function ambilSiswa(user){
 
 
 /* =====================================================
-   AMBIL ULANG GURU WALI
-   UNTUK MEMASTIKAN guru_id TIDAK NULL
+   AMBIL GURU WALI TERBARU
 ===================================================== */
 
 async function ambilGuruWaliTerbaru(){
@@ -515,18 +568,12 @@ async function ambilGuruWaliTerbaru(){
   }
 
 
-  console.log(
-    "Mengambil ulang data guru wali..."
-  );
-
-
   const hasil =
     await supabaseClient
       .from("siswa")
-      .select(`
-        id,
-        guru_wali_id
-      `)
+      .select(
+        "id, guru_wali_id"
+      )
       .eq(
         "id",
         siswaLogin.id
@@ -535,11 +582,6 @@ async function ambilGuruWaliTerbaru(){
 
 
   if(hasil.error){
-
-    console.error(
-      "ERROR AMBIL GURU WALI:",
-      hasil.error
-    );
 
     throw hasil.error;
 
@@ -559,12 +601,6 @@ async function ambilGuruWaliTerbaru(){
     hasil.data.guru_wali_id;
 
 
-  console.log(
-    "HASIL GURU_WALI_ID TERBARU:",
-    guruId
-  );
-
-
   if(
     guruId === null ||
     guruId === undefined ||
@@ -572,28 +608,24 @@ async function ambilGuruWaliTerbaru(){
   ){
 
     throw new Error(
-      "Guru wali siswa belum terhubung. Kolom guru_wali_id pada tabel siswa masih kosong."
+      "guru_wali_id siswa masih kosong."
     );
 
   }
 
 
-  /*
-     Karena guru.id dan jurnal.guru_id
-     menggunakan INT8, kita pastikan
-     nilainya berupa angka.
-  */
-
-  const guruIdInt =
+  const guruIdAngka =
     Number(guruId);
 
 
   if(
-    !Number.isInteger(guruIdInt)
+    !Number.isInteger(
+      guruIdAngka
+    )
   ){
 
     throw new Error(
-      "guru_wali_id bukan angka INT8 yang valid: " +
+      "guru_wali_id bukan angka yang valid: " +
       guruId
     );
 
@@ -601,7 +633,7 @@ async function ambilGuruWaliTerbaru(){
 
 
   /* =================================================
-     PASTIKAN GURU MEMANG ADA
+     PASTIKAN GURU ADA
   ================================================= */
 
   const guru =
@@ -610,17 +642,12 @@ async function ambilGuruWaliTerbaru(){
       .select("id")
       .eq(
         "id",
-        guruIdInt
+        guruIdAngka
       )
       .maybeSingle();
 
 
   if(guru.error){
-
-    console.error(
-      "ERROR CEK GURU:",
-      guru.error
-    );
 
     throw guru.error;
 
@@ -630,21 +657,15 @@ async function ambilGuruWaliTerbaru(){
   if(!guru.data){
 
     throw new Error(
-      "Guru dengan ID " +
-      guruIdInt +
-      " tidak ditemukan pada tabel guru."
+      "Guru ID " +
+      guruIdAngka +
+      " tidak ditemukan."
     );
 
   }
 
 
-  console.log(
-    "GURU VALID:",
-    guru.data
-  );
-
-
-  return guruIdInt;
+  return guruIdAngka;
 
 }
 
@@ -670,6 +691,10 @@ async function muatJurnal(){
 
   if(!tanggalElement){
 
+    console.warn(
+      "Element tanggal tidak ditemukan."
+    );
+
     return;
 
   }
@@ -680,10 +705,6 @@ async function muatJurnal(){
 
 
   if(!tanggal){
-
-    tampilPesan(
-      "Silakan pilih tanggal jurnal."
-    );
 
     return;
 
@@ -705,6 +726,9 @@ async function muatJurnal(){
 
     loading.style.display =
       "block";
+
+    loading.textContent =
+      "⏳ Memuat jurnal...";
 
   }
 
@@ -742,16 +766,7 @@ async function muatJurnal(){
         hasil.error
       );
 
-
-      if(loading){
-
-        loading.innerHTML =
-          "❌ Gagal mengambil jurnal: " +
-          hasil.error.message;
-
-      }
-
-      return;
+      throw hasil.error;
 
     }
 
@@ -762,9 +777,16 @@ async function muatJurnal(){
 
     if(jurnalAktif){
 
+      console.log(
+        "JURNAL DITEMUKAN:",
+        jurnalAktif
+      );
+
+
       isiForm(
         jurnalAktif
       );
+
 
       tampilFeedback(
         jurnalAktif
@@ -772,6 +794,11 @@ async function muatJurnal(){
 
     }
     else{
+
+      console.log(
+        "BELUM ADA JURNAL"
+      );
+
 
       kosongkanForm();
 
@@ -813,9 +840,9 @@ async function muatJurnal(){
     tampilPesan(
       jurnalAktif
       ?
-      "📖 Jurnal ditemukan. Anda dapat melihat atau memperbarui isian."
+      "📖 Jurnal ditemukan. Silakan periksa atau perbarui."
       :
-      "📝 Silakan isi jurnal untuk tanggal tersebut.",
+      "📝 Silakan isi jurnal hari ini.",
       true
     );
 
@@ -823,15 +850,15 @@ async function muatJurnal(){
   catch(error){
 
     console.error(
-      "ERROR MUAT JURNAL:",
+      "ERROR MUAT:",
       error
     );
 
 
     if(loading){
 
-      loading.innerHTML =
-        "❌ Terjadi kesalahan: " +
+      loading.textContent =
+        "❌ Gagal memuat jurnal: " +
         error.message;
 
     }
@@ -847,10 +874,17 @@ async function muatJurnal(){
 
 function isiForm(row){
 
-  document.getElementById(
-    "jam_bangun"
-  ).value =
-    row.jam_bangun || "";
+  const jamBangun =
+    document.getElementById(
+      "jam_bangun"
+    );
+
+  if(jamBangun){
+
+    jamBangun.value =
+      row.jam_bangun || "";
+
+  }
 
 
   setRadio(
@@ -859,34 +893,73 @@ function isiForm(row){
   );
 
 
-  document.getElementById(
-    "menu_sarapan"
-  ).value =
-    row.menu_sarapan || "";
+  const fields = {
+
+    menu_sarapan:
+      row.menu_sarapan,
+
+    menu_siang:
+      row.menu_siang,
+
+    menu_malam:
+      row.menu_malam,
+
+    menu_sahur:
+      row.menu_sahur,
+
+    menu_berbuka:
+      row.menu_berbuka,
+
+    jenis_olahraga:
+      row.jenis_olahraga,
+
+    durasi_olahraga:
+      row.durasi_olahraga,
+
+    alasan_olahraga:
+      row.alasan_olahraga,
+
+    jenis_bermasyarakat:
+      row.jenis_bermasyarakat,
+
+    alasan_bermasyarakat:
+      row.alasan_bermasyarakat,
+
+    materi_belajar:
+      row.materi_belajar,
+
+    durasi_belajar:
+      row.durasi_belajar,
+
+    alasan_belajar:
+      row.alasan_belajar,
+
+    jenis_ibadah:
+      row.jenis_ibadah,
+
+    alasan_ibadah:
+      row.alasan_ibadah,
+
+    jam_tidur:
+      row.jam_tidur
+
+  };
 
 
-  document.getElementById(
-    "menu_siang"
-  ).value =
-    row.menu_siang || "";
+  Object.keys(fields)
+    .forEach(function(id){
 
+      const el =
+        document.getElementById(id);
 
-  document.getElementById(
-    "menu_malam"
-  ).value =
-    row.menu_malam || "";
+      if(el){
 
+        el.value =
+          fields[id] ?? "";
 
-  document.getElementById(
-    "menu_sahur"
-  ).value =
-    row.menu_sahur || "";
+      }
 
-
-  document.getElementById(
-    "menu_berbuka"
-  ).value =
-    row.menu_berbuka || "";
+    });
 
 
   setRadio(
@@ -895,40 +968,10 @@ function isiForm(row){
   );
 
 
-  document.getElementById(
-    "jenis_olahraga"
-  ).value =
-    row.jenis_olahraga || "";
-
-
-  document.getElementById(
-    "durasi_olahraga"
-  ).value =
-    row.durasi_olahraga ?? "";
-
-
-  document.getElementById(
-    "alasan_olahraga"
-  ).value =
-    row.alasan_olahraga || "";
-
-
   setRadio(
     "bermasyarakat",
     row.bermasyarakat || ""
   );
-
-
-  document.getElementById(
-    "jenis_bermasyarakat"
-  ).value =
-    row.jenis_bermasyarakat || "";
-
-
-  document.getElementById(
-    "alasan_bermasyarakat"
-  ).value =
-    row.alasan_bermasyarakat || "";
 
 
   setRadio(
@@ -937,46 +980,10 @@ function isiForm(row){
   );
 
 
-  document.getElementById(
-    "materi_belajar"
-  ).value =
-    row.materi_belajar || "";
-
-
-  document.getElementById(
-    "durasi_belajar"
-  ).value =
-    row.durasi_belajar ?? "";
-
-
-  document.getElementById(
-    "alasan_belajar"
-  ).value =
-    row.alasan_belajar || "";
-
-
   setRadio(
     "ibadah",
     row.ibadah || ""
   );
-
-
-  document.getElementById(
-    "jenis_ibadah"
-  ).value =
-    row.jenis_ibadah || "";
-
-
-  document.getElementById(
-    "alasan_ibadah"
-  ).value =
-    row.alasan_ibadah || "";
-
-
-  document.getElementById(
-    "jam_tidur"
-  ).value =
-    row.jam_tidur || "";
 
 
   ubahOlahraga();
@@ -993,33 +1000,20 @@ function isiForm(row){
 
 function kosongkanForm(){
 
-  const jamBangun =
-    document.getElementById(
-      "jam_bangun"
-    );
-
-  if(jamBangun){
-
-    jamBangun.value = "";
-
-  }
-
-
   document
     .querySelectorAll(
       'input[type="radio"]'
     )
-    .forEach(
-      function(input){
+    .forEach(function(input){
 
-        input.checked =
-          false;
+      input.checked = false;
 
-      }
-    );
+    });
 
 
   const ids = [
+
+    "jam_bangun",
 
     "menu_sarapan",
     "menu_siang",
@@ -1046,20 +1040,18 @@ function kosongkanForm(){
   ];
 
 
-  ids.forEach(
-    function(id){
+  ids.forEach(function(id){
 
-      const el =
-        document.getElementById(id);
+    const el =
+      document.getElementById(id);
 
-      if(el){
+    if(el){
 
-        el.value = "";
-
-      }
+      el.value = "";
 
     }
-  );
+
+  });
 
 
   ubahOlahraga();
@@ -1341,12 +1333,12 @@ async function simpanJurnal(){
   );
 
   console.log(
-    "=== MULAI SIMPAN JURNAL ==="
+    "MULAI SIMPAN JURNAL"
   );
 
 
   /* =================================================
-     CEK DATA SISWA
+     1. CEK SISWA
   ================================================= */
 
   if(!siswaLogin){
@@ -1360,10 +1352,13 @@ async function simpanJurnal(){
   }
 
 
-  if(!siswaLogin.id){
+  if(
+    siswaLogin.id === null ||
+    siswaLogin.id === undefined
+  ){
 
     tampilPesan(
-      "❌ ID siswa tidak ditemukan."
+      "❌ ID siswa kosong."
     );
 
     return;
@@ -1371,17 +1366,12 @@ async function simpanJurnal(){
   }
 
 
-  console.log(
-    "ID SISWA:",
-    siswaLogin.id
-  );
-
-
   /* =================================================
-     AMBIL GURU WALI LANGSUNG DARI DATABASE
+     2. AMBIL GURU WALI
   ================================================= */
 
   let guruId;
+
 
   try{
 
@@ -1392,7 +1382,7 @@ async function simpanJurnal(){
   catch(error){
 
     console.error(
-      "ERROR GURU WALI:",
+      "ERROR GURU:",
       error
     );
 
@@ -1403,25 +1393,13 @@ async function simpanJurnal(){
     );
 
 
-    alert(
-      "Jurnal belum dapat disimpan.\n\n" +
-      error.message
-    );
-
-
     return;
 
   }
 
 
-  console.log(
-    "GURU ID VALID:",
-    guruId
-  );
-
-
   /* =================================================
-     TANGGAL
+     3. TANGGAL
   ================================================= */
 
   const tanggalElement =
@@ -1448,7 +1426,7 @@ async function simpanJurnal(){
   if(!tanggal){
 
     tampilPesan(
-      "❌ Silakan pilih tanggal."
+      "❌ Tanggal belum dipilih."
     );
 
     return;
@@ -1457,8 +1435,11 @@ async function simpanJurnal(){
 
 
   /* =================================================
-     RADIO
+     4. RADIO
   ================================================= */
+
+  const puasa =
+    radioValue("puasa");
 
   const olahraga =
     radioValue("olahraga");
@@ -1472,18 +1453,15 @@ async function simpanJurnal(){
   const ibadah =
     radioValue("ibadah");
 
-  const puasa =
-    radioValue("puasa");
-
 
   /* =================================================
-     VALIDASI
+     5. VALIDASI
   ================================================= */
 
   if(!puasa){
 
     tampilPesan(
-      "❌ Silakan pilih apakah Anda berpuasa atau tidak."
+      "❌ Pilih terlebih dahulu apakah berpuasa."
     );
 
     return;
@@ -1494,7 +1472,7 @@ async function simpanJurnal(){
   if(!olahraga){
 
     tampilPesan(
-      "❌ Silakan pilih apakah Anda berolahraga atau tidak."
+      "❌ Pilih terlebih dahulu olahraga."
     );
 
     return;
@@ -1505,7 +1483,7 @@ async function simpanJurnal(){
   if(!bermasyarakat){
 
     tampilPesan(
-      "❌ Silakan pilih kegiatan bermasyarakat."
+      "❌ Pilih kegiatan bermasyarakat."
     );
 
     return;
@@ -1516,7 +1494,7 @@ async function simpanJurnal(){
   if(!belajar_malam){
 
     tampilPesan(
-      "❌ Silakan pilih apakah Anda belajar malam."
+      "❌ Pilih terlebih dahulu belajar malam."
     );
 
     return;
@@ -1527,7 +1505,7 @@ async function simpanJurnal(){
   if(!ibadah){
 
     tampilPesan(
-      "❌ Silakan pilih apakah Anda melaksanakan ibadah."
+      "❌ Pilih terlebih dahulu ibadah."
     );
 
     return;
@@ -1536,37 +1514,33 @@ async function simpanJurnal(){
 
 
   /* =================================================
-     DATA FORM
+     6. DATA YANG DISIMPAN
   ================================================= */
 
   const data = {
 
-    /* =========================
-       IDENTITAS
-    ========================= */
-
     siswa_id:
-      siswaLogin.id,
+      Number(siswaLogin.id),
 
     guru_id:
-      guruId,
+      Number(guruId),
 
     tanggal:
       tanggal,
 
 
     /* =========================
-       1. BANGUN PAGI
+       BANGUN PAGI
     ========================= */
 
     jam_bangun:
       document.getElementById(
         "jam_bangun"
-      ).value || null,
+      )?.value || null,
 
 
     /* =========================
-       2. MAKAN SEHAT
+       MAKAN SEHAT
     ========================= */
 
     puasa:
@@ -1575,31 +1549,31 @@ async function simpanJurnal(){
     menu_sarapan:
       document.getElementById(
         "menu_sarapan"
-      ).value.trim() || null,
+      )?.value.trim() || null,
 
     menu_siang:
       document.getElementById(
         "menu_siang"
-      ).value.trim() || null,
+      )?.value.trim() || null,
 
     menu_malam:
       document.getElementById(
         "menu_malam"
-      ).value.trim() || null,
+      )?.value.trim() || null,
 
     menu_sahur:
       document.getElementById(
         "menu_sahur"
-      ).value.trim() || null,
+      )?.value.trim() || null,
 
     menu_berbuka:
       document.getElementById(
         "menu_berbuka"
-      ).value.trim() || null,
+      )?.value.trim() || null,
 
 
     /* =========================
-       3. OLAHRAGA
+       OLAHRAGA
     ========================= */
 
     olahraga:
@@ -1610,7 +1584,7 @@ async function simpanJurnal(){
       ?
       document.getElementById(
         "jenis_olahraga"
-      ).value.trim() || null
+      )?.value.trim() || null
       :
       null,
 
@@ -1618,7 +1592,7 @@ async function simpanJurnal(){
       olahraga === "Ya" &&
       document.getElementById(
         "durasi_olahraga"
-      ).value !== ""
+      )?.value !== ""
       ?
       Number(
         document.getElementById(
@@ -1633,13 +1607,13 @@ async function simpanJurnal(){
       ?
       document.getElementById(
         "alasan_olahraga"
-      ).value.trim() || null
+      )?.value.trim() || null
       :
       null,
 
 
     /* =========================
-       4. BERMASYARAKAT
+       BERMASYARAKAT
     ========================= */
 
     bermasyarakat:
@@ -1650,7 +1624,7 @@ async function simpanJurnal(){
       ?
       document.getElementById(
         "jenis_bermasyarakat"
-      ).value.trim() || null
+      )?.value.trim() || null
       :
       null,
 
@@ -1659,13 +1633,13 @@ async function simpanJurnal(){
       ?
       document.getElementById(
         "alasan_bermasyarakat"
-      ).value.trim() || null
+      )?.value.trim() || null
       :
       null,
 
 
     /* =========================
-       5. BELAJAR
+       BELAJAR
     ========================= */
 
     belajar_malam:
@@ -1676,7 +1650,7 @@ async function simpanJurnal(){
       ?
       document.getElementById(
         "materi_belajar"
-      ).value.trim() || null
+      )?.value.trim() || null
       :
       null,
 
@@ -1684,7 +1658,7 @@ async function simpanJurnal(){
       belajar_malam === "Ya" &&
       document.getElementById(
         "durasi_belajar"
-      ).value !== ""
+      )?.value !== ""
       ?
       Number(
         document.getElementById(
@@ -1699,13 +1673,13 @@ async function simpanJurnal(){
       ?
       document.getElementById(
         "alasan_belajar"
-      ).value.trim() || null
+      )?.value.trim() || null
       :
       null,
 
 
     /* =========================
-       6. IBADAH
+       IBADAH
     ========================= */
 
     ibadah:
@@ -1716,7 +1690,7 @@ async function simpanJurnal(){
       ?
       document.getElementById(
         "jenis_ibadah"
-      ).value.trim() || null
+      )?.value.trim() || null
       :
       null,
 
@@ -1725,52 +1699,45 @@ async function simpanJurnal(){
       ?
       document.getElementById(
         "alasan_ibadah"
-      ).value.trim() || null
+      )?.value.trim() || null
       :
       null,
 
 
     /* =========================
-       7. TIDUR CEPAT
+       TIDUR
     ========================= */
 
     jam_tidur:
       document.getElementById(
         "jam_tidur"
-      ).value || null
+      )?.value || null
 
   };
 
 
-  /* =================================================
-     DEBUG
-  ================================================= */
-
   console.log(
-    "DATA FINAL YANG AKAN DISIMPAN:"
-  );
-
-  console.table(
+    "DATA YANG AKAN DISIMPAN:",
     data
   );
 
 
   /* =================================================
-     PASTIKAN guru_id VALID
+     7. CEK NOT NULL
   ================================================= */
 
   if(
-    data.guru_id === null ||
-    data.guru_id === undefined ||
-    data.guru_id === ""
+    !data.siswa_id ||
+    !data.guru_id ||
+    !data.tanggal
   ){
 
     tampilPesan(
-      "❌ Guru ID kosong. Jurnal tidak disimpan."
+      "❌ siswa_id, guru_id, dan tanggal wajib terisi."
     );
 
     console.error(
-      "guru_id kosong:",
+      "DATA TIDAK LENGKAP:",
       data
     );
 
@@ -1779,28 +1746,8 @@ async function simpanJurnal(){
   }
 
 
-  if(
-    !Number.isInteger(
-      Number(data.guru_id)
-    )
-  ){
-
-    tampilPesan(
-      "❌ Guru ID tidak valid."
-    );
-
-    console.error(
-      "guru_id tidak valid:",
-      data.guru_id
-    );
-
-    return;
-
-  }
-
-
   /* =================================================
-     SIMPAN
+     8. SIMPAN
   ================================================= */
 
   tampilPesan(
@@ -1818,7 +1765,7 @@ async function simpanJurnal(){
   if(jurnalAktif){
 
     console.log(
-      "MODE: UPDATE"
+      "MODE UPDATE"
     );
 
 
@@ -1845,7 +1792,7 @@ async function simpanJurnal(){
   else{
 
     console.log(
-      "MODE: INSERT"
+      "MODE INSERT"
     );
 
 
@@ -1860,16 +1807,13 @@ async function simpanJurnal(){
 
 
   /* =================================================
-     CEK ERROR
+     9. CEK ERROR
   ================================================= */
 
   if(hasil.error){
 
     console.error(
-      "ERROR SUPABASE:"
-    );
-
-    console.error(
+      "ERROR SUPABASE:",
       hasil.error
     );
 
@@ -1886,7 +1830,7 @@ async function simpanJurnal(){
 
 
   /* =================================================
-     BERHASIL
+     10. BERHASIL
   ================================================= */
 
   console.log(
@@ -1973,9 +1917,7 @@ function tampilFeedback(row){
   ){
 
     html += `
-      <strong>
-        Respons:
-      </strong>
+      <strong>Respons:</strong>
       ${aman(row.respons_guru)}
     `;
 
@@ -2005,6 +1947,7 @@ function tampilFeedback(row){
 
   isi.innerHTML =
     html;
+
 
   box.classList.remove(
     "hidden"
@@ -2091,6 +2034,81 @@ async function logout(){
 
   window.location.href =
     "login-siswa.html";
+
+}
+
+
+/* =====================================================
+   RADIO EVENT
+===================================================== */
+
+document.addEventListener(
+  "change",
+  function(event){
+
+    if(
+      event.target.name ===
+      "olahraga"
+    ){
+
+      ubahOlahraga();
+
+    }
+
+
+    if(
+      event.target.name ===
+      "bermasyarakat"
+    ){
+
+      ubahBermasyarakat();
+
+    }
+
+
+    if(
+      event.target.name ===
+      "belajar_malam"
+    ){
+
+      ubahBelajar();
+
+    }
+
+
+    if(
+      event.target.name ===
+      "ibadah"
+    ){
+
+      ubahIbadah();
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   TANGGAL BERUBAH
+===================================================== */
+
+const tanggalElement =
+  document.getElementById(
+    "tanggal"
+  );
+
+
+if(tanggalElement){
+
+  tanggalElement.addEventListener(
+    "change",
+    function(){
+
+      muatJurnal();
+
+    }
+  );
 
 }
 
