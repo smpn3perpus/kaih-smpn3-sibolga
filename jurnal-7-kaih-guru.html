@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
 
+<html lang="id">
+
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -22,10 +23,6 @@ body{
   color:#222;
 }
 
-/* =========================
-   HEADER
-========================= */
-
 .header{
   background:linear-gradient(135deg,#0f4c81,#1565c0);
   color:white;
@@ -42,19 +39,11 @@ body{
   margin:5px 0;
 }
 
-/* =========================
-   CONTAINER
-========================= */
-
 .container{
   max-width:1100px;
   margin:25px auto;
   padding:0 15px;
 }
-
-/* =========================
-   CARD
-========================= */
 
 .card{
   background:white;
@@ -69,20 +58,12 @@ body{
   color:#0f4c81;
 }
 
-/* =========================
-   INFO GURU
-========================= */
-
 .info{
   background:#eef5ff;
   padding:15px;
   border-radius:10px;
   line-height:1.9;
 }
-
-/* =========================
-   FILTER
-========================= */
 
 .filter{
   display:flex;
@@ -98,10 +79,6 @@ input[type="date"]{
   font-size:15px;
 }
 
-/* =========================
-   BUTTON
-========================= */
-
 button{
   border:none;
   border-radius:8px;
@@ -109,15 +86,10 @@ button{
   color:white;
   font-weight:bold;
   cursor:pointer;
-  font-size:14px;
 }
 
 button:hover{
   opacity:.9;
-}
-
-button:active{
-  transform:scale(.98);
 }
 
 .btn-tampil{
@@ -138,21 +110,14 @@ button:active{
   margin-top:10px;
 }
 
-.btn-kembali{
+.btn-kembali,
+.link-kembali{
   background:#616161;
-}
-
-.btn-kembali:hover{
-  background:#424242;
 }
 
 .btn-logout{
   background:#c62828;
 }
-
-/* =========================
-   NAVIGASI
-========================= */
 
 .navigasi{
   display:flex;
@@ -160,13 +125,18 @@ button:active{
   flex-wrap:wrap;
 }
 
+.navigasi a,
 .navigasi button{
-  min-width:200px;
+  display:inline-block;
+  text-decoration:none;
+  border:none;
+  border-radius:8px;
+  padding:11px 16px;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  font-size:14px;
 }
-
-/* =========================
-   PESAN
-========================= */
 
 .pesan{
   display:none;
@@ -185,10 +155,6 @@ button:active{
   background:#ffebee;
   color:#c62828;
 }
-
-/* =========================
-   SISWA
-========================= */
 
 .siswa-card{
   border:2px solid #e0e0e0;
@@ -209,10 +175,6 @@ button:active{
   color:#0f4c81;
 }
 
-/* =========================
-   KAIH
-========================= */
-
 .kaih-item{
   padding:18px;
   border-bottom:1px solid #ddd;
@@ -228,10 +190,6 @@ button:active{
   color:#0f4c81;
   margin-bottom:12px;
 }
-
-/* =========================
-   ISIAN SISWA
-========================= */
 
 .isian-siswa{
   background:#fafafa;
@@ -251,10 +209,6 @@ button:active{
   margin-top:3px;
   line-height:1.5;
 }
-
-/* =========================
-   RESPONS GURU
-========================= */
 
 .respons{
   background:#f8f9fa;
@@ -310,10 +264,6 @@ textarea{
   resize:vertical;
 }
 
-/* =========================
-   KOSONG / LOADING
-========================= */
-
 .loading{
   text-align:center;
   padding:35px;
@@ -329,10 +279,6 @@ textarea{
   line-height:1.7;
 }
 
-/* =========================
-   FOOTER
-========================= */
-
 .footer{
   text-align:center;
   color:#666;
@@ -340,10 +286,6 @@ textarea{
   font-size:14px;
   line-height:1.8;
 }
-
-/* =========================
-   MOBILE
-========================= */
 
 @media(max-width:600px){
 
@@ -380,9 +322,10 @@ textarea{
     flex-direction:column;
   }
 
+  .navigasi a,
   .navigasi button{
     width:100%;
-    min-width:100%;
+    text-align:center;
   }
 
 }
@@ -393,96 +336,57 @@ textarea{
 
 <body>
 
-<!-- ==================================================
-     HEADER
-================================================== -->
-
 <div class="header">
 
-  <h1>
-    📖 Monitoring Jurnal 7 KAIH
-  </h1>
+  <h1>📖 Monitoring Jurnal 7 KAIH</h1>
 
-  <p>
-    7 Kebiasaan Anak Indonesia Hebat
-  </p>
+  <p>7 Kebiasaan Anak Indonesia Hebat</p>
 
-  <p>
-    SMP Negeri 3 Sibolga
-  </p>
+  <p>SMP Negeri 3 Sibolga</p>
 
 </div>
 
-
 <div class="container">
-
-<!-- ==================================================
-     INFORMASI GURU
-================================================== -->
 
 <div class="card">
 
   <h2>
     👨‍🏫 Guru:
-    <span id="namaGuru">
-      Memuat...
-    </span>
+    <span id="namaGuru">Memuat...</span>
   </h2>
 
   <div class="info">
 
-    <strong>
-      Username:
-    </strong>
+```
+<strong>Username:</strong>
+<span id="usernameGuru">-</span>
 
-    <span id="usernameGuru">
-      -
-    </span>
+<br>
 
-    <br>
+<strong>Siswa Wali:</strong>
+<span id="jumlahSiswa">0</span>
+siswa
 
-    <strong>
-      Siswa Wali:
-    </strong>
+<br>
 
-    <span id="jumlahSiswa">
-      0
-    </span>
+<strong>Peran:</strong>
+Guru Wali / Pemantau Jurnal 7 KAIH
 
-    siswa
+<br>
 
-    <br>
-
-    <strong>
-      Peran:
-    </strong>
-
-    Guru Wali / Pemantau Jurnal 7 KAIH
-
-    <br>
-
-    <strong>
-      Keterangan:
-    </strong>
-
-    Guru tidak mengisi jurnal.
-    Guru hanya memantau jurnal siswa
-    dan memberikan feedback.
+<strong>Keterangan:</strong>
+Guru tidak mengisi jurnal.
+Guru hanya memantau jurnal siswa
+dan memberikan feedback.
+```
 
   </div>
 
 </div>
 
-
-<!-- ==================================================
-     PILIH TANGGAL
-================================================== -->
-
 <div class="card">
 
-  <h2>
-    📅 Pilih Tanggal Jurnal
-  </h2>
+  <h2>📅 Pilih Tanggal Jurnal</h2>
 
   <p>
     Pilih tanggal untuk melihat jurnal
@@ -491,43 +395,32 @@ textarea{
 
   <div class="filter">
 
-    <input
-      type="date"
-      id="tanggal"
-    >
+```
+<input
+  type="date"
+  id="tanggal"
+>
 
-    <button
-      type="button"
-      class="btn-tampil"
-      onclick="ambilJurnal()"
-    >
-      🔄 Tampilkan Jurnal
-    </button>
+<button
+  type="button"
+  class="btn-tampil"
+  id="btnTampil"
+>
+  🔄 Tampilkan Jurnal
+</button>
+```
 
   </div>
 
-  <div
-    id="pesan"
-    class="pesan"
-  ></div>
+  <div id="pesan" class="pesan"></div>
 
 </div>
 
-
-<!-- ==================================================
-     DAFTAR JURNAL
-================================================== -->
-
 <div class="card">
 
-  <h2>
-    👨‍🎓 Jurnal Siswa Wali
-  </h2>
+  <h2>👨‍🎓 Jurnal Siswa Wali</h2>
 
-  <div
-    id="loading"
-    class="loading"
-  >
+  <div id="loading" class="loading">
     ⏳ Memuat jurnal siswa...
   </div>
 
@@ -538,46 +431,32 @@ textarea{
 
 </div>
 
-
-<!-- ==================================================
-     NAVIGASI
-================================================== -->
-
 <div class="card">
-
-  <h2>
-    🧭 Navigasi
-  </h2>
 
   <div class="navigasi">
 
-    <button
-      type="button"
-      class="btn-kembali"
-      onclick="kembaliDashboard()"
-    >
-      ← Dashboard Guru
-    </button>
+```
+<a
+  href="dashboard-guru.html"
+  class="link-kembali"
+>
+  ← Dashboard Guru
+</a>
 
-    <button
-      type="button"
-      class="btn-logout"
-      onclick="logoutGuru()"
-    >
-      🚪 Keluar
-    </button>
+<button
+  type="button"
+  class="btn-logout"
+  id="btnLogout"
+>
+  🚪 Keluar
+</button>
+```
 
   </div>
 
 </div>
 
-
 </div>
-
-
-<!-- ==================================================
-     FOOTER
-================================================== -->
 
 <div class="footer">
 
@@ -587,20 +466,15 @@ textarea{
 
   <br>
 
-  SMP Negeri 3 Sibolga
+SMP Negeri 3 Sibolga
 
   <br>
 
-  Sistem 7 KAIH
+Sistem 7 KAIH
 
 </div>
 
-
 <script>
-
-/* ==================================================
-   SUPABASE
-================================================== */
 
 const SUPABASE_URL =
 "https://nnnvgbajiqlqrsaygxme.supabase.co";
@@ -614,26 +488,14 @@ window.supabase.createClient(
   SUPABASE_KEY
 );
 
-
-/* ==================================================
-   VARIABEL
-================================================== */
-
 let guruLogin = null;
-
 let siswaWali = [];
-
 let responsSementara = {};
 
 
-/* ==================================================
-   TANGGAL HARI INI
-================================================== */
-
 function tanggalHariIni(){
 
-  const sekarang =
-    new Date();
+  const sekarang = new Date();
 
   const tahun =
     sekarang.getFullYear();
@@ -653,19 +515,13 @@ function tanggalHariIni(){
 }
 
 
-/* ==================================================
-   AMAN HTML
-================================================== */
-
 function aman(nilai){
 
   if(
     nilai === null ||
     nilai === undefined
   ){
-
     return "";
-
   }
 
   return String(nilai)
@@ -674,13 +530,8 @@ function aman(nilai){
     .replace(/>/g,"&gt;")
     .replace(/"/g,"&quot;")
     .replace(/'/g,"&#039;");
-
 }
 
-
-/* ==================================================
-   AMAN TEXTAREA
-================================================== */
 
 function teksInput(nilai){
 
@@ -688,22 +539,15 @@ function teksInput(nilai){
     nilai === null ||
     nilai === undefined
   ){
-
     return "";
-
   }
 
   return String(nilai)
     .replace(/&/g,"&amp;")
     .replace(/</g,"&lt;")
     .replace(/>/g,"&gt;");
-
 }
 
-
-/* ==================================================
-   PESAN
-================================================== */
 
 function tampilPesan(
   teks,
@@ -711,16 +555,9 @@ function tampilPesan(
 ){
 
   const box =
-    document.getElementById(
-      "pesan"
-    );
+    document.getElementById("pesan");
 
-  if(!box){
-    return;
-  }
-
-  box.textContent =
-    teks;
+  box.textContent = teks;
 
   box.className =
     "pesan " +
@@ -730,23 +567,14 @@ function tampilPesan(
       : "gagal"
     );
 
-  box.style.display =
-    "block";
+  box.style.display = "block";
 
 }
 
 
-/* ==================================================
-   MULAI
-================================================== */
-
 async function mulai(){
 
   try{
-
-    /* ----------------------------------------------
-       CEK LOGIN
-    ---------------------------------------------- */
 
     const hasilLogin =
       await supabaseClient
@@ -756,36 +584,25 @@ async function mulai(){
     const user =
       hasilLogin.data.user;
 
-
     if(!user){
 
-      window.location.replace(
-        "login-guru.html"
-      );
+      window.location.href =
+        "login-guru.html";
 
       return;
-
     }
 
 
-    /* ----------------------------------------------
-       AMBIL DATA GURU
-    ---------------------------------------------- */
-
     const hasilGuru =
       await supabaseClient
-
         .from("guru")
-
         .select(
           "id,nama,username,auth_user_id"
         )
-
         .eq(
           "auth_user_id",
           user.id
         )
-
         .maybeSingle();
 
 
@@ -793,10 +610,6 @@ async function mulai(){
       hasilGuru.error ||
       !hasilGuru.data
     ){
-
-      console.error(
-        hasilGuru.error
-      );
 
       alert(
         "Akun login tidak terdaftar sebagai Guru."
@@ -806,22 +619,16 @@ async function mulai(){
         .auth
         .signOut();
 
-      window.location.replace(
-        "login-guru.html"
-      );
+      window.location.href =
+        "login-guru.html";
 
       return;
-
     }
 
 
     guruLogin =
       hasilGuru.data;
 
-
-    /* ----------------------------------------------
-       DATA GURU
-    ---------------------------------------------- */
 
     document.getElementById(
       "namaGuru"
@@ -835,26 +642,13 @@ async function mulai(){
       guruLogin.username || "-";
 
 
-    /* ----------------------------------------------
-       TANGGAL
-    ---------------------------------------------- */
-
     document.getElementById(
       "tanggal"
     ).value =
       tanggalHariIni();
 
 
-    /* ----------------------------------------------
-       AMBIL SISWA WALI
-    ---------------------------------------------- */
-
     await ambilSiswa();
-
-
-    /* ----------------------------------------------
-       TAMPILKAN JURNAL
-    ---------------------------------------------- */
 
     await ambilJurnal();
 
@@ -874,26 +668,18 @@ async function mulai(){
 }
 
 
-/* ==================================================
-   AMBIL SISWA WALI
-================================================== */
-
 async function ambilSiswa(){
 
   const hasil =
     await supabaseClient
-
       .from("siswa")
-
       .select(
         "id,nama,nisn,kelas_id"
       )
-
       .eq(
         "guru_wali_id",
         guruLogin.id
       )
-
       .order(
         "nama",
         {
@@ -923,7 +709,6 @@ async function ambilSiswa(){
     `;
 
     return;
-
   }
 
 
@@ -938,10 +723,6 @@ async function ambilSiswa(){
 
 }
 
-
-/* ==================================================
-   AMBIL JURNAL
-================================================== */
 
 async function ambilJurnal(){
 
@@ -958,7 +739,6 @@ async function ambilJurnal(){
     );
 
     return;
-
   }
 
 
@@ -973,17 +753,14 @@ async function ambilJurnal(){
     );
 
 
-  loading.style.display =
-    "block";
+  loading.style.display = "block";
 
   loading.innerHTML =
     "⏳ Memuat jurnal siswa...";
 
-  daftar.style.display =
-    "none";
+  daftar.style.display = "none";
 
-  daftar.innerHTML =
-    "";
+  daftar.innerHTML = "";
 
 
   if(
@@ -1002,33 +779,23 @@ async function ambilJurnal(){
     `;
 
     return;
-
   }
 
 
   const ids =
     siswaWali.map(
-      siswa =>
-        siswa.id
+      siswa => siswa.id
     );
 
 
-  /* ----------------------------------------------
-     AMBIL JURNAL SISWA
-  ---------------------------------------------- */
-
   const hasil =
     await supabaseClient
-
       .from("jurnal_7_kaih")
-
       .select("*")
-
       .eq(
         "tanggal",
         tanggal
       )
-
       .in(
         "siswa_id",
         ids
@@ -1054,7 +821,6 @@ async function ambilJurnal(){
     `;
 
     return;
-
   }
 
 
@@ -1062,11 +828,9 @@ async function ambilJurnal(){
     hasil.data || [];
 
 
-  loading.style.display =
-    "none";
+  loading.style.display = "none";
 
-  daftar.style.display =
-    "block";
+  daftar.style.display = "block";
 
 
   if(data.length === 0){
@@ -1094,13 +858,8 @@ async function ambilJurnal(){
     `;
 
     return;
-
   }
 
-
-  /* ----------------------------------------------
-     TAMPILKAN SISWA
-  ---------------------------------------------- */
 
   siswaWali.forEach(
     (siswa,index)=>{
@@ -1153,10 +912,6 @@ async function ambilJurnal(){
 }
 
 
-/* ==================================================
-   BUAT KARTU SISWA
-================================================== */
-
 function buatKartuSiswa(
   siswa,
   row,
@@ -1170,9 +925,7 @@ function buatKartuSiswa(
 
 
   const card =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
 
   card.className =
@@ -1187,28 +940,19 @@ function buatKartuSiswa(
 
   card.innerHTML = `
 
-    <!-- DATA SISWA -->
-
     <div class="siswa-header">
 
       <h3>
-
         👨‍🎓
         ${index + 1}.
         ${aman(siswa.nama)}
-
       </h3>
 
-      <strong>
-        NISN:
-      </strong>
-
+      <strong>NISN:</strong>
       ${aman(siswa.nisn || "-")}
 
     </div>
 
-
-    <!-- 1 BANGUN PAGI -->
 
     <div class="kaih-item">
 
@@ -1218,9 +962,7 @@ function buatKartuSiswa(
 
       <div class="isian-siswa">
 
-        <strong>
-          Isian Siswa
-        </strong>
+        <strong>Isian Siswa</strong>
 
         <div class="data-label">
           Jam bangun pagi
@@ -1235,8 +977,6 @@ function buatKartuSiswa(
     </div>
 
 
-    <!-- 2 MAKAN SEHAT -->
-
     <div class="kaih-item">
 
       <div class="kaih-judul">
@@ -1245,9 +985,7 @@ function buatKartuSiswa(
 
       <div class="isian-siswa">
 
-        <strong>
-          Isian Siswa
-        </strong>
+        <strong>Isian Siswa</strong>
 
         <div class="data-label">
           Puasa
@@ -1302,8 +1040,6 @@ function buatKartuSiswa(
     </div>
 
 
-    <!-- 3 OLAHRAGA -->
-
     <div class="kaih-item">
 
       <div class="kaih-judul">
@@ -1312,9 +1048,7 @@ function buatKartuSiswa(
 
       <div class="isian-siswa">
 
-        <strong>
-          Isian Siswa
-        </strong>
+        <strong>Isian Siswa</strong>
 
         <div class="data-label">
           Olahraga
@@ -1337,7 +1071,6 @@ function buatKartuSiswa(
         </div>
 
         <div class="data-value">
-
           ${
             row.durasi_olahraga !== null &&
             row.durasi_olahraga !== undefined &&
@@ -1348,7 +1081,6 @@ function buatKartuSiswa(
             :
             "-"
           }
-
         </div>
 
         <div class="data-label">
@@ -1364,8 +1096,6 @@ function buatKartuSiswa(
     </div>
 
 
-    <!-- 4 BERMASYARAKAT -->
-
     <div class="kaih-item">
 
       <div class="kaih-judul">
@@ -1374,9 +1104,7 @@ function buatKartuSiswa(
 
       <div class="isian-siswa">
 
-        <strong>
-          Isian Siswa
-        </strong>
+        <strong>Isian Siswa</strong>
 
         <div class="data-label">
           Bermasyarakat
@@ -1407,8 +1135,6 @@ function buatKartuSiswa(
     </div>
 
 
-    <!-- 5 BELAJAR MALAM -->
-
     <div class="kaih-item">
 
       <div class="kaih-judul">
@@ -1417,9 +1143,7 @@ function buatKartuSiswa(
 
       <div class="isian-siswa">
 
-        <strong>
-          Isian Siswa
-        </strong>
+        <strong>Isian Siswa</strong>
 
         <div class="data-label">
           Belajar malam
@@ -1442,7 +1166,6 @@ function buatKartuSiswa(
         </div>
 
         <div class="data-value">
-
           ${
             row.durasi_belajar !== null &&
             row.durasi_belajar !== undefined &&
@@ -1453,7 +1176,6 @@ function buatKartuSiswa(
             :
             "-"
           }
-
         </div>
 
         <div class="data-label">
@@ -1469,8 +1191,6 @@ function buatKartuSiswa(
     </div>
 
 
-    <!-- 6 IBADAH -->
-
     <div class="kaih-item">
 
       <div class="kaih-judul">
@@ -1479,9 +1199,7 @@ function buatKartuSiswa(
 
       <div class="isian-siswa">
 
-        <strong>
-          Isian Siswa
-        </strong>
+        <strong>Isian Siswa</strong>
 
         <div class="data-label">
           Ibadah
@@ -1512,8 +1230,6 @@ function buatKartuSiswa(
     </div>
 
 
-    <!-- 7 TIDUR CEPAT -->
-
     <div class="kaih-item">
 
       <div class="kaih-judul">
@@ -1522,9 +1238,7 @@ function buatKartuSiswa(
 
       <div class="isian-siswa">
 
-        <strong>
-          Isian Siswa
-        </strong>
+        <strong>Isian Siswa</strong>
 
         <div class="data-label">
           Jam tidur
@@ -1539,22 +1253,15 @@ function buatKartuSiswa(
     </div>
 
 
-    <!-- FEEDBACK GURU -->
-
     <div class="kaih-item">
 
       <div class="respons">
 
         <div class="respons-title">
-
           👨‍🏫 Feedback Guru
-
         </div>
 
-
-        <div
-          id="statusRespons_${aman(row.id)}"
-        >
+        <div id="statusRespons_${row.id}">
 
           ${
             respons
@@ -1562,14 +1269,13 @@ function buatKartuSiswa(
             tampilRespons(respons)
             :
             `
-            <span style="color:#777">
-              Belum ada feedback
-            </span>
+              <span style="color:#777">
+                Belum ada feedback
+              </span>
             `
           }
 
         </div>
-
 
         <div class="tombol-respons">
 
@@ -1580,16 +1286,11 @@ function buatKartuSiswa(
               ? "btn-aktif"
               : ""
             }"
-            onclick="
-              pilihRespons(
-                '${aman(row.id)}',
-                'Suka'
-              )
-            "
+            data-id="${row.id}"
+            data-respons="Suka"
           >
             👍 Suka
           </button>
-
 
           <button
             type="button"
@@ -1598,345 +1299,378 @@ function buatKartuSiswa(
               ? "btn-aktif"
               : ""
             }"
-            onclick="
-              pilihRespons(
-                '${aman(row.id)}',
-                'Kecewa'
-              )
-            "
+            data-id="${row.id}"
+            data-respons="Kecewa"
           >
             😞 Kecewa
           </button>
 
         </div>
 
-
         <label>
-
           💬 Komentar / Motivasi Guru
-
         </label>
 
-
         <textarea
-          id="komentar_${aman(row.id)}"
+          id="komentar_${row.id}"
           placeholder="Tuliskan komentar, motivasi atau pembinaan untuk siswa..."
         >${teksInput(row.komentar_guru)}</textarea>
 
+```
+    <button
+      type="button"
+      class="btn-simpan"
+      data-simpan-id="${row.id}"
+    >
+      💾 Simpan Feedback Guru
+    </button>
 
-        <button
-          type="button"
-          class="btn-simpan"
-          onclick="
-            simpanRespons(
-              '${aman(row.id)}'
-            )
-          "
-        >
-          💾 Simpan Feedback Guru
-        </button>
+  </div>
 
-      </div>
+</div>
+```
 
-    </div>
+`;
 
-  `;
+daftar.appendChild(card);
 
+card
+.querySelectorAll(".tombol-respons button")
+.forEach(
+tombol => {
 
-  daftar.appendChild(card);
+```
+    tombol.addEventListener(
+      "click",
+      function(){
+
+        pilihRespons(
+          this.dataset.id,
+          this.dataset.respons
+        );
+
+      }
+    );
+
+  }
+);
+```
+
+const tombolSimpan =
+card.querySelector(
+`[data-simpan-id="${row.id}"]`
+);
+
+if(tombolSimpan){
+
+```
+tombolSimpan.addEventListener(
+  "click",
+  function(){
+
+    simpanRespons(row.id);
+
+  }
+);
+```
 
 }
 
+}
 
-/* ==================================================
-   TAMPIL RESPONS
-================================================== */
+function tampilRespons(respons){
 
-function tampilRespons(
-  respons
-){
+if(respons === "Suka"){
 
-  if(respons === "Suka"){
-
-    return `
-
-      <span class="status-respons status-suka">
-
-        👍 Suka
-
-      </span>
-
-    `;
-
-  }
-
-
-  if(respons === "Kecewa"){
-
-    return `
-
-      <span class="status-respons status-kecewa">
-
-        😞 Kecewa
-
-      </span>
-
-    `;
-
-  }
-
-
-  return `
-
-    <span class="status-respons">
-
-      ${aman(respons)}
-
-    </span>
-
-  `;
+```
+return `
+  <span class="status-respons status-suka">
+    👍 Suka
+  </span>
+`;
+```
 
 }
 
+if(respons === "Kecewa"){
 
-/* ==================================================
-   PILIH RESPONS
-================================================== */
+```
+return `
+  <span class="status-respons status-kecewa">
+    😞 Kecewa
+  </span>
+`;
+```
+
+}
+
+return `     <span class="status-respons">
+      ${aman(respons)}     </span>
+  `;
+
+}
 
 function pilihRespons(
-  id,
-  respons
+id,
+respons
 ){
 
-  responsSementara[id] =
-    respons;
+responsSementara[id] =
+respons;
 
+const status =
+document.getElementById(
+"statusRespons_" + id
+);
 
-  const status =
-    document.getElementById(
-      "statusRespons_" + id
-    );
+if(status){
 
-
-  if(status){
-
-    status.innerHTML =
-      tampilRespons(
-        respons
-      );
-
-  }
-
-
-  const parent =
-    status
-    ?
-    status.closest(".respons")
-    :
-    null;
-
-
-  if(!parent){
-
-    return;
-
-  }
-
-
-  const tombol =
-    parent.querySelectorAll(
-      ".tombol-respons button"
-    );
-
-
-  tombol.forEach(
-    item => {
-
-      item.classList.remove(
-        "btn-aktif"
-      );
-
-    }
-  );
-
-
-  if(
-    respons === "Suka" &&
-    tombol[0]
-  ){
-
-    tombol[0].classList.add(
-      "btn-aktif"
-    );
-
-  }
-
-
-  if(
-    respons === "Kecewa" &&
-    tombol[1]
-  ){
-
-    tombol[1].classList.add(
-      "btn-aktif"
-    );
-
-  }
+```
+status.innerHTML =
+  tampilRespons(respons);
+```
 
 }
 
+const parent =
+status
+?
+status.closest(".respons")
+:
+null;
 
-/* ==================================================
-   SIMPAN FEEDBACK GURU
-================================================== */
+if(!parent){
+return;
+}
 
-async function simpanRespons(
-  id
+const tombol =
+parent.querySelectorAll(
+".tombol-respons button"
+);
+
+tombol.forEach(
+item => {
+
+```
+  item.classList.remove(
+    "btn-aktif"
+  );
+
+}
+```
+
+);
+
+if(
+respons === "Suka" &&
+tombol[0]
 ){
 
-  if(!guruLogin){
-
-    tampilPesan(
-      "Data guru belum tersedia."
-    );
-
-    return;
-
-  }
-
-
-  const textarea =
-    document.getElementById(
-      "komentar_" + id
-    );
-
-
-  const komentar =
-    textarea
-    ?
-    textarea.value.trim()
-    :
-    "";
-
-
-  const respons =
-    responsSementara[id]
-    || null;
-
-
-  const updateData = {
-
-    respons_guru:
-      respons,
-
-    komentar_guru:
-      komentar || null,
-
-    direspons_oleh:
-      guruLogin.id,
-
-    direspons_pada:
-      new Date().toISOString()
-
-  };
-
-
-  const hasil =
-    await supabaseClient
-
-      .from("jurnal_7_kaih")
-
-      .update(
-        updateData
-      )
-
-      .eq(
-        "id",
-        id
-      );
-
-
-  if(hasil.error){
-
-    console.error(
-      hasil.error
-    );
-
-    tampilPesan(
-
-      "❌ Gagal menyimpan feedback: " +
-      hasil.error.message
-
-    );
-
-    return;
-
-  }
-
-
-  delete responsSementara[id];
-
-
-  tampilPesan(
-    "✅ Feedback guru berhasil disimpan.",
-    true
-  );
-
-
-  await ambilJurnal();
+```
+tombol[0].classList.add(
+  "btn-aktif"
+);
+```
 
 }
 
+if(
+respons === "Kecewa" &&
+tombol[1]
+){
 
-/* ==================================================
-   KEMBALI KE DASHBOARD GURU
-================================================== */
-
-function kembaliDashboard(){
-
-  console.log(
-    "Kembali ke Dashboard Guru..."
-  );
-
-  window.location.href =
-    "./dashboard-guru.html";
+```
+tombol[1].classList.add(
+  "btn-aktif"
+);
+```
 
 }
 
+}
 
-/* ==================================================
-   LOGOUT
-================================================== */
+async function simpanRespons(id){
+
+if(!guruLogin){
+
+```
+tampilPesan(
+  "Data guru belum tersedia."
+);
+
+return;
+```
+
+}
+
+const textarea =
+document.getElementById(
+"komentar_" + id
+);
+
+const komentar =
+textarea
+?
+textarea.value.trim()
+:
+"";
+
+const respons =
+responsSementara[id]
+|| null;
+
+const updateData = {
+
+```
+respons_guru:
+  respons,
+
+komentar_guru:
+  komentar || null,
+
+direspons_oleh:
+  guruLogin.id,
+
+direspons_pada:
+  new Date().toISOString()
+```
+
+};
+
+const hasil =
+await supabaseClient
+.from("jurnal_7_kaih")
+.update(updateData)
+.eq(
+"id",
+id
+);
+
+if(hasil.error){
+
+```
+console.error(
+  hasil.error
+);
+
+tampilPesan(
+  "❌ Gagal menyimpan feedback: " +
+  hasil.error.message
+);
+
+return;
+```
+
+}
+
+delete responsSementara[id];
+
+tampilPesan(
+"✅ Feedback guru berhasil disimpan.",
+true
+);
+
+await ambilJurnal();
+
+}
+
+/* ==========================================
+LOGOUT
+========================================== */
 
 async function logoutGuru(){
 
-  try{
+try{
 
-    await supabaseClient
-      .auth
-      .signOut();
-
-  }
-
-  catch(error){
-
-    console.error(error);
-
-  }
+```
+const hasil =
+  await supabaseClient
+    .auth
+    .signOut();
 
 
-  window.location.replace(
-    "./login-guru.html"
+if(hasil.error){
+
+  console.error(
+    hasil.error
+  );
+
+  alert(
+    "Gagal keluar: " +
+    hasil.error.message
+  );
+
+  return;
+}
+
+
+window.location.replace(
+  "login-guru.html"
+);
+```
+
+}
+
+catch(error){
+
+```
+console.error(error);
+
+window.location.replace(
+  "login-guru.html"
+);
+```
+
+}
+
+}
+
+/* ==========================================
+EVENT LISTENER
+========================================== */
+
+document.addEventListener(
+"DOMContentLoaded",
+function(){
+
+```
+const tombolTampil =
+  document.getElementById(
+    "btnTampil"
+  );
+
+
+if(tombolTampil){
+
+  tombolTampil.addEventListener(
+    "click",
+    ambilJurnal
   );
 
 }
 
 
-/* ==================================================
-   JALANKAN SISTEM
-================================================== */
+const tombolLogout =
+  document.getElementById(
+    "btnLogout"
+  );
+
+
+if(tombolLogout){
+
+  tombolLogout.addEventListener(
+    "click",
+    logoutGuru
+  );
+
+}
+
 
 mulai();
+```
+
+}
+);
 
 </script>
 
